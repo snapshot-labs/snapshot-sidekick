@@ -12,12 +12,22 @@ for snapshot-hub, for proposals' votes.
 
 ## Project Setup
 
-> yarn
+### Dependencies
 
-Set the hub API url in the `.env` file
+Install the dependencies
 
 ```
-HUB_URL=
+yarn
+```
+
+_This project does not require a database, but may need larger server storage capacity for the cached files_
+
+### Configuration
+
+Edit the hub API url in the `.env` file if needed
+
+```
+HUB_URL=https://hub.snapshot.org
 ```
 
 ## Compiles and hot-reloads for development
@@ -43,15 +53,14 @@ curl -X POST localhost:3000/votes/[PROPOSAL-ID]
 
 When cached, this request will respond with a stream to a CSV file.
 
-Otherwise, on error, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
+On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
 
 ```
 {
   "jsonrpc":"2.0",
   "error":{
     "code": CODE,
-    "message": MESSAGE,
-    "data": MESSAGE_DETAIL
+    "message": MESSAGE
   },
   "id": PROPOSAL-ID
 }
@@ -63,6 +72,13 @@ Otherwise, on error, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.o
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
+
+## Build for production
+
+```
+yarn build
+yarn start
+```
 
 ## License
 
