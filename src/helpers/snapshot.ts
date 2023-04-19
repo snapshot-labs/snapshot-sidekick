@@ -3,12 +3,12 @@ import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core'
 export type Proposal = {
   id: string;
   state: string;
+  choices: string[];
 };
 export type Vote = {
   ipfs: string;
   voter: string;
-  choice: any[] | any;
-  choices?: any[];
+  choice: Record<string, number> | number;
   vp: number;
   reason: string;
   created: number;
@@ -31,6 +31,7 @@ const PROPOSAL_QUERY = gql`
     proposal(id: $id) {
       id
       state
+      choices
     }
   }
 `;

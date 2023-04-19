@@ -36,28 +36,17 @@ class VotesReport {
   };
 
   #generateCachedFile = (proposal: Proposal) => {
-    const headers = [
-      'address',
-      'choice',
-      // ...proposal.choices.map((choice, index) => `choice.${index + 1}`),
-      'voting_power',
-      'timestamp',
-      'date_utc',
-      'author_ipfs_hash'
-    ];
-
-    appendFileSync(this.path, headers.join(','));
-
-    return this.#saveVotes();
+    return this.#saveVotes(proposal);
   };
 
-  #saveVotes = async () => {
+  #saveVotes = async (proposal: Proposal) => {
     let votes: Vote[] = [];
     let page = 0;
     let createdPivot = 0;
     const pageSize = 1000;
     let resultsSize = 0;
     const maxPage = 5;
+    let headersAppended = false;
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -68,6 +57,22 @@ class VotesReport {
         orderDirection: 'asc'
       });
       resultsSize = newVotes.length;
+
+      if (!headersAppended) {
+        const headers = [
+          'address',
+          newVotes.length === 0 || typeof newVotes[0].choice === 'number'
+            ? 'choice'
+            : proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+          'voting_power',
+          'timestamp',
+          'author_ipfs_hash'
+        ].flat();
+
+        appendFileSync(this.path, headers.join(','));
+
+        headersAppended = true;
+      }
 
       if (page === 0 && createdPivot > 0) {
         // Loosely assuming that there will never be more than 1000 duplicates
@@ -85,7 +90,10 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(this.path, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
+      appendFileSync(
+        this.path,
+        `\n${newVotes.map(vote => this.#formatCsvLine(vote, proposal)).join('\n')}`
+      );
 
       votes = newVotes;
     } while (resultsSize === pageSize);
@@ -93,15 +101,18 @@ class VotesReport {
     return this.path;
   };
 
-  #formatCsvLine = (vote: Vote) => {
-    return [
-      vote.voter,
-      vote.choice,
-      vote.vp,
-      vote.created,
-      `"${new Date(vote.created * 1e3).toUTCString()}"`,
-      vote.ipfs
-    ].join(',');
+  #formatCsvLine = (vote: Vote, proposal: Proposal) => {
+    let choices: Vote['choice'][] = [];
+    if (typeof vote.choice !== 'number') {
+      choices = Array.from({ length: proposal.choices.length });
+      for (const [key, value] of Object.entries(vote.choice)) {
+        choices[parseInt(key) - 1] = value;
+      }
+    } else {
+      choices.push(vote.choice);
+    }
+
+    return [vote.voter, choices, vote.vp, vote.created, vote.ipfs].flat().join(',');
   };
 }
 
