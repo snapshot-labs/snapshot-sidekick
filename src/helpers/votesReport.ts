@@ -7,11 +7,13 @@ const CACHE_PATH = `${__dirname}/../../cache`;
 class VotesReport {
   id: string;
   path: string;
+  tempPath: string;
   proposal?: Proposal;
 
   constructor(id: string) {
     this.id = id;
     this.path = `${CACHE_PATH}/snapshot-votes-report-${this.id}.csv`;
+    this.tempPath = `${this.path}.pending`;
   }
 
   cachedFile = () => {
@@ -19,6 +21,10 @@ class VotesReport {
   };
 
   generate = async () => {
+    if (existsSync(this.tempPath)) {
+      return Promise.reject('PENDING_GENERATION');
+    }
+
     this.proposal = await fetchProposal(this.id);
 
     if (!this.proposal) {
@@ -37,6 +43,9 @@ class VotesReport {
   };
 
   #generateCachedFile = () => {
+    // Touch file to prevent race condition allowing file generation
+    // to be run multiple times
+    appendFileSync(this.tempPath, '');
     return this.#saveVotes();
   };
 
@@ -48,7 +57,6 @@ class VotesReport {
     let resultsSize = 0;
     const maxPage = 5;
     let headersAppended = false;
-    const tempPath = `${this.path}.pending`;
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -71,7 +79,7 @@ class VotesReport {
           'author_ipfs_hash'
         ].flat();
 
-        appendFileSync(tempPath, headers.join(','));
+        appendFileSync(this.tempPath, headers.join(','));
 
         headersAppended = true;
       }
@@ -92,12 +100,15 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(tempPath, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
+      appendFileSync(
+        this.tempPath,
+        `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`
+      );
 
       votes = newVotes;
     } while (resultsSize === pageSize);
 
-    renameSync(tempPath, this.path);
+    renameSync(this.tempPath, this.path);
 
     return this.path;
   };
