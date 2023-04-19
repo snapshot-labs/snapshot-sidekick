@@ -7,6 +7,7 @@ const CACHE_PATH = `${__dirname}/../../cache`;
 class VotesReport {
   id: string;
   path: string;
+  proposal?: Proposal;
 
   constructor(id: string) {
     this.id = id;
@@ -18,28 +19,28 @@ class VotesReport {
   };
 
   generate = async () => {
-    const proposal = await fetchProposal(this.id);
+    this.proposal = await fetchProposal(this.id);
 
-    if (!proposal) {
+    if (!this.proposal) {
       return Promise.reject('PROPOSAL_NOT_FOUND');
     }
 
-    if (proposal.state !== 'closed') {
+    if (this.proposal.state !== 'closed') {
       return Promise.reject('PROPOSAL_NOT_CLOSED');
     }
 
     if (!this.cachedFile()) {
-      this.#generateCachedFile(proposal);
+      this.#generateCachedFile();
     }
 
     return Promise.resolve();
   };
 
-  #generateCachedFile = (proposal: Proposal) => {
-    return this.#saveVotes(proposal);
+  #generateCachedFile = () => {
+    return this.#saveVotes();
   };
 
-  #saveVotes = async (proposal: Proposal) => {
+  #saveVotes = async () => {
     let votes: Vote[] = [];
     let page = 0;
     let createdPivot = 0;
@@ -63,7 +64,7 @@ class VotesReport {
           'address',
           newVotes.length === 0 || typeof newVotes[0].choice === 'number'
             ? 'choice'
-            : proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+            : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
           'voting_power',
           'timestamp',
           'author_ipfs_hash'
@@ -90,10 +91,7 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(
-        this.path,
-        `\n${newVotes.map(vote => this.#formatCsvLine(vote, proposal)).join('\n')}`
-      );
+      appendFileSync(this.path, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
 
       votes = newVotes;
     } while (resultsSize === pageSize);
@@ -101,10 +99,11 @@ class VotesReport {
     return this.path;
   };
 
-  #formatCsvLine = (vote: Vote, proposal: Proposal) => {
+  #formatCsvLine = (vote: Vote) => {
     let choices: Vote['choice'][] = [];
-    if (typeof vote.choice !== 'number') {
-      choices = Array.from({ length: proposal.choices.length });
+
+    if (typeof vote.choice !== 'number' && this.proposal) {
+      choices = Array.from({ length: this.proposal.choices.length });
       for (const [key, value] of Object.entries(vote.choice)) {
         choices[parseInt(key) - 1] = value;
       }
