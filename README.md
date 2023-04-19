@@ -12,12 +12,22 @@ for snapshot-hub, for proposals' votes.
 
 ## Project Setup
 
-> yarn
+### Dependencies
 
-Set the hub API url in the `.env` file
+Install the dependencies
 
 ```
-HUB_URL=
+yarn
+```
+
+_This project does not require a database, but may need larger server storage capacity for the cached files_
+
+### Configuration
+
+Edit the hub API url in the `.env` file if needed
+
+```
+HUB_URL=https://hub.snapshot.org
 ```
 
 ## Compiles and hot-reloads for development
@@ -31,6 +41,13 @@ yarn dev
 ```
 yarn lint
 yarn typecheck
+```
+
+## Build for production
+
+```
+yarn build
+yarn start
 ```
 
 ## License
