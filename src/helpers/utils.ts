@@ -1,21 +1,20 @@
 import type { Response } from 'express';
 
-export function rpcError(res: Response, code: number, e: unknown, id: string | number) {
-  res.status(code).json({
+const ERROR_CODES: Record<string, number> = {
+  PROPOSAL_NOT_FOUND: -40001,
+  PROPOSAL_NOT_CLOSED: -40004,
+  PENDING_GENERATION: -40010
+};
+
+export function rpcError(res: Response, e: Error | string, id: string | number) {
+  const errorMessage = e instanceof Error ? e.message : e;
+
+  res.status(500).json({
     jsonrpc: '2.0',
     error: {
-      code,
-      message: 'unauthorized',
-      data: e
+      code: ERROR_CODES[errorMessage] ? ERROR_CODES[errorMessage] : -32603,
+      message: errorMessage
     },
-    id
-  });
-}
-
-export function rpcSuccess(res: Response, result: string, id: string | number) {
-  res.json({
-    jsonrpc: '2.0',
-    result,
     id
   });
 }

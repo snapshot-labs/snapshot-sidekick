@@ -21,11 +21,11 @@ class VotesReport {
     const proposal = await fetchProposal(this.id);
 
     if (!proposal) {
-      return Promise.reject('proposal_not_found');
+      return Promise.reject('PROPOSAL_NOT_FOUND');
     }
 
     if (proposal.state !== 'closed') {
-      return Promise.reject('proposal_not_closed');
+      return Promise.reject('PROPOSAL_NOT_CLOSED');
     }
 
     if (!this.cachedFile()) {

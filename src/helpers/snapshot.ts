@@ -71,17 +71,6 @@ export async function fetchProposal(id: string) {
     }
   });
 
-  console.log(
-    (
-      await client.query({
-        query: PROPOSAL_QUERY,
-        variables: {
-          id
-        }
-      })
-    ).data
-  );
-
   return proposal;
 }
 

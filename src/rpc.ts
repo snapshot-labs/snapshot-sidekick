@@ -1,5 +1,5 @@
 import express from 'express';
-import { rpcError, rpcSuccess } from './helpers/utils';
+import { rpcError } from './helpers/utils';
 import VotesReport from './helpers/votesReport';
 
 const router = express.Router();
@@ -18,14 +18,14 @@ router.post('/votes/:id', async (req, res) => {
     votesReport
       .generate()
       .then(() => {
-        return rpcSuccess(res, 'pending_generation', id);
+        return rpcError(res, 'PENDING_GENERATION', id);
       })
       .catch(e => {
-        return rpcError(res, 500, e, id);
+        return rpcError(res, e, id);
       });
   } catch (e) {
     console.log(e);
-    return rpcError(res, 500, e, id);
+    return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
 
