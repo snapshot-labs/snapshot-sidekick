@@ -46,7 +46,7 @@ class VotesReport {
       'author_ipfs_hash'
     ];
 
-    appendFileSync(this.path, `${headers.join(',')}\n`);
+    appendFileSync(this.path, headers.join(','));
 
     return this.#saveVotes();
   };
@@ -85,7 +85,7 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(this.path, newVotes.map(vote => this.#formatCsvLine(vote)).join('\n'));
+      appendFileSync(this.path, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
 
       votes = newVotes;
     } while (resultsSize === pageSize);
