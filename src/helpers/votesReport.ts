@@ -1,4 +1,4 @@
-import { existsSync, appendFileSync } from 'fs';
+import { existsSync, appendFileSync, renameSync } from 'fs';
 import { fetchProposal, fetchVotes } from './snapshot';
 import type { Proposal, Vote } from './snapshot';
 
@@ -48,6 +48,7 @@ class VotesReport {
     let resultsSize = 0;
     const maxPage = 5;
     let headersAppended = false;
+    const tempPath = `${this.path}.pending`;
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -70,7 +71,7 @@ class VotesReport {
           'author_ipfs_hash'
         ].flat();
 
-        appendFileSync(this.path, headers.join(','));
+        appendFileSync(tempPath, headers.join(','));
 
         headersAppended = true;
       }
@@ -91,10 +92,12 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(this.path, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
+      appendFileSync(tempPath, `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`);
 
       votes = newVotes;
     } while (resultsSize === pageSize);
+
+    renameSync(tempPath, this.path);
 
     return this.path;
   };
