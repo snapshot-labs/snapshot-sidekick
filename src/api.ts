@@ -11,7 +11,7 @@ router.post('/votes/:id', async (req, res) => {
   try {
     const file = votesReport.cachedFile();
 
-    if (file) {
+    if (typeof file === 'string') {
       return res.download(file);
     }
 

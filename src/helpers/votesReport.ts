@@ -1,30 +1,22 @@
-import { existsSync, appendFileSync, renameSync } from 'fs';
 import { fetchProposal, fetchVotes } from './snapshot';
+import { set, get, exist } from './aws';
 import type { Proposal, Vote } from './snapshot';
-
-const CACHE_PATH = `${__dirname}/../../cache`;
 
 class VotesReport {
   id: string;
-  path: string;
-  tempPath: string;
+  filename: string;
   proposal?: Proposal;
 
   constructor(id: string) {
     this.id = id;
-    this.path = `${CACHE_PATH}/snapshot-votes-report-${this.id}.csv`;
-    this.tempPath = `${this.path}.pending`;
+    this.filename = `snapshot-votes-report-${this.id}.csv`;
   }
 
   cachedFile = () => {
-    return existsSync(this.path) && this.path;
+    return get(this.filename);
   };
 
   generate = async () => {
-    if (existsSync(this.tempPath)) {
-      return Promise.reject('PENDING_GENERATION');
-    }
-
     this.proposal = await fetchProposal(this.id);
 
     if (!this.proposal) {
@@ -35,17 +27,14 @@ class VotesReport {
       return Promise.reject('PROPOSAL_NOT_CLOSED');
     }
 
-    if (!this.cachedFile()) {
+    if (!exist(this.filename)) {
       this.#generateCachedFile();
     }
 
-    return Promise.resolve();
+    return true;
   };
 
   #generateCachedFile = () => {
-    // Touch file to prevent race condition allowing file generation
-    // to be run multiple times
-    appendFileSync(this.tempPath, '');
     return this.#saveVotes();
   };
 
@@ -57,6 +46,7 @@ class VotesReport {
     let resultsSize = 0;
     const maxPage = 5;
     let headersAppended = false;
+    let content = '';
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -79,7 +69,7 @@ class VotesReport {
           'author_ipfs_hash'
         ].flat();
 
-        appendFileSync(this.tempPath, headers.join(','));
+        content += headers.join(',');
 
         headersAppended = true;
       }
@@ -100,17 +90,12 @@ class VotesReport {
         page++;
       }
 
-      appendFileSync(
-        this.tempPath,
-        `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`
-      );
+      content += `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
 
       votes = newVotes;
     } while (resultsSize === pageSize);
 
-    renameSync(this.tempPath, this.path);
-
-    return this.path;
+    return set(this.filename, content);
   };
 
   #formatCsvLine = (vote: Vote) => {
