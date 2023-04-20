@@ -1,5 +1,5 @@
+import { set, get } from './aws';
 import { fetchProposal, fetchVotes } from './snapshot';
-import { set, get, exist } from './aws';
 import type { Proposal, Vote } from './snapshot';
 
 class VotesReport {
@@ -16,7 +16,7 @@ class VotesReport {
     return get(this.filename);
   };
 
-  generate = async () => {
+  canBeCached = async () => {
     this.proposal = await fetchProposal(this.id);
 
     if (!this.proposal) {
@@ -27,18 +27,14 @@ class VotesReport {
       return Promise.reject('PROPOSAL_NOT_CLOSED');
     }
 
-    if (!exist(this.filename)) {
-      this.#generateCachedFile();
-    }
-
     return true;
   };
 
-  #generateCachedFile = () => {
-    return this.#saveVotes();
-  };
+  generateCacheFile = async () => {
+    if (!(await this.canBeCached())) {
+      return false;
+    }
 
-  #saveVotes = async () => {
     let votes: Vote[] = [];
     let page = 0;
     let createdPivot = 0;

@@ -1,55 +1,46 @@
-import { S3 } from '@aws-sdk/client-s3';
-import type { Readable } from 'stream';
+import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
-let client: S3;
+let client: S3Client;
 const region = process.env.AWS_REGION;
-const endpoint = process.env.AWS_ENDPOINT || undefined;
-if (region) client = new S3({ region, endpoint });
-const dir = 'sidekiq';
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-async function streamToString(stream: Readable): Promise<string> {
-  return await new Promise((resolve, reject) => {
-    const chunks: Uint8Array[] = [];
-    stream.on('data', chunk => chunks.push(chunk));
-    stream.on('error', reject);
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+if (region && accessKeyId && secretAccessKey) {
+  client = new S3Client({
+    region,
+    credentials: {
+      secretAccessKey,
+      accessKeyId
+    }
   });
 }
+const dir = 'sidekiq';
 
 export async function set(key: string, value: string) {
   try {
-    return await client.putObject({
+    const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `public/${dir}/${key}`,
       Body: value,
       ContentType: 'text/csv; charset=utf-8'
     });
+
+    return await client.send(command);
   } catch (e) {
     console.log('Store cache failed', e);
-    throw e;
+    throw 'Unable to access storage';
   }
 }
 
 export async function get(key: string) {
   try {
-    const { Body } = await client.getObject({
+    const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `public/${dir}/${key}`
     });
-    const str = await streamToString(Body as Readable);
-    return str;
-  } catch (e) {
-    return false;
-  }
-}
+    const response = await client.send(command);
 
-export async function exist(key: string) {
-  try {
-    await client.headObject({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `public/${dir}/${key}`
-    });
-    return true;
+    return response.Body?.transformToString() || false;
   } catch (e) {
     return false;
   }
