@@ -30,6 +30,24 @@ Edit the hub API url in the `.env` file if needed
 HUB_URL=https://hub.snapshot.org
 ```
 
+If you are using AWS as storage engine, set all the required `AWS_` config keys.
+
+#### Storage engine
+
+This script is shipped with 2 storage engine:
+
+- `AWS`: All cached files will be stored on Amazon S3 storage
+- `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
+
+You can toggle the cache engine in `src/api.ts`, when importing the storage engine
+
+```
+// For AWS (default)
+import StorageEngine from './lib/storage/aws';
+// For File
+import StorageEngine from './lib/storage/file';
+```
+
 ## Compiles and hot-reloads for development
 
 ```
@@ -44,6 +62,10 @@ yarn typecheck
 ```
 
 ## Usage
+
+Retrieving and generating the cache file have their own respective endpoint
+
+### Fetch a cache file
 
 Send a POST request with a proposal ID
 
@@ -72,6 +94,17 @@ On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.or
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
+
+### Generate a cache file
+
+Send a POST request with a proposal ID
+
+```
+curl -X POST localhost:3000/votes/generate/[PROPOSAL-ID]
+```
+
+- On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+- On error, will respond with the same result and codes as the `fetch` endpoint above
 
 ## Build for production
 
