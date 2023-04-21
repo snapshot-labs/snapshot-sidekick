@@ -11,7 +11,7 @@ class VotesReport {
   constructor(id: string, storage: IStorageConstructor) {
     this.id = id;
     this.filename = `snapshot-votes-report-${this.id}.csv`;
-    this.storage = new storage();
+    this.storage = new storage('votes');
   }
 
   cachedFile = () => {

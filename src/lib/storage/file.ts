@@ -4,9 +4,13 @@ import type { IStorage } from './types';
 const CACHE_PATH = `${__dirname}/../../../tmp`;
 
 class File implements IStorage {
-  constructor() {
-    if (!existsSync(CACHE_PATH)) {
-      mkdirSync(CACHE_PATH);
+  folder: string;
+
+  constructor(folder: string) {
+    this.folder = folder;
+
+    if (!existsSync(`${CACHE_PATH}/${this.folder}`)) {
+      mkdirSync(`${CACHE_PATH}/${this.folder}`);
     }
   }
 
@@ -19,7 +23,7 @@ class File implements IStorage {
   };
 
   path = (key: string) => {
-    return `${CACHE_PATH}/${key}`;
+    return `${CACHE_PATH}/${this.folder}/${key}`;
   };
 }
 
