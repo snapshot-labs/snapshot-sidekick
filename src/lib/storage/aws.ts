@@ -15,13 +15,7 @@ class Aws implements IStorage {
       throw 'AWS credentials missing';
     }
 
-    this.client = new S3Client({
-      region,
-      credentials: {
-        secretAccessKey,
-        accessKeyId
-      }
-    });
+    this.client = new S3Client({});
   }
 
   set = async (key: string, value: string) => {
