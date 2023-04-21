@@ -1,19 +1,21 @@
-import { set, get } from './aws';
-import { fetchProposal, fetchVotes } from './snapshot';
-import type { Proposal, Vote } from './snapshot';
+import { fetchProposal, fetchVotes } from '../helpers/snapshot';
+import type { Proposal, Vote } from '../helpers/snapshot';
+import type { IStorage, IStorageConstructor } from './storage/types';
 
 class VotesReport {
   id: string;
   filename: string;
   proposal?: Proposal;
+  storage: IStorage;
 
-  constructor(id: string) {
+  constructor(id: string, storage: IStorageConstructor) {
     this.id = id;
     this.filename = `snapshot-votes-report-${this.id}.csv`;
+    this.storage = new storage();
   }
 
   cachedFile = () => {
-    return get(this.filename);
+    return this.storage.get(this.filename);
   };
 
   canBeCached = async () => {
@@ -89,7 +91,7 @@ class VotesReport {
       votes = newVotes;
     } while (resultsSize === pageSize);
 
-    return set(this.filename, content);
+    return this.storage.set(this.filename, content);
   };
 
   #formatCsvLine = (vote: Vote) => {
