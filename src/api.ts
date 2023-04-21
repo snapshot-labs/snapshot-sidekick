@@ -8,6 +8,10 @@ const router = express.Router();
 router.post('/votes/generate/:id', (req, res) => {
   const { id } = req.params;
 
+  if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
+    return rpcError(res, 'UNAUTHORIZE', id);
+  }
+
   try {
     new VotesReport(id, StorageEngine)
       .generateCacheFile()
