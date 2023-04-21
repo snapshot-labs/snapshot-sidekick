@@ -6,6 +6,14 @@ const ERROR_CODES: Record<string, number> = {
   PENDING_GENERATION: -40010
 };
 
+export function rpcSuccess(res: Response, result: string, id: string | number) {
+  res.json({
+    jsonrpc: '2.0',
+    result,
+    id
+  });
+}
+
 export function rpcError(res: Response, e: Error | string, id: string | number) {
   const errorMessage = e instanceof Error ? e.message : e;
 

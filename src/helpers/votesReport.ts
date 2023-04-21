@@ -31,9 +31,7 @@ class VotesReport {
   };
 
   generateCacheFile = async () => {
-    if (!(await this.canBeCached())) {
-      return false;
-    }
+    await this.canBeCached();
 
     let votes: Vote[] = [];
     let page = 0;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { rpcError } from './helpers/utils';
+import { rpcError, rpcSuccess } from './helpers/utils';
 import VotesReport from './helpers/votesReport';
 
 const router = express.Router();
@@ -11,12 +11,8 @@ router.post('/votes/generate/:id', (req, res) => {
   try {
     votesReport
       .generateCacheFile()
-      .then(() => {
-        return rpcError(res, 'PENDING_GENERATION', id);
-      })
-      .catch(e => {
-        return rpcError(res, e, id);
-      });
+      .then(() => rpcSuccess(res, 'Cache file generated', id))
+      .catch(e => rpcError(res, e, id));
   } catch (e) {
     console.log(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
@@ -36,12 +32,8 @@ router.post('/votes/:id', async (req, res) => {
 
     votesReport
       .canBeCached()
-      .then(() => {
-        return rpcError(res, 'PENDING_GENERATION', id);
-      })
-      .catch(e => {
-        return rpcError(res, e, id);
-      });
+      .then(() => rpcError(res, 'PENDING_GENERATION', id))
+      .catch(e => rpcError(res, e, id));
   } catch (e) {
     console.log(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
