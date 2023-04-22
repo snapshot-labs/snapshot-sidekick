@@ -6,13 +6,13 @@ import type { IStorage, IStorageConstructor } from './storage/types';
 class VotesReport {
   id: string;
   filename: string;
-  proposal?: Proposal;
+  proposal?: Proposal | null;
   storage: IStorage;
 
-  constructor(id: string, storage: IStorageConstructor) {
+  constructor(id: string, storage: IStorage) {
     this.id = id;
     this.filename = `snapshot-votes-report-${this.id}.csv`;
-    this.storage = new storage('votes');
+    this.storage = storage;
   }
 
   cachedFile = () => {
@@ -20,7 +20,7 @@ class VotesReport {
   };
 
   canBeCached = async () => {
-    this.proposal = await fetchProposal(this.id);
+    this.proposal = await this.fetchProposal();
 
     if (!this.proposal) {
       return Promise.reject('PROPOSAL_NOT_FOUND');
@@ -114,6 +114,10 @@ class VotesReport {
     }
 
     return [vote.voter, choices, vote.vp, vote.created, vote.ipfs].flat().join(',');
+  };
+
+  fetchProposal = async () => {
+    return await fetchProposal(this.id);
   };
 }
 

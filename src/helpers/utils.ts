@@ -1,5 +1,5 @@
 import VotesReport from '../lib/votesReport';
-import StorageEngine from '../lib/storage/aws';
+import StorageEngine from '../lib/storage/file'; // aws | file
 import type { Response } from 'express';
 
 const ERROR_CODES: Record<string, number> = {
@@ -39,5 +39,5 @@ export async function sleep(time: number) {
 }
 
 export function voteReportWithStorage(id: string) {
-  return new VotesReport(id, StorageEngine);
+  return new VotesReport(id, new StorageEngine('votes'));
 }

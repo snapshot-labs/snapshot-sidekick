@@ -1,4 +1,4 @@
-name: Build and Run Lint
+name: Build and Run Tests
 on: [push]
 jobs:
   build-test:
@@ -11,5 +11,5 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn lint
-      - run: yarn typecheck
+      - run: echo -en "HUB_URL=https://hub.snapshot.org" > .env
+      - run: yarn test

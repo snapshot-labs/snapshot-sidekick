@@ -1,4 +1,4 @@
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import log from '../../helpers/log';
 import type { IStorage } from './types';
 
@@ -17,7 +17,7 @@ class File implements IStorage {
 
   set = async (key: string, value: string) => {
     try {
-      appendFileSync(this.path(key), value);
+      writeFileSync(this.path(key), value);
       log.info(`[storage:file] File saved to ${this.path(key)}`);
 
       return true;
@@ -29,9 +29,13 @@ class File implements IStorage {
 
   get = async (key: string) => {
     try {
+      if (!existsSync(this.path(key))) {
+        return false;
+      }
+
       return readFileSync(this.path(key), 'utf8');
     } catch (e) {
-      log.error('[storage:file] Store file failed', e);
+      log.error('[storage:file] Fetch file failed', e);
       return false;
     }
   };

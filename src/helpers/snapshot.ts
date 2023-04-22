@@ -65,7 +65,7 @@ const VOTES_QUERY = gql`
 export async function fetchProposal(id: string) {
   const {
     data: { proposal }
-  }: { data: { proposal: Proposal } } = await client.query({
+  }: { data: { proposal: Proposal | null } } = await client.query({
     query: PROPOSAL_QUERY,
     variables: {
       id
