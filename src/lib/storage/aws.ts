@@ -1,4 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import log from '../../helpers/log';
 import type { IStorage } from './types';
 
 class Aws implements IStorage {
@@ -11,7 +12,7 @@ class Aws implements IStorage {
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
     if (!region || !accessKeyId || !secretAccessKey) {
-      throw 'AWS credentials missing';
+      throw '[storage:aws] AWS credentials missing';
     }
 
     this.client = new S3Client({});
@@ -27,9 +28,12 @@ class Aws implements IStorage {
         ContentType: 'text/csv; charset=utf-8'
       });
 
-      return await this.client.send(command);
+      await this.client.send(command);
+      log.error(`[storage:aws] File saved to public/${this.folder}/${key}`);
+
+      return true;
     } catch (e) {
-      console.log('Store cache failed', e);
+      log.error('[storage:aws] Store file failed', e);
       throw 'Unable to access storage';
     }
   };
@@ -44,6 +48,7 @@ class Aws implements IStorage {
 
       return response.Body?.transformToString() || false;
     } catch (e) {
+      log.error('[storage:aws] Create file failed', e);
       return false;
     }
   };

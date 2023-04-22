@@ -1,4 +1,5 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import log from '../../helpers/log';
 import type { IStorage } from './types';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;
@@ -15,11 +16,24 @@ class File implements IStorage {
   }
 
   set = async (key: string, value: string) => {
-    return await appendFileSync(this.path(key), value);
+    try {
+      appendFileSync(this.path(key), value);
+      log.info(`[storage:file] File saved to ${this.path(key)}`);
+
+      return true;
+    } catch (e) {
+      log.error('[storage:file] Create file failed', e);
+      throw e;
+    }
   };
 
   get = async (key: string) => {
-    return await readFileSync(this.path(key), 'utf8');
+    try {
+      return readFileSync(this.path(key), 'utf8');
+    } catch (e) {
+      log.error('[storage:file] Store file failed', e);
+      return false;
+    }
   };
 
   path = (key: string) => {

@@ -1,3 +1,5 @@
+import VotesReport from '../lib/votesReport';
+import StorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
 
 const ERROR_CODES: Record<string, number> = {
@@ -28,4 +30,14 @@ export function rpcError(res: Response, e: Error | string, id: string | number) 
     },
     id
   });
+}
+
+export async function sleep(time: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, time);
+  });
+}
+
+export function voteReportWithStorage(id: string) {
+  return new VotesReport(id, StorageEngine);
 }

@@ -1,11 +1,13 @@
 import express from 'express';
-import { rpcError, rpcSuccess } from './helpers/utils';
-import VotesReport from './lib/votesReport';
-import StorageEngine from './lib/storage/aws'; // file | aws
+import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
+import log from './helpers/log';
+import { queues } from './lib/queue';
 
 const router = express.Router();
 
-router.post('/votes/generate', (req, res) => {
+router.post('/votes/generate', async (req, res) => {
+  log.info(`[http] POST /votes/generate`);
+
   const body = req.body || {};
   const event = body.event.toString();
   const id = body.id.toString().replace('proposal/', '');
@@ -23,19 +25,20 @@ router.post('/votes/generate', (req, res) => {
   }
 
   try {
-    new VotesReport(id, StorageEngine)
-      .generateCacheFile()
-      .then(() => rpcSuccess(res, 'Cache file generated', id))
-      .catch(e => rpcError(res, e, id));
+    await voteReportWithStorage(id).canBeCached();
+    queues.add(id);
+    return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
-    console.log(e);
+    log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
 
 router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
-  const votesReport = new VotesReport(id, StorageEngine);
+  log.info(`[http] POST /votes/${id}`);
+
+  const votesReport = voteReportWithStorage(id);
 
   try {
     const file = await votesReport.cachedFile();
@@ -48,10 +51,16 @@ router.post('/votes/:id', async (req, res) => {
 
     votesReport
       .canBeCached()
-      .then(() => rpcError(res, 'PENDING_GENERATION', id))
-      .catch(e => rpcError(res, e, id));
+      .then(() => {
+        queues.add(id);
+        return rpcError(res, 'PENDING_GENERATION', id);
+      })
+      .catch((e: any) => {
+        log.error(e);
+        rpcError(res, e, id);
+      });
   } catch (e) {
-    console.log(e);
+    log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });

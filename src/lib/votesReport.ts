@@ -1,4 +1,5 @@
 import { fetchProposal, fetchVotes } from '../helpers/snapshot';
+import log from '../helpers/log';
 import type { Proposal, Vote } from '../helpers/snapshot';
 import type { IStorage, IStorageConstructor } from './storage/types';
 
@@ -41,8 +42,11 @@ class VotesReport {
     const pageSize = 1000;
     let resultsSize = 0;
     const maxPage = 5;
+    let totalResults = 0;
     let headersAppended = false;
     let content = '';
+
+    log.info(`[votereport] Generating cache file for ${this.id}`);
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -89,7 +93,10 @@ class VotesReport {
       content += `\n${newVotes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
 
       votes = newVotes;
+      totalResults += newVotes.length;
     } while (resultsSize === pageSize);
+
+    log.info(`[votereport] File cache ready to be saved with ${totalResults} items`);
 
     return this.storage.set(this.filename, content);
   };
