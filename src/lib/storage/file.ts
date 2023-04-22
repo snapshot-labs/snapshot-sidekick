@@ -11,7 +11,7 @@ class File implements IStorage {
     this.folder = folder;
 
     if (!existsSync(`${CACHE_PATH}/${this.folder}`)) {
-      mkdirSync(`${CACHE_PATH}/${this.folder}`);
+      mkdirSync(`${CACHE_PATH}/${this.folder}`, { recursive: true });
     }
   }
 
