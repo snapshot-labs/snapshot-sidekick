@@ -20,7 +20,7 @@ Install the dependencies
 yarn
 ```
 
-_This project does not require a database, but may need larger server storage capacity for the cached files_
+_This project does not require a database, but requires a [storage engine](#storage-engine)_
 
 ### Configuration
 
@@ -39,13 +39,13 @@ This script is shipped with 2 storage engine:
 - `AWS`: All cached files will be stored on Amazon S3 storage
 - `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
 
-You can toggle the cache engine in `src/api.ts`, when importing the storage engine
+You can toggle the cache engine in `helpers/utils.ts`, when importing the storage engine
 
 ```
 // For AWS (default)
-import StorageEngine from './lib/storage/aws';
+import StorageEngine from '../lib/storage/aws';
 // For File
-import StorageEngine from './lib/storage/file';
+import StorageEngine from '../lib/storage/file';
 ```
 
 ## Compiles and hot-reloads for development
@@ -95,16 +95,25 @@ On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.or
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
 
+Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
+
 ### Generate a cache file
 
-Send a POST request with a proposal ID
+Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
 ```
-curl -X POST localhost:3000/votes/generate/[PROPOSAL-ID]
+curl -X POST localhost:3000/votes/generate \
+-H "Authenticate: WEBHOOK_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
 ```
 
 - On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
 - On error, will respond with the same result and codes as the `fetch` endpoint above
+
+The endpoint has been designed to receive events from snapshot webhook service.
+
+Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
 ## Build for production
 
