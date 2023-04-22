@@ -4,16 +4,22 @@ import FileStorage from '../../../src/lib/storage/file';
 
 describe('VotesReport', () => {
   const id = '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
-  const fixtureFile = `${__dirname}/../../fixtures/snapshot-votes-report-${id}.csv`;
+  const weightedId = '0x79ae5f9eb3c710179cfbf706fa451459ddd18d4b0bce37c22aae601128efe927';
   let cacheFolder: string;
   let cachePath: string;
-  let cachedFile: string;
   let storageEngine: FileStorage;
+
+  function cachedFilePath(id: string) {
+    return `${cachePath}/snapshot-votes-report-${id}.csv`;
+  }
+
+  function fixtureFilePath(id: string) {
+    return `${__dirname}/../../fixtures/snapshot-votes-report-${id}.csv`;
+  }
 
   beforeEach(() => {
     cacheFolder = `votes-test-${Math.floor(Math.random() * 1e6)}`;
     cachePath = `${__dirname}/../../../tmp/${cacheFolder}`;
-    cachedFile = `${cachePath}/snapshot-votes-report-${id}.csv`;
     storageEngine = new FileStorage(cacheFolder);
 
     if (!existsSync(cachePath)) {
@@ -27,12 +33,15 @@ describe('VotesReport', () => {
     }
   });
 
-  it('caches a votes report', async () => {
-    const report = new VotesReport(id, storageEngine);
+  it.each([
+    ['single', id],
+    ['weighted', weightedId]
+  ])('caches a %s choices votes report', async (type: string, pid: string) => {
+    const report = new VotesReport(pid, storageEngine);
 
     await report.generateCacheFile();
 
-    return expect(readFileSync(cachedFile)).toEqual(readFileSync(fixtureFile));
+    return expect(readFileSync(cachedFilePath(pid))).toEqual(readFileSync(fixtureFilePath(pid)));
   });
 
   describe('canBeCached()', () => {
@@ -68,10 +77,10 @@ describe('VotesReport', () => {
   describe('cachedFile()', () => {
     describe('when the cache exists', () => {
       it('returns a votes report', async () => {
-        copyFileSync(fixtureFile, cachedFile);
+        copyFileSync(fixtureFilePath(id), cachedFilePath(id));
         const report = new VotesReport(id, storageEngine);
 
-        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFile, 'utf8'));
+        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id), 'utf8'));
       });
     });
 
