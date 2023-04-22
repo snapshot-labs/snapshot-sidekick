@@ -54,11 +54,12 @@ import StorageEngine from '../lib/storage/file';
 yarn dev
 ```
 
-## Linting and typecheck
+## Linting, typecheck and test
 
 ```
 yarn lint
 yarn typecheck
+yarn test
 ```
 
 ## Usage
