@@ -7,6 +7,7 @@ import api from './api';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
 app.use(compression());
 app.use('/', api);

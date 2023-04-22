@@ -5,11 +5,21 @@ import StorageEngine from './lib/storage/aws'; // file | aws
 
 const router = express.Router();
 
-router.post('/votes/generate/:id', (req, res) => {
-  const { id } = req.params;
+router.post('/votes/generate', (req, res) => {
+  const body = req.body || {};
+  const event = body.event.toString();
+  const id = body.id.toString().replace('proposal/', '');
 
   if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
     return rpcError(res, 'UNAUTHORIZE', id);
+  }
+
+  if (!event || !id) {
+    return rpcError(res, 'Invalid Request', id);
+  }
+
+  if (event !== 'proposal/end') {
+    return rpcSuccess(res, 'Event skipped', id);
   }
 
   try {
