@@ -115,4 +115,4 @@ yarn start
 
 ## License
 
-[MIT](https://github.com/snapshot-labs/envelop-ui/blob/bootstrap-app/LICENSE)
+[MIT](https://github.com/snapshot-labs/snapshot-sidekick/blob/main/LICENCE)
