@@ -66,7 +66,8 @@ class VotesReport {
             : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
           'voting_power',
           'timestamp',
-          'author_ipfs_hash'
+          'author_ipfs_hash',
+          'reason'
         ].flat();
 
         content += headers.join(',');
@@ -113,7 +114,9 @@ class VotesReport {
       choices.push(vote.choice);
     }
 
-    return [vote.voter, choices, vote.vp, vote.created, vote.ipfs].flat().join(',');
+    return [vote.voter, choices, vote.vp, vote.created, vote.ipfs, `"${vote.reason}"`]
+      .flat()
+      .join(',');
   };
 
   fetchProposal = async () => {
