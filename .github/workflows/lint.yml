@@ -1,7 +1,7 @@
 name: Run Lint
 on: [push]
 jobs:
-  build-test:
+  build-lint:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
