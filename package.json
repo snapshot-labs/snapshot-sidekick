@@ -10,7 +10,7 @@
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon src/index.ts -e js,ts",
     "start": "node dist/src/index.js",
-    "typecheck": "tsc",
+    "typecheck": "tsc --noEmit",
     "test": "jest"
   },
   "eslintConfig": {
