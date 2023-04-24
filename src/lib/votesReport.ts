@@ -1,7 +1,7 @@
 import { fetchProposal, fetchVotes } from '../helpers/snapshot';
 import log from '../helpers/log';
 import type { Proposal, Vote } from '../helpers/snapshot';
-import type { IStorage, IStorageConstructor } from './storage/types';
+import type { IStorage } from './storage/types';
 
 class VotesReport {
   id: string;
