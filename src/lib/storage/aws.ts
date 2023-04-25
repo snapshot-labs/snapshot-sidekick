@@ -12,7 +12,7 @@ class Aws implements IStorage {
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
     if (!region || !accessKeyId || !secretAccessKey) {
-      throw '[storage:aws] AWS credentials missing';
+      throw new Error('[storage:aws] AWS credentials missing');
     }
 
     this.client = new S3Client({});
@@ -34,7 +34,7 @@ class Aws implements IStorage {
       return true;
     } catch (e) {
       log.error('[storage:aws] Store file failed', e);
-      throw 'Unable to access storage';
+      throw new Error('Unable to access storage');
     }
   };
 

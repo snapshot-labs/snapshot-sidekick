@@ -14,7 +14,10 @@
     "test": "jest"
   },
   "eslintConfig": {
-    "extends": "@snapshot-labs"
+    "extends": "@snapshot-labs",
+    "rules": {
+      "no-throw-literal": "error"
+    }
   },
   "prettier": "@snapshot-labs/prettier-config",
   "dependencies": {
