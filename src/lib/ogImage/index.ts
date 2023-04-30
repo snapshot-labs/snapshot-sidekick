@@ -6,19 +6,19 @@ export type ImageType = 'space' | 'proposal';
 
 class ogImage {
   type: ImageType;
-  proposalId: string;
+  id: string;
 
-  constructor(type: ImageType, proposalId: string) {
+  constructor(type: ImageType, id: string) {
     this.type = type;
-    this.proposalId = proposalId;
+    this.id = id;
   }
 
   async getSvg() {
     switch (this.type) {
       case 'proposal':
-        return getProposalSvg(this.proposalId);
+        return getProposalSvg(this.id);
       case 'space':
-        return getSpaceSvg(this.proposalId);
+        return getSpaceSvg(this.id);
       default:
         throw new Error('Invalid image type');
     }

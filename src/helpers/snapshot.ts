@@ -3,6 +3,8 @@ import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core'
 export type Space = {
   id: string;
   name: string;
+  about?: string;
+  members?: string[];
 };
 
 export type Proposal = {
@@ -46,6 +48,17 @@ const PROPOSAL_QUERY = gql`
         id
         name
       }
+    }
+  }
+`;
+
+const SPACE_QUERY = gql`
+  query Space($id: String) {
+    space(id: $id) {
+      id
+      name
+      about
+      members
     }
   }
 `;
@@ -108,4 +121,19 @@ export async function fetchVotes(
   });
 
   return votes;
+}
+
+export async function fetchSpace(id: string) {
+  const {
+    data: { space }
+  }: { data: { space: Space | null } } = await client.query({
+    query: SPACE_QUERY,
+    variables: {
+      id
+    }
+  });
+
+  console.log(space);
+
+  return space;
 }

@@ -69,7 +69,7 @@ router.post('/votes/:id', async (req, res) => {
 router.get('/og/:type/:id.:ext?', async (req, res) => {
   const { type, id, ext = 'png' } = req.params;
 
-  if (!['png', 'ext'].includes(ext)) {
+  if (!['png', 'svg'].includes(ext)) {
     throw new Error('Extension not supported');
   }
 
