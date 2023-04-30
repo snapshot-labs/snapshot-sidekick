@@ -2,6 +2,7 @@ import express from 'express';
 import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
+import ogImage, { ImageType } from './lib/ogImage';
 
 const router = express.Router();
 
@@ -59,6 +60,31 @@ router.post('/votes/:id', async (req, res) => {
         log.error(e);
         rpcError(res, e, id);
       });
+  } catch (e) {
+    log.error(e);
+    return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
+router.get('/og/:type/:id.:ext?', async (req, res) => {
+  const { type, id, ext = 'png' } = req.params;
+
+  if (!['png', 'ext'].includes(ext)) {
+    throw new Error('Extension not supported');
+  }
+
+  try {
+    const og = new ogImage(type as ImageType, id);
+
+    if (ext === 'svg') {
+      res.setHeader('Content-Type', 'image/svg+xml');
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.send(await og.getSvg());
+    } else if (ext === 'png') {
+      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.end(await og.getImage());
+    }
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);

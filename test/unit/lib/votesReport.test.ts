@@ -45,6 +45,8 @@ describe('VotesReport', () => {
   });
 
   describe('canBeCached()', () => {
+    const baseMockedProposal = { id: '', title: '', votes: 0, choices: [] };
+
     it('raises an error when the proposal does not exist', () => {
       const report = new VotesReport('test', storageEngine);
       const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce(null);
@@ -57,7 +59,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'pending', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'pending', ...baseMockedProposal });
 
       expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -67,7 +69,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'closed', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'closed', ...baseMockedProposal });
 
       expect(await report.canBeCached()).toBe(true);
       expect(votesReportSpy).toHaveBeenCalled();
