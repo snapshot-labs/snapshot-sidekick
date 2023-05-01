@@ -1,36 +1,20 @@
-import satori, { SatoriOptions } from 'satori';
-import { fetchSpace } from '../../helpers/snapshot';
-import { logo, fontsData, image, membersIcon } from './utils';
+import { fetchSpace } from '../../../helpers/snapshot';
+import { logo, image, membersIcon } from '../utils';
 
-export default async function getSpaceSvg(spaceId: string) {
+export default async function svg(spaceId: string) {
   const space = await fetchSpace(spaceId);
 
   if (!space) {
     throw new Error('Space not found');
   }
 
-  const WIDTH = 1200;
-  const HEIGHT = 600;
-
-  const svg = await satori(
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        background: '#fff',
-        width: WIDTH,
-        height: HEIGHT,
-        color: '#57606a',
-        fontSize: '40px',
-        fontFamily: 'Calibre',
-        padding: '80px 80px 0'
-      }}
-    >
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
-          height: '415px'
+          height: '400px'
         }}
       >
         <div
@@ -44,7 +28,7 @@ export default async function getSpaceSvg(spaceId: string) {
           <div style={{ fontSize: '40px', color: '#999' }}>{space.id}</div>
           <div
             style={{
-              color: '#111111',
+              color: '#111',
               fontSize: '60px',
               fontWeight: '700',
               margin: '24px 0'
@@ -61,21 +45,13 @@ export default async function getSpaceSvg(spaceId: string) {
           height: '160px'
         })}
       </div>
-      <div style={{ display: 'flex', height: '80px' }}>
+      <div style={{ display: 'flex', height: '40px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>
           {membersIcon}
           {space.followersCount?.toLocaleString('en-US')} members
         </div>
         {logo({ textColor: '#57606a', height: 42 })}
       </div>
-    </div>,
-    {
-      width: WIDTH,
-      height: HEIGHT,
-      fonts: fontsData as SatoriOptions['fonts'],
-      debug: false
-    }
+    </div>
   );
-
-  return svg;
 }

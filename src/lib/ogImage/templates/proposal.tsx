@@ -1,36 +1,25 @@
-import satori, { SatoriOptions } from 'satori';
-import { fetchProposal } from '../../helpers/snapshot';
-import { logo, votesIcon, proposalStatus, fontsData, image } from './utils';
+import { fetchProposal } from '../../../helpers/snapshot';
+import { logo, votesIcon, proposalStatus, image } from '../utils';
 
-export default async function getProposalSvg(proposalId: string) {
+export default async function svg(proposalId: string) {
   const proposal = await fetchProposal(proposalId);
 
   if (!proposal) {
     throw new Error('Proposal not found');
   }
 
-  const WIDTH = 1200;
-  const HEIGHT = 600;
-
-  const svg = await satori(
+  return (
     <div
       style={{
         display: 'flex',
-        flexDirection: 'column',
-        background: '#fff',
-        width: WIDTH,
-        height: HEIGHT,
-        color: '#57606a',
-        fontSize: '40px',
-        fontFamily: 'Calibre',
-        padding: '80px 80px 0'
+        flexDirection: 'column'
       }}
     >
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
-          height: '415px'
+          height: '400px'
         }}
       >
         <div
@@ -44,7 +33,7 @@ export default async function getProposalSvg(proposalId: string) {
           <div style={{ fontSize: '48px' }}>{proposal.space?.name}</div>
           <div
             style={{
-              color: '#111111',
+              color: '#111',
               fontSize: '50px',
               fontWeight: '700',
               margin: '24px 0'
@@ -64,18 +53,10 @@ export default async function getProposalSvg(proposalId: string) {
           height: '160px'
         })}
       </div>
-      <div style={{ display: 'flex', height: '80px' }}>
+      <div style={{ display: 'flex', height: '40px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>{proposalStatus(proposal.state)}</div>
         {logo({ textColor: '#57606a', height: 42 })}
       </div>
-    </div>,
-    {
-      width: WIDTH,
-      height: HEIGHT,
-      fonts: fontsData as SatoriOptions['fonts'],
-      debug: false
-    }
+    </div>
   );
-
-  return svg;
 }
