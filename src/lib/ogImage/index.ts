@@ -1,8 +1,9 @@
 import { Resvg } from '@resvg/resvg-js';
 import getProposalSvg from './proposal';
 import getSpaceSvg from './space';
+import getHomeSvg from './home';
 
-export type ImageType = 'space' | 'proposal';
+export type ImageType = 'space' | 'proposal' | 'home';
 
 class ogImage {
   type: ImageType;
@@ -19,6 +20,8 @@ class ogImage {
         return getProposalSvg(this.id);
       case 'space':
         return getSpaceSvg(this.id);
+      case 'home':
+        return getHomeSvg();
       default:
         throw new Error('Invalid image type');
     }

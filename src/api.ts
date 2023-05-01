@@ -66,8 +66,9 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/og/:type/:id.:ext?', async (req, res) => {
+router.get('/og/(:type.:ext?|:type/:id.:ext?)', async (req, res) => {
   const { type, id, ext = 'png' } = req.params;
+  console.log(type);
 
   if (!['png', 'svg'].includes(ext)) {
     throw new Error('Extension not supported');
@@ -87,7 +88,7 @@ router.get('/og/:type/:id.:ext?', async (req, res) => {
     }
   } catch (e) {
     log.error(e);
-    return rpcError(res, 'INTERNAL_ERROR', id);
+    return rpcError(res, 'INTERNAL_ERROR', id || type);
   }
 });
 
