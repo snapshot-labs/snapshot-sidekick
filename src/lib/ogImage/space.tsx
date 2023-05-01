@@ -64,15 +64,15 @@ export default async function getSpaceSvg(spaceId: string) {
       <div style={{ display: 'flex', height: '80px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>
           {membersIcon}
+          {space.followersCount?.toLocaleString('en-US')} members
         </div>
         <div
           style={{
             display: 'flex',
-            opacity: 0.5
+            opacity: 0.6
           }}
         >
           {logo}
-          {space.followersCount?.toLocaleString('en-US')} members
         </div>
       </div>
     </div>,

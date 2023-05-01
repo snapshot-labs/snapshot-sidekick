@@ -69,7 +69,7 @@ export default async function getProposalSvg(proposalId: string) {
         <div
           style={{
             display: 'flex',
-            opacity: 0.5
+            opacity: 0.6
           }}
         >
           {logo}
