@@ -133,7 +133,5 @@ export async function fetchSpace(id: string) {
     }
   });
 
-  console.log(space);
-
   return space;
 }

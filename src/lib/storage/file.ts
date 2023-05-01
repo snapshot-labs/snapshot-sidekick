@@ -22,7 +22,7 @@ class File implements IStorage {
 
       return true;
     } catch (e) {
-      log.error('[storage:file] Create file failed', e);
+      log.error('[storage:file] Store file failed', e);
       throw e;
     }
   };
@@ -32,6 +32,7 @@ class File implements IStorage {
       if (!existsSync(this.path(key))) {
         return false;
       }
+      log.info(`[storage:file] File fetched from ${this.path(key)}`);
 
       return readFileSync(this.path(key));
     } catch (e) {
