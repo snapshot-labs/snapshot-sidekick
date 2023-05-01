@@ -66,14 +66,7 @@ export default async function getSpaceSvg(spaceId: string) {
           {membersIcon}
           {space.followersCount?.toLocaleString('en-US')} members
         </div>
-        <div
-          style={{
-            display: 'flex',
-            opacity: 0.6
-          }}
-        >
-          {logo}
-        </div>
+        {logo({ textColor: '#57606a', height: 42 })}
       </div>
     </div>,
     {

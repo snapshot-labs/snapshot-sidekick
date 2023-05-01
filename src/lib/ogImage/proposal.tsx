@@ -66,14 +66,7 @@ export default async function getProposalSvg(proposalId: string) {
       </div>
       <div style={{ display: 'flex', height: '80px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>{proposalStatus(proposal.state)}</div>
-        <div
-          style={{
-            display: 'flex',
-            opacity: 0.6
-          }}
-        >
-          {logo}
-        </div>
+        {logo({ textColor: '#57606a', height: 42 })}
       </div>
     </div>,
     {
