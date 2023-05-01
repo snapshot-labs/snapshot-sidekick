@@ -1,14 +1,14 @@
 # Snapshot/Sidekick
 
-Sidekick is the service serving all proposals' votes CSV report
+Sidekick is the service serving all proposals' votes CSV report, as well as opengraph image.
 
 <hr>
 
-This service is exposing an API endpoint expecting a closed proposal ID, and will
-return a CSV file with all the given proposal's votes.
+This service is exposing:
 
-NOTE: CSV files are generated only once, then cached, making this service a cache middleware
-for snapshot-hub, for proposals' votes.
+- an API endpoint expecting a closed proposal ID, and will
+  return a CSV file with all the given proposal's votes.
+- an API endpoint to fetch [OpenGraph](https://ogp.me/) image for proposal and space
 
 ## Project Setup
 
@@ -64,9 +64,11 @@ yarn test
 
 ## Usage
 
-Retrieving and generating the cache file have their own respective endpoint
+### CSV votes report
 
-### Fetch a cache file
+#### Fetch a cache file
+
+##### `POST /votes/[PROPOSAL-ID]`
 
 Send a POST request with a proposal ID
 
@@ -76,7 +78,73 @@ curl -X POST localhost:3000/votes/[PROPOSAL-ID]
 
 When cached, this request will respond with a stream to a CSV file.
 
-On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
+Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
+
+#### Generate a cache file
+
+##### `POST /votes/generate`
+
+Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+
+```
+curl -X POST localhost:3000/votes/generate \
+-H "Authenticate: WEBHOOK_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
+```
+
+On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+
+> This endpoint has been designed to receive events from snapshot webhook service.
+
+Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
+
+### OpenGraph images
+
+#### Fetch an image
+
+##### `GET /og/[TYPE]/[ID].[EXTENSION]`
+
+Send a GET request with an image type and ID
+
+```
+curl -X GET localhost:3000/og/(space|proposal)[PROPOSAL-ID]
+```
+
+This endpoint will return a .png image designed to be used with [OpenGraph](https://ogp.me/) `og:image` meta tag.
+
+You can get images for:
+
+- space, using `/og/space/SPACE_ID.png`
+- proposal: using `og/proposal/PROPOSAL_ID.png`
+- generic page, using `og/home.png` (will return a static image with just the logo)
+
+All the images are built-on demand, and will be cached after the first generation.
+
+Image dimension are 1200px x 600px.
+
+> For debug purpose, you can also use the `.svg` file extension when polling the endpoint, to preview a high-resolution rendering of the image before conversion to .png
+
+#### Refresh an image
+
+##### `POST /og/refresh`
+
+Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+
+```
+curl -X POST localhost:3000/og/refresh \
+-H "Authenticate: WEBHOOK_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
+```
+
+This endpoint will force the generation of a new image i already cached, or create it if not exist, and is used to receive webhook in order to keep data in images up-to-date.
+
+On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+
+## Error response
+
+When not returning the expected result, all API endpoint will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
 
 ```
 {
@@ -95,26 +163,6 @@ On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.or
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
-
-Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
-
-### Generate a cache file
-
-Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
-
-```
-curl -X POST localhost:3000/votes/generate \
--H "Authenticate: WEBHOOK_AUTH_TOKEN" \
--H "Content-Type: application/json" \
--d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
-```
-
-- On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
-- On error, will respond with the same result and codes as the `fetch` endpoint above
-
-The endpoint has been designed to receive events from snapshot webhook service.
-
-Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
 ## Build for production
 
