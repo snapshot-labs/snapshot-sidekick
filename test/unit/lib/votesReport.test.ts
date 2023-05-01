@@ -82,7 +82,7 @@ describe('VotesReport', () => {
         copyFileSync(fixtureFilePath(id), cachedFilePath(id));
         const report = new VotesReport(id, storageEngine);
 
-        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id), 'utf8'));
+        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id)));
       });
     });
 
