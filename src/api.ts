@@ -66,6 +66,35 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
+router.post('/og/refresh', async (req, res) => {
+  log.info(`[http] POST /og/refresh`);
+
+  const body = req.body || {};
+  const event = body.event.toString();
+  const { type, id } = body.id.toString().split('/');
+
+  if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
+    return rpcError(res, 'UNAUTHORIZE', id);
+  }
+
+  if (!event || !id) {
+    return rpcError(res, 'Invalid Request', id);
+  }
+
+  if (type !== 'proposal') {
+    return rpcSuccess(res, 'Event skipped', id);
+  }
+
+  try {
+    const og = ogImageWithStorage(type as ImageType, id);
+    await og.getImage(true);
+    return rpcSuccess(res, `Image card for ${type} refreshed`, id);
+  } catch (e) {
+    log.error(e);
+    return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
 router.get('/og/(:type.:ext?|:type/:id.:ext?)', async (req, res) => {
   const { type, id, ext = 'png' } = req.params;
 
