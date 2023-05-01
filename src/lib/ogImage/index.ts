@@ -1,5 +1,5 @@
 import { Resvg } from '@resvg/resvg-js';
-import render from './templates';
+import render from './templates/index';
 import { IStorage } from '../storage/types';
 
 export type ImageType = 'space' | 'proposal' | 'home';

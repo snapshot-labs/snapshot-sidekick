@@ -1,5 +1,5 @@
 import { fetchSpace } from '../../../helpers/snapshot';
-import { logo, image, membersIcon } from '../utils';
+import { logo, image, membersIcon, spaceAvatarUrl } from '../utils';
 
 export default async function svg(spaceId: string) {
   const space = await fetchSpace(spaceId);
@@ -39,7 +39,7 @@ export default async function svg(spaceId: string) {
           <div style={{ fontSize: '48px', height: '190px' }}>{space.about}</div>
         </div>
 
-        {await image(`https://cdn.stamp.fyi/space/${space.id}?s=160`, {
+        {await image(spaceAvatarUrl(space.id), {
           borderRadius: '100%',
           width: '160px',
           height: '160px'

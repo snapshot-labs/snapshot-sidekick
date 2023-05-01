@@ -1,5 +1,5 @@
 import { fetchProposal } from '../../../helpers/snapshot';
-import { logo, votesIcon, proposalStatus, image } from '../utils';
+import { logo, votesIcon, proposalStatus, image, spaceAvatarUrl } from '../utils';
 
 export default async function svg(proposalId: string) {
   const proposal = await fetchProposal(proposalId);
@@ -47,11 +47,12 @@ export default async function svg(proposalId: string) {
           </div>
         </div>
 
-        {await image(`https://cdn.stamp.fyi/space/${proposal.space?.id}?s=160`, {
-          borderRadius: '100%',
-          width: '160px',
-          height: '160px'
-        })}
+        {proposal.space &&
+          (await image(spaceAvatarUrl(proposal.space.id), {
+            borderRadius: '100%',
+            width: '160px',
+            height: '160px'
+          }))}
       </div>
       <div style={{ display: 'flex', height: '40px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>{proposalStatus(proposal.state)}</div>

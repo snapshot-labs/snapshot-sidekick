@@ -130,3 +130,7 @@ export async function image(src: string, style: Record<string, string>) {
 
   return <img src={`data:image/png;base64,${stringifiedBuffer}`} style={style} />;
 }
+
+export function spaceAvatarUrl(spaceId: string, size = 160) {
+  return `https://cdn.stamp.fyi/space/${spaceId}?s=${size}`;
+}
