@@ -19,7 +19,7 @@ class Aws implements IStorage {
     this.folder = folder;
   }
 
-  set = async (key: string, value: string) => {
+  set = async (key: string, value: string | Buffer) => {
     try {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -46,7 +46,7 @@ class Aws implements IStorage {
       });
       const response = await this.client.send(command);
 
-      return response.Body?.transformToString() || false;
+      return response.Body ?? false;
     } catch (e) {
       log.error('[storage:aws] Create file failed', e);
       return false;

@@ -1,4 +1,5 @@
 import VotesReport from '../lib/votesReport';
+import ogImage, { ImageType } from '../lib/ogImage';
 import StorageEngine from '../lib/storage/file'; // aws | file
 import type { Response } from 'express';
 
@@ -40,4 +41,8 @@ export async function sleep(time: number) {
 
 export function voteReportWithStorage(id: string) {
   return new VotesReport(id, new StorageEngine('votes'));
+}
+
+export function ogImageWithStorage(type: ImageType, id: string) {
+  return new ogImage(type, id, new StorageEngine('ogImages'));
 }

@@ -1,8 +1,8 @@
 import express from 'express';
-import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
+import { voteReportWithStorage, ogImageWithStorage, rpcError, rpcSuccess } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
-import ogImage, { ImageType } from './lib/ogImage';
+import { ImageType } from './lib/ogImage';
 
 const router = express.Router();
 
@@ -44,10 +44,10 @@ router.post('/votes/:id', async (req, res) => {
   try {
     const file = await votesReport.cachedFile();
 
-    if (typeof file === 'string') {
+    if (file instanceof Buffer) {
       res.header('Content-Type', 'text/csv');
       res.attachment(votesReport.filename);
-      return res.send(Buffer.from(file));
+      return res.end(file);
     }
 
     votesReport
@@ -73,7 +73,7 @@ router.get('/og/(:type.:ext?|:type/:id.:ext?)', async (req, res) => {
     if (!['png', 'svg'].includes(ext)) {
       throw new Error('Extension not supported');
     }
-    const og = new ogImage(type as ImageType, id);
+    const og = ogImageWithStorage(type as ImageType, id);
 
     if (ext === 'svg') {
       res.setHeader('Content-Type', 'image/svg+xml');
