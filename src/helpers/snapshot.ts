@@ -4,7 +4,7 @@ export type Space = {
   id: string;
   name: string;
   about?: string;
-  members?: string[];
+  followersCount?: number;
 };
 
 export type Proposal = {
@@ -58,7 +58,7 @@ const SPACE_QUERY = gql`
       id
       name
       about
-      members
+      followersCount
     }
   }
 `;
