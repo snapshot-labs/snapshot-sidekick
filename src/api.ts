@@ -95,26 +95,18 @@ router.post('/og/refresh', async (req, res) => {
   }
 });
 
-router.get('/og/(:type.:ext?|:type/:id.:ext?)', async (req, res) => {
-  const { type, id, ext = 'png' } = req.params;
+router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)', async (req, res) => {
+  const { type, id = '', ext = 'png' } = req.params;
 
   try {
-    if (!['png', 'svg'].includes(ext)) {
-      throw new Error('Extension not supported');
-    }
     const og = ogImageWithStorage(type as ImageType, id);
 
-    if (ext === 'svg') {
-      res.setHeader('Content-Type', 'image/svg+xml');
-      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-      res.send(await og.getSvg());
-    } else if (ext === 'png') {
-      res.setHeader('Content-Type', 'image/png');
-      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-      res.end(await og.getImage());
-    }
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
+    return res.end(await (ext === 'svg' ? og.getSvg() : og.getImage()));
   } catch (e) {
     log.error(e);
+    res.setHeader('Content-Type', 'application/json');
     return rpcError(res, 'INTERNAL_ERROR', id || type);
   }
 });
