@@ -57,7 +57,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'pending', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'pending', id: '', votes: 0, choices: [] });
 
       expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'closed', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'closed', id: '', votes: 0, choices: [] });
 
       expect(await report.canBeCached()).toBe(true);
       expect(votesReportSpy).toHaveBeenCalled();
