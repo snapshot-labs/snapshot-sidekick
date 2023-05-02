@@ -3,6 +3,7 @@ import { voteReportWithStorage, ogImageWithStorage, rpcError, rpcSuccess } from 
 import log from './helpers/log';
 import { queues } from './lib/queue';
 import { ImageType } from './lib/ogImage';
+import { shareProposalPage, shareSpacePage } from './lib/sharePage';
 
 const router = express.Router();
 
@@ -108,6 +109,32 @@ router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res
     log.error(e);
     res.setHeader('Content-Type', 'application/json');
     return rpcError(res, 'INTERNAL_ERROR', id || type);
+  }
+});
+
+router.get('/:spaceId', async (req, res) => {
+  const { spaceId } = req.params;
+
+  try {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(await shareSpacePage(spaceId));
+  } catch (e) {
+    log.error(e);
+    res.setHeader('Content-Type', 'application/json');
+    return rpcError(res, 'INTERNAL_ERROR', spaceId);
+  }
+});
+
+router.get('/:spaceId/proposal/:proposalId', async (req, res) => {
+  const { spaceId, proposalId } = req.params;
+
+  try {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(await shareProposalPage(spaceId, proposalId));
+  } catch (e) {
+    log.error(e);
+    res.setHeader('Content-Type', 'application/json');
+    return rpcError(res, 'INTERNAL_ERROR', spaceId);
   }
 });
 
