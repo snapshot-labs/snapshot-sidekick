@@ -66,13 +66,13 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/badges/:type(space|proposal)/:id.:ext(png|svg)?', async (req, res) => {
-  const { id, type, ext = 'svg' } = req.params;
+router.get('/badges/:type(space|proposal)/:id', async (req, res) => {
+  const { id, type } = req.params;
 
   try {
-    res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
-    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-    return res.end(await getBadge(type as BadgeType, id, ext, req.query));
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'public, max-age=18000, must-revalidate');
+    return res.end(await getBadge(type as BadgeType, id, req.query));
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);

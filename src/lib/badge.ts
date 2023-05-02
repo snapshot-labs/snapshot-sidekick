@@ -1,5 +1,4 @@
 import { makeBadge } from 'badge-maker';
-import { Resvg } from '@resvg/resvg-js';
 import { fetchSpace, fetchProposal, fetchProposals, Space, Proposal } from '../helpers/snapshot';
 import type { Request } from 'express';
 
@@ -7,36 +6,21 @@ type State = 'pending' | 'active' | 'closed';
 export type BadgeType = 'space' | 'proposal';
 const STATE_COLORS: Record<State, string> = {
   pending: 'rgb(107, 114, 128)',
-  active: 'green',
+  active: 'yellowgreen',
   closed: '#384aff'
 };
 
-export async function getBadge(
-  type: BadgeType,
-  id: string,
-  extension: string,
-  query: Request['query']
-) {
-  let svg: string;
+export async function getBadge(type: BadgeType, id: string, query: Request['query']) {
   switch (type) {
     case 'space':
-      svg = await getSpaceBadge(id, query);
+      return await getSpaceBadge(id, query);
       break;
     case 'proposal':
-      svg = await getProposalBadge(id);
+      return await getProposalBadge(id);
       break;
     default:
       throw new Error('Invalid badge type');
   }
-
-  return extension === 'svg' ? svg : toImage(svg);
-}
-
-function toImage(svg: string) {
-  const resvg = new Resvg(svg as string, {});
-  const imageData = resvg.render();
-
-  return imageData.asPng();
 }
 
 async function getSpaceBadge(id: string, query: Request['query']) {
@@ -49,7 +33,7 @@ async function getSpaceBadge(id: string, query: Request['query']) {
   if (query.field === 'followersCount') {
     return getSpaceFollowersCountBadge(space);
   } else {
-    return getSpaceProposalsCountBadge(space, (query.state || 'active') as State);
+    return await getSpaceProposalsCountBadge(space, (query.state || 'active') as State);
   }
 }
 
@@ -85,7 +69,7 @@ async function getSpaceProposalsCountBadge(space: Space, state: State) {
   return makeBadge(format);
 }
 
-async function getProposalVotesCountBadge(proposal: Proposal) {
+function getProposalVotesCountBadge(proposal: Proposal) {
   const format = {
     label: 'votes',
     message: proposal.votes.toLocaleString('en-US').toString() || '0',
