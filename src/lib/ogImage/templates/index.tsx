@@ -3,7 +3,16 @@ import getProposalSvg from './proposal';
 import getSpaceSvg from './space';
 import getHomeSvg from './home';
 import { fontsData } from '../utils';
+import { loadEmoji, getIconCode, apis } from '../twemoji';
 import type { ImageType } from '../index';
+
+async function loadDynamicAsset(emojiType: keyof typeof apis, _code: string, text: string) {
+  if (_code === 'emoji') {
+    return `data:image/svg+xml;base64,${btoa(await loadEmoji(emojiType, getIconCode(text)))}`;
+  }
+
+  return fontsData as any[];
+}
 
 export default async function render(type: ImageType, id: string) {
   let content: JSX.Element;
@@ -40,6 +49,9 @@ export default async function render(type: ImageType, id: string) {
       width: 1200,
       height: 600,
       fonts: fontsData as SatoriOptions['fonts'],
+      loadAdditionalAsset: async (code, text) => {
+        return loadDynamicAsset('twemoji', code, text);
+      },
       debug: false
     }
   );

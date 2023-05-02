@@ -95,7 +95,7 @@ router.post('/og/refresh', async (req, res) => {
   }
 });
 
-router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)', async (req, res) => {
+router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res) => {
   const { type, id = '', ext = 'png' } = req.params;
 
   try {

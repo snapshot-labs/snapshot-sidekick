@@ -1,5 +1,5 @@
 import { fetchSpace } from '../../../helpers/snapshot';
-import { logo, image, membersIcon, spaceAvatarUrl } from '../utils';
+import { logo, image, spaceAvatarUrl } from '../utils';
 
 export default async function svg(spaceId: string) {
   const space = await fetchSpace(spaceId);
