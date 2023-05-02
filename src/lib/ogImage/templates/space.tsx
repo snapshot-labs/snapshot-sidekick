@@ -47,8 +47,8 @@ export default async function svg(spaceId: string) {
       </div>
       <div style={{ display: 'flex', height: '40px' }}>
         <div style={{ display: 'flex', flexGrow: 1 }}>
-          {membersIcon}
-          {space.followersCount?.toLocaleString('en-US')} members
+          {/*{membersIcon}
+          {space.followersCount?.toLocaleString('en-US')} members*/}
         </div>
         {logo({ textColor: '#57606a', height: 42 })}
       </div>
