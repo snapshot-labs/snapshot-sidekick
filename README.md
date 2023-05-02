@@ -103,7 +103,7 @@ Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
 #### Fetch an image
 
-##### `GET /og/[TYPE]/[ID].[EXTENSION]`
+##### `GET /og/[TYPE]/[ID]`
 
 Send a GET request with an image type and ID
 
@@ -113,15 +113,17 @@ curl -X GET localhost:3000/og/(space|proposal)[PROPOSAL-ID]
 
 This endpoint will return a .png image designed to be used with [OpenGraph](https://ogp.me/) `og:image` meta tag.
 
-You can get images for:
+The different image types are
 
-- space, using `/og/space/SPACE_ID.png`
-- proposal: using `og/proposal/PROPOSAL_ID.png`
-- generic page, using `og/home.png` (will return a static image with just the logo)
+| TYPE       | Description                                       | Url format                |
+| ---------- | ------------------------------------------------- | ------------------------- |
+| `space`    | A space image                                     | `/og/space/SPACE_ID`      |
+| `proposal` | A proposal image                                  | `og/proposal/PROPOSAL_ID` |
+| `home`     | A generic image (static image with just the logo) | `og/home`                 |
 
 All the images are built-on demand, and will be cached after the first generation.
 
-Image dimension are 1200px x 600px.
+Image dimension are 1200px x 600px, and default returned image format will be PNG.
 
 > For debug purpose, you can also use the `.svg` file extension when polling the endpoint, to preview a high-resolution rendering of the image before conversion to .png
 
