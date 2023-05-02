@@ -4,14 +4,19 @@ import { fetchSpace, fetchProposal, fetchProposals, Space, Proposal } from '../h
 import type { Request } from 'express';
 
 type State = 'pending' | 'active' | 'closed';
+export type BadgeType = 'space' | 'proposal';
 const STATE_COLORS: Record<State, string> = {
   pending: 'rgb(107, 114, 128)',
   active: 'green',
   closed: '#384aff'
 };
-export type BadgeType = 'space' | 'proposal';
 
-export async function getBadge(type: BadgeType, id: string, query: Request['query']) {
+export async function getBadge(
+  type: BadgeType,
+  id: string,
+  extension: string,
+  query: Request['query']
+) {
   let svg: string;
   switch (type) {
     case 'space':
@@ -24,7 +29,7 @@ export async function getBadge(type: BadgeType, id: string, query: Request['quer
       throw new Error('Invalid badge type');
   }
 
-  return query.as === 'svg' ? Buffer.from(svg, 'utf-8') : toImage(svg);
+  return extension === 'svg' ? svg : toImage(svg);
 }
 
 function toImage(svg: string) {
