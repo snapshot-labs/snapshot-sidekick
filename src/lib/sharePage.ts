@@ -8,7 +8,7 @@ function template(title: string, description: string, url: string, ogImageUrl: s
       <head>
         <title>${title}</title>
         <link rel="icon" href="https://snapshot.org/favicon.png">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:image" content="${ogImageUrl}" />
@@ -21,7 +21,7 @@ function template(title: string, description: string, url: string, ogImageUrl: s
           body, html {
             width: 100%,
             height: 100%;
-            padding: 0;
+            padding: 20px;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -57,7 +57,7 @@ function template(title: string, description: string, url: string, ogImageUrl: s
         // window.location = "https://snapshot.org/#/${url}";
       </script>
       <div style="display: flex; flex-direction: column; text-align: center; gap: 10px">
-        <svg width="400px" viewBox="0 0 590 126" preserveAspectRatio="xMidYMid meet" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg width="100%" style="max-width: 400px;" viewBox="0 0 590 126" preserveAspectRatio="xMidYMid meet" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <title>Snapshot</title>
             <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <g id="Group" fill-rule="nonzero">
