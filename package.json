@@ -19,6 +19,9 @@
       "no-throw-literal": "error"
     }
   },
+  "engines": {
+    "node": ">= 18"
+  },
   "prettier": "@snapshot-labs/prettier-config",
   "dependencies": {
     "@apollo/client": "^3.7.12",
