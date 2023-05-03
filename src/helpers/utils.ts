@@ -7,7 +7,7 @@ const ERROR_CODES: Record<string, number> = {
   PROPOSAL_NOT_FOUND: -40001,
   PROPOSAL_NOT_CLOSED: -40004,
   PENDING_GENERATION: -40010,
-  UNAUTHORIZE: 401
+  UNAUTHORIZED: 401
 };
 
 export function rpcSuccess(res: Response, result: string, id: string | number) {

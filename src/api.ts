@@ -13,7 +13,7 @@ router.post('/votes/generate', async (req, res) => {
   const id = body.id.toString().replace('proposal/', '');
 
   if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
-    return rpcError(res, 'UNAUTHORIZE', id);
+    return rpcError(res, 'UNAUTHORIZED', id);
   }
 
   if (!event || !id) {

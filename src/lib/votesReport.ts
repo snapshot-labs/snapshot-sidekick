@@ -97,7 +97,7 @@ class VotesReport {
       totalResults += newVotes.length;
     } while (resultsSize === pageSize);
 
-    log.info(`[votereport] File cache ready to be saved with ${totalResults} items`);
+    log.info(`[vote report] File cache ready to be saved with ${totalResults} items`);
 
     return this.storage.set(this.filename, content);
   };
