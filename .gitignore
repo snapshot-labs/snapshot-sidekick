@@ -4,6 +4,7 @@ dist
 build
 .env
 coverage
+tmp
 
 # Remove some common IDE working directories
 .idea

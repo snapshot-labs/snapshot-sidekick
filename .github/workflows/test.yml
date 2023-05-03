@@ -1,7 +1,7 @@
-name: Run Lint
+name: Build and Run Tests
 on: [push]
 jobs:
-  build-lint:
+  build-test:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -10,6 +10,5 @@ jobs:
           node-version: '18'
           cache: 'yarn'
       - run: yarn install
-      - run: yarn build
-      - run: yarn lint:nofix
-      - run: yarn typecheck
+      - run: echo -en "HUB_URL=https://hub.snapshot.org" > .env
+      - run: yarn test
