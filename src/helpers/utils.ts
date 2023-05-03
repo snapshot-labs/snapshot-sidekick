@@ -46,3 +46,7 @@ export function voteReportWithStorage(id: string) {
 export function ogImageWithStorage(type: ImageType, id: string) {
   return new ogImage(type, id, new StorageEngine('ogImages'));
 }
+
+export function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

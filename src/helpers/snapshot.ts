@@ -10,6 +10,7 @@ export type Space = {
 export type Proposal = {
   id: string;
   title: string;
+  body: string;
   state: string;
   choices: string[];
   votes: number;
@@ -41,6 +42,7 @@ const PROPOSAL_QUERY = gql`
     proposal(id: $id) {
       id
       title
+      body
       state
       choices
       votes

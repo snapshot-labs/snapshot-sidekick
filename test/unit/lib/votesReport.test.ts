@@ -45,7 +45,7 @@ describe('VotesReport', () => {
   });
 
   describe('canBeCached()', () => {
-    const baseMockedProposal = { id: '', title: '', votes: 0, choices: [] };
+    const baseMockedProposal = { id: '', title: '', votes: 0, body: '', choices: [] };
 
     it('raises an error when the proposal does not exist', () => {
       const report = new VotesReport('test', storageEngine);

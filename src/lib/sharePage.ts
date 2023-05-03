@@ -1,5 +1,9 @@
+import removeMd from 'remove-markdown';
 import { fetchProposal, fetchSpace } from '../helpers/snapshot';
 import { HEIGHT, WIDTH } from './ogImage/templates';
+import { capitalize } from '../helpers/utils';
+
+const MAX_DESCRIPTION_LENGTH = 300;
 
 function template(title: string, description: string, url: string, ogImageUrl: string) {
   const redirectUrl = `https://snapshot.org/#/${url}`;
@@ -87,9 +91,16 @@ export async function shareProposalPage(spaceId: string, proposalId: string) {
   const proposal = await fetchProposal(proposalId);
 
   if (proposal && proposal.space?.id === spaceId) {
+    const sanitazedBody = removeMd(proposal.body);
+    const description = `[${capitalize(proposal.state)}] ${proposal.votes} vote${
+      proposal.votes !== 1 ? 's' : ''
+    } - ${sanitazedBody.substring(0, MAX_DESCRIPTION_LENGTH).replace(/\r?\n|\r/g, ' ')}${
+      sanitazedBody.length > MAX_DESCRIPTION_LENGTH ? '…' : ''
+    }`;
+
     return template(
       proposal.title,
-      '',
+      description,
       `${spaceId}/proposal/${proposalId}`,
       `/og/proposal/${proposalId}`
     );
