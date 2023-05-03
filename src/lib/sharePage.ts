@@ -7,6 +7,8 @@ function template(title: string, description: string, url: string, ogImageUrl: s
   return `<html>
       <head>
         <title>${title}</title>
+        <link rel="icon" href="https://snapshot.org/favicon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:image" content="${ogImageUrl}" />
