@@ -81,9 +81,9 @@ export async function shareSpacePage(spaceId: string) {
   const space = await fetchSpace(spaceId);
 
   if (space) {
-    let description: string = space.about || '';
-    if (description.length === 0) {
-      description = `${space.followersCount} member${space.followersCount === 1 ? '' : 's'}`;
+    let description = `${space.followersCount} member${space.followersCount === 1 ? '' : 's'}`;
+    if (description.length > 0) {
+      description += ` | ${space.about}`;
     }
 
     return template(space.name, description, space.id, `/og/space/${space.id}`);
