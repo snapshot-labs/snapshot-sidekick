@@ -6,6 +6,9 @@ import { fontsData } from '../utils';
 import { loadEmoji, getIconCode, apis } from '../twemoji';
 import type { ImageType } from '../index';
 
+export const WIDTH = 1200;
+export const HEIGHT = 600;
+
 async function loadDynamicAsset(emojiType: keyof typeof apis, _code: string, text: string) {
   if (_code === 'emoji') {
     return `data:image/svg+xml;base64,${btoa(await loadEmoji(emojiType, getIconCode(text)))}`;
@@ -46,8 +49,8 @@ export default async function render(type: ImageType, id: string) {
       {content}
     </div>,
     {
-      width: 1200,
-      height: 600,
+      width: WIDTH,
+      height: HEIGHT,
       fonts: fontsData as SatoriOptions['fonts'],
       loadAdditionalAsset: async (code, text) => {
         return loadDynamicAsset('twemoji', code, text);
