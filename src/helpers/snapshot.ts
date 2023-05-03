@@ -16,6 +16,7 @@ export type Proposal = {
   votes: number;
   space?: Space;
 };
+
 export type Vote = {
   ipfs: string;
   voter: string;

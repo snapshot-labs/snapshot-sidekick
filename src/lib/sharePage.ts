@@ -81,7 +81,12 @@ export async function shareSpacePage(spaceId: string) {
   const space = await fetchSpace(spaceId);
 
   if (space) {
-    return template(space.name, space.about || '', space.id, `/og/space/${space.id}`);
+    let description: string = space.about || '';
+    if (description.length === 0) {
+      description = `${space.followersCount} member${space.followersCount === 1 ? '' : 's'}`;
+    }
+
+    return template(space.name, description, space.id, `/og/space/${space.id}`);
   }
 
   throw new Error('Space not found');
