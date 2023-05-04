@@ -5,8 +5,8 @@
   "repository": "snapshot-labs/snapshot-sidekick",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src/ --ext .ts",
-    "lint:fix": "eslint src/ --ext .ts --fix",
+    "lint:nofix": "eslint src/ --ext .ts",
+    "lint": "yarn lint:nofix --fix",
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon src/index.ts -e js,ts",
     "start": "node dist/src/index.js",
