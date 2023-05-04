@@ -2,11 +2,13 @@ import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3
 import log from '../../helpers/log';
 import type { IStorage } from './types';
 
+const CACHE_PATH = 'public';
+
 class Aws implements IStorage {
   client: S3Client;
-  folder: string;
+  subDir?: string;
 
-  constructor(folder: string) {
+  constructor(subDir?: string) {
     const region = process.env.AWS_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
@@ -16,33 +18,33 @@ class Aws implements IStorage {
     }
 
     this.client = new S3Client({});
-    this.folder = folder;
+    this.subDir = subDir;
   }
 
-  set = async (key: string, value: string) => {
+  async set(key: string, value: string) {
     try {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `public/${this.folder}/${key}`,
+        Key: this.#path(key),
         Body: value,
         ContentType: 'text/csv; charset=utf-8'
       });
 
       await this.client.send(command);
-      log.error(`[storage:aws] File saved to public/${this.folder}/${key}`);
+      log.error(`[storage:aws] File saved to public/${this.subDir}/${key}`);
 
       return true;
     } catch (e) {
       log.error('[storage:aws] Store file failed', e);
       throw new Error('Unable to access storage');
     }
-  };
+  }
 
-  get = async (key: string) => {
+  async get(key: string) {
     try {
       const command = new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `public/${this.folder}/${key}`
+        Key: this.#path(key)
       });
       const response = await this.client.send(command);
 
@@ -51,7 +53,11 @@ class Aws implements IStorage {
       log.error('[storage:aws] Create file failed', e);
       return false;
     }
-  };
+  }
+
+  #path(key?: string) {
+    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
+  }
 }
 
 export default Aws;

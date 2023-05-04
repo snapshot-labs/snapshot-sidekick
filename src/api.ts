@@ -1,8 +1,9 @@
 import express from 'express';
-import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
 import { name, version } from '../package.json';
+import VotesReport from './lib/votesReport';
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ router.post('/votes/generate', async (req, res) => {
   }
 
   try {
-    await voteReportWithStorage(id).canBeCached();
+    await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).canBeCached();
     queues.add(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
@@ -48,7 +49,7 @@ router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
   log.info(`[http] POST /votes/${id}`);
 
-  const votesReport = voteReportWithStorage(id);
+  const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
 
   try {
     const file = await votesReport.cachedFile();

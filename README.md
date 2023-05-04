@@ -37,12 +37,17 @@ If you are using AWS as storage engine, set all the required `AWS_` config keys,
 
 ### Storage engine
 
-This script is shipped with 2 storage engine:
+This script is shipped with 2 storage engine.
 
-- `AWS`: All cached files will be stored on Amazon S3 storage
-- `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
+You can set the cache engine by toggling the `STORAGE_ENGINE` environment variable.
 
-You can toggle the cache engine by toggling the `STORAGE_ENGINE` environment variable. Valid values are `file` (default) and `aws`.
+| `STORAGE_ENGINE` | Description | Cache save path                   |
+| ---------------- | ----------- | --------------------------------- |
+| `aws`            | Amazon S3   | `public/`                         |
+| `file` (default) | Local file  | `tmp/` (relative to project root) |
+
+You can additionally specify a sub directory by setting `VOTE_REPORT_SUBDIR`
+(By default, all votes report will be nested in the `votes` directory).
 
 ### Compiles and hot-reloads for development
 
