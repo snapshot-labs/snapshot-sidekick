@@ -1,6 +1,8 @@
 import VotesReport from '../lib/votesReport';
-import StorageEngine from '../lib/storage/file'; // aws | file
+import FileStorageEngine from '../lib/storage/file';
+import AwsStorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
+import type { IStorage } from '../lib/storage/types';
 
 const ERROR_CODES: Record<string, number> = {
   'Invalid Request': -32600,
@@ -39,5 +41,13 @@ export async function sleep(time: number) {
 }
 
 export function voteReportWithStorage(id: string) {
-  return new VotesReport(id, new StorageEngine('votes'));
+  let storage: IStorage;
+
+  if (process.env.STORAGE_ENGINE === 'aws') {
+    storage = new AwsStorageEngine('votes');
+  } else {
+    storage = new FileStorageEngine('votes');
+  }
+
+  return new VotesReport(id, storage);
 }

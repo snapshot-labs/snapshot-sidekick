@@ -2,7 +2,7 @@
 
 Sidekick is the service serving all proposal's votes CSV report
 
--------------------
+---
 
 This service is exposing an API endpoint expecting a closed proposal ID, and will
 return a CSV file with all the given proposal's votes.
@@ -33,7 +33,7 @@ Copy `.env.example`, rename it to `.env` and edit the hub API url in the `.env` 
 HUB_URL=https://hub.snapshot.org
 ```
 
-If you are using AWS as storage engine, set all the required `AWS_` config keys.
+If you are using AWS as storage engine, set all the required `AWS_` config keys, and set `STORAGE_ENGINE` to `aws`.
 
 ### Storage engine
 
@@ -42,15 +42,7 @@ This script is shipped with 2 storage engine:
 - `AWS`: All cached files will be stored on Amazon S3 storage
 - `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
 
-You can toggle the cache engine in `helpers/utils.ts`, when importing the storage engine
-
-```typescript
-// For File (default) storage engine
-import StorageEngine from '../lib/storage/file';
-
-// For AWS storage engine
-import StorageEngine from '../lib/storage/aws';
-```
+You can toggle the cache engine by toggling the `STORAGE_ENGINE` environment variable. Valid values are `file` (default) and `aws`.
 
 ### Compiles and hot-reloads for development
 
