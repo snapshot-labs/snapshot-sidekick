@@ -2,8 +2,18 @@ import express from 'express';
 import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
+import { name, version } from '../package.json';
 
 const router = express.Router();
+
+router.get('/', (req, res) => {
+  const commit = process.env.COMMIT_HASH || '';
+  const v = commit ? `${version}#${commit.substr(0, 7)}` : version;
+  return res.json({
+    name,
+    version: v
+  });
+});
 
 router.post('/votes/generate', async (req, res) => {
   log.info(`[http] POST /votes/generate`);
