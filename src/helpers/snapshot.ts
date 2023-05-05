@@ -39,6 +39,7 @@ const PROPOSAL_QUERY = gql`
       id
       state
       choices
+
       votes
     }
   }

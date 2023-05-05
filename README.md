@@ -1,22 +1,25 @@
 # Snapshot/Sidekick
 
-Sidekick is the service serving all proposals' votes CSV report
+Sidekick is the service serving all proposal's votes CSV report
 
-<hr>
+---
 
 This service is exposing an API endpoint expecting a closed proposal ID, and will
 return a CSV file with all the given proposal's votes.
 
-NOTE: CSV files are generated only once, then cached, making this service a cache middleware
-for snapshot-hub, for proposals' votes.
+> NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
 
 ## Project Setup
+
+### Requirements
+
+node >= 18.0.0
 
 ### Dependencies
 
 Install the dependencies
 
-```
+```bash
 yarn
 ```
 
@@ -24,39 +27,37 @@ _This project does not require a database, but requires a [storage engine](#stor
 
 ### Configuration
 
-Edit the hub API url in the `.env` file if needed
+Copy `.env.example`, rename it to `.env` and edit the hub API url in the `.env` file if needed
 
-```
+```bash
 HUB_URL=https://hub.snapshot.org
 ```
 
-If you are using AWS as storage engine, set all the required `AWS_` config keys.
+If you are using AWS as storage engine, set all the required `AWS_` config keys, and set `STORAGE_ENGINE` to `aws`.
 
-#### Storage engine
+### Storage engine
 
-This script is shipped with 2 storage engine:
+This script is shipped with 2 storage engine.
 
-- `AWS`: All cached files will be stored on Amazon S3 storage
-- `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
+You can set the cache engine by toggling the `STORAGE_ENGINE` environment variable.
 
-You can toggle the cache engine in `helpers/utils.ts`, when importing the storage engine
+| `STORAGE_ENGINE` | Description | Cache save path                   |
+| ---------------- | ----------- | --------------------------------- |
+| `aws`            | Amazon S3   | `public/`                         |
+| `file` (default) | Local file  | `tmp/` (relative to project root) |
 
-```
-// For AWS (default)
-import StorageEngine from '../lib/storage/aws';
-// For File
-import StorageEngine from '../lib/storage/file';
-```
+You can additionally specify a sub directory by setting `VOTE_REPORT_SUBDIR`
+(By default, all votes report will be nested in the `votes` directory).
 
-## Compiles and hot-reloads for development
+### Compiles and hot-reloads for development
 
-```
+```bash
 yarn dev
 ```
 
 ## Linting, typecheck and test
 
-```
+```bash
 yarn lint
 yarn typecheck
 yarn test
@@ -70,7 +71,7 @@ Retrieving and generating the cache file have their own respective endpoint
 
 Send a POST request with a proposal ID
 
-```
+```bash
 curl -X POST localhost:3000/votes/[PROPOSAL-ID]
 ```
 
@@ -78,7 +79,7 @@ When cached, this request will respond with a stream to a CSV file.
 
 On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
 
-```
+```bash
 {
   "jsonrpc":"2.0",
   "error":{
@@ -102,7 +103,7 @@ Furthermore, when votes report can be cached, but does not exist yet, a cache ge
 
 Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
-```
+```bash
 curl -X POST localhost:3000/votes/generate \
 -H "Authenticate: WEBHOOK_AUTH_TOKEN" \
 -H "Content-Type: application/json" \
@@ -118,7 +119,7 @@ Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
 ## Build for production
 
-```
+```bash
 yarn build
 yarn start
 ```
