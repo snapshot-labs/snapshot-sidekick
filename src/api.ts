@@ -3,8 +3,8 @@ import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
 import getModerationList from './lib/moderationList';
-import VotesReport from './lib/votesReport';
 import { name, version } from '../package.json';
+import VotesReport from './lib/votesReport';
 
 const router = express.Router();
 
@@ -38,7 +38,6 @@ router.post('/votes/generate', async (req, res) => {
 
   try {
     await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).canBeCached();
-
     queues.add(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
