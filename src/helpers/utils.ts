@@ -1,6 +1,7 @@
-import VotesReport from '../lib/votesReport';
 import ogImage, { ImageType } from '../lib/ogImage';
 import StorageEngine from '../lib/storage/file'; // aws | file
+import FileStorageEngine from '../lib/storage/file';
+import AwsStorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
 
 const ERROR_CODES: Record<string, number> = {
@@ -8,7 +9,7 @@ const ERROR_CODES: Record<string, number> = {
   PROPOSAL_NOT_FOUND: -40001,
   PROPOSAL_NOT_CLOSED: -40004,
   PENDING_GENERATION: -40010,
-  UNAUTHORIZE: 401
+  UNAUTHORIZED: 401
 };
 
 export function rpcSuccess(res: Response, result: string, id: string | number) {
@@ -39,8 +40,12 @@ export async function sleep(time: number) {
   });
 }
 
-export function voteReportWithStorage(id: string) {
-  return new VotesReport(id, new StorageEngine('votes'));
+export function storageEngine(subDir?: string) {
+  if (process.env.STORAGE_ENGINE === 'aws') {
+    return new AwsStorageEngine(subDir);
+  } else {
+    return new FileStorageEngine(subDir);
+  }
 }
 
 export function ogImageWithStorage(type: ImageType, id: string) {

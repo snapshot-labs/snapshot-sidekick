@@ -2,7 +2,7 @@
 
 Sidekick is the service serving all proposals' votes CSV report, as well as opengraph image.
 
-<hr>
+---
 
 This service is exposing:
 
@@ -12,11 +12,15 @@ This service is exposing:
 
 ## Project Setup
 
+### Requirements
+
+node >= 18.0.0
+
 ### Dependencies
 
 Install the dependencies
 
-```
+```bash
 yarn
 ```
 
@@ -24,39 +28,37 @@ _This project does not require a database, but requires a [storage engine](#stor
 
 ### Configuration
 
-Edit the hub API url in the `.env` file if needed
+Copy `.env.example`, rename it to `.env` and edit the hub API url in the `.env` file if needed
 
-```
+```bash
 HUB_URL=https://hub.snapshot.org
 ```
 
-If you are using AWS as storage engine, set all the required `AWS_` config keys.
+If you are using AWS as storage engine, set all the required `AWS_` config keys, and set `STORAGE_ENGINE` to `aws`.
 
-#### Storage engine
+### Storage engine
 
-This script is shipped with 2 storage engine:
+This script is shipped with 2 storage engine.
 
-- `AWS`: All cached files will be stored on Amazon S3 storage
-- `File`: All cached files will be stored locally, in the `tmp` folder (used for dev environment and testing)
+You can set the cache engine by toggling the `STORAGE_ENGINE` environment variable.
 
-You can toggle the cache engine in `helpers/utils.ts`, when importing the storage engine
+| `STORAGE_ENGINE` | Description | Cache save path                   |
+| ---------------- | ----------- | --------------------------------- |
+| `aws`            | Amazon S3   | `public/`                         |
+| `file` (default) | Local file  | `tmp/` (relative to project root) |
 
-```
-// For AWS (default)
-import StorageEngine from '../lib/storage/aws';
-// For File
-import StorageEngine from '../lib/storage/file';
-```
+You can additionally specify a sub directory by setting `VOTE_REPORT_SUBDIR`
+(By default, all votes report will be nested in the `votes` directory).
 
-## Compiles and hot-reloads for development
+### Compiles and hot-reloads for development
 
-```
+```bash
 yarn dev
 ```
 
 ## Linting, typecheck and test
 
-```
+```bash
 yarn lint
 yarn typecheck
 yarn test
@@ -72,7 +74,7 @@ yarn test
 
 Send a POST request with a proposal ID
 
-```
+```bash
 curl -X POST localhost:3000/votes/[PROPOSAL-ID]
 ```
 
@@ -80,22 +82,21 @@ When cached, this request will respond with a stream to a CSV file.
 
 Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
 
-#### Generate a cache file
-
-##### `POST /votes/generate`
+### Generate a cache file
 
 Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
-```
+```bash
 curl -X POST localhost:3000/votes/generate \
 -H "Authenticate: WEBHOOK_AUTH_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
 ```
 
-On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+- On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+- On error, will respond with the same result and codes as the `fetch` endpoint above
 
-> This endpoint has been designed to receive events from snapshot webhook service.
+The endpoint has been designed to receive events from snapshot webhook service.
 
 Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
@@ -148,7 +149,7 @@ On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/s
 
 When not returning the expected result, all API endpoint will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
 
-```
+```bash
 {
   "jsonrpc":"2.0",
   "error":{
@@ -166,9 +167,11 @@ When not returning the expected result, all API endpoint will respond with a [JS
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
 
+Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
+
 ## Build for production
 
-```
+```bash
 yarn build
 yarn start
 ```

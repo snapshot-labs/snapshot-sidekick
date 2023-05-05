@@ -1,10 +1,10 @@
 export interface IStorage {
-  folder: string;
+  subDir?: string;
 
-  set: (key: string, value: string | Buffer) => Promise<unknown>;
-  get: (key: string) => Promise<unknown>;
+  set(key: string, value: string | Buffer): Promise<unknown>;
+  get(key: string): Promise<unknown>;
 }
 
 export interface IStorageConstructor {
-  new (folder: string): IStorage;
+  new (subDir?: string): IStorage;
 }

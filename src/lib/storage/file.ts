@@ -5,45 +5,45 @@ import type { IStorage } from './types';
 const CACHE_PATH = `${__dirname}/../../../tmp`;
 
 class File implements IStorage {
-  folder: string;
+  subDir?: string;
 
-  constructor(folder: string) {
-    this.folder = folder;
+  constructor(subDir?: string) {
+    this.subDir = subDir;
 
-    if (!existsSync(`${CACHE_PATH}/${this.folder}`)) {
-      mkdirSync(`${CACHE_PATH}/${this.folder}`, { recursive: true });
+    if (!existsSync(this.#path())) {
+      mkdirSync(this.#path(), { recursive: true });
     }
   }
 
-  set = async (key: string, value: string | Buffer) => {
+  async set(key: string, value: string | Buffer) {
     try {
-      writeFileSync(this.path(key), value);
-      log.info(`[storage:file] File saved to ${this.path(key)}`);
+      writeFileSync(this.#path(key), value);
+      log.info(`[storage:file] File saved to ${this.#path(key)}`);
 
       return true;
     } catch (e) {
       log.error('[storage:file] Store file failed', e);
       throw e;
     }
-  };
+  }
 
-  get = async (key: string) => {
+  async get(key: string) {
     try {
-      if (!existsSync(this.path(key))) {
+      if (!existsSync(this.#path(key))) {
         return false;
       }
-      log.info(`[storage:file] File fetched from ${this.path(key)}`);
+      log.info(`[storage:file] File fetched from ${this.#path(key)}`);
 
-      return readFileSync(this.path(key));
+      return readFileSync(this.#path(key));
     } catch (e) {
       log.error('[storage:file] Fetch file failed', e);
       return false;
     }
-  };
+  }
 
-  path = (key: string) => {
-    return `${CACHE_PATH}/${this.folder}/${key}`;
-  };
+  #path(key?: string) {
+    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
+  }
 }
 
 export default File;
