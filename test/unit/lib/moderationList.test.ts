@@ -35,4 +35,16 @@ describe('moderationList', () => {
     expect(list).toEqual({});
     expect(filePathSpy).toHaveBeenCalledTimes(0);
   });
+
+  it('returns all fields by default', () => {
+    const filePathSpy = jest
+      .spyOn(testModerationList, 'filePath')
+      .mockReturnValueOnce(path.resolve(__dirname, `../../fixtures/flaggedLinks.json`))
+      .mockReturnValueOnce(path.resolve(__dirname, `../../fixtures/flaggedProposalIds.json`))
+      .mockReturnValueOnce(path.resolve(__dirname, `../../fixtures/verifiedSpaces.json`));
+
+    const list = testModerationList.getModerationList();
+    expect(list).toMatchSnapshot();
+    expect(filePathSpy).toHaveBeenCalledTimes(3);
+  });
 });

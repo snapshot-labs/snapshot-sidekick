@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`moderationList returns all fields by default 1`] = `
+{
+  "flaggedLinks": [
+    "https://gogle.com",
+    "https://facebook.com",
+  ],
+  "flaggedProposalIds": [
+    "0x1",
+    "0x2",
+  ],
+  "verifiedSpaces": {
+    "space1.eth": 1,
+    "space2.eth": 2,
+  },
+}
+`;
+
 exports[`moderationList returns multiple fields 1`] = `
 {
   "flaggedLinks": [
