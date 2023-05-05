@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`moderationList returns multiple fields 1`] = `
+{
+  "flaggedLinks": [
+    "https://gogle.com",
+    "https://facebook.com",
+  ],
+  "verifiedSpaces": {
+    "space1.eth": 1,
+    "space2.eth": 2,
+  },
+}
+`;
+
+exports[`moderationList returns only the flaggedLinks 1`] = `
+{
+  "flaggedLinks": [
+    "https://gogle.com",
+    "https://facebook.com",
+  ],
+}
+`;
+
+exports[`moderationList returns only the flaggedProposalIds 1`] = `
+{
+  "flaggedProposalIds": [
+    "0x1",
+    "0x2",
+  ],
+}
+`;
+
+exports[`moderationList returns only the verifiedSpaces 1`] = `
+{
+  "verifiedSpaces": {
+    "space1.eth": 1,
+    "space2.eth": 2,
+  },
+}
+`;
