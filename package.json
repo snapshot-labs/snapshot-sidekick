@@ -14,7 +14,10 @@
     "test": "jest"
   },
   "eslintConfig": {
-    "extends": "@snapshot-labs"
+    "extends": "@snapshot-labs",
+    "rules": {
+      "no-throw-literal": "error"
+    }
   },
   "engines": {
     "node": ">= 18"
@@ -23,6 +26,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@aws-sdk/client-s3": "^3.316.0",
+    "badge-maker": "^3.3.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.18.2",

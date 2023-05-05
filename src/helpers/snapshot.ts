@@ -1,8 +1,15 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
 
+export type Space = {
+  id: string;
+  name: string;
+  about?: string;
+  followersCount?: number;
+};
 export type Proposal = {
   id: string;
   state: string;
+  votes: number;
   choices: string[];
 };
 export type Vote = {
@@ -32,6 +39,27 @@ const PROPOSAL_QUERY = gql`
       id
       state
       choices
+
+      votes
+    }
+  }
+`;
+
+const SPACE_PROPOSALS_QUERY = gql`
+  query Proposals($id: String!, $state: String) {
+    proposals(where: { space: $id, state: $state }) {
+      id
+    }
+  }
+`;
+
+const SPACE_QUERY = gql`
+  query Space($id: String) {
+    space(id: $id) {
+      id
+      name
+      about
+      followersCount
     }
   }
 `;
@@ -75,6 +103,20 @@ export async function fetchProposal(id: string) {
   return proposal;
 }
 
+export async function fetchProposals(id: string, state?: string) {
+  const {
+    data: { proposals }
+  }: { data: { proposals: Proposal[] } } = await client.query({
+    query: SPACE_PROPOSALS_QUERY,
+    variables: {
+      id,
+      state
+    }
+  });
+
+  return proposals;
+}
+
 export async function fetchVotes(
   id: string,
   { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
@@ -94,4 +136,17 @@ export async function fetchVotes(
   });
 
   return votes;
+}
+
+export async function fetchSpace(id: string) {
+  const {
+    data: { space }
+  }: { data: { space: Space | null } } = await client.query({
+    query: SPACE_QUERY,
+    variables: {
+      id
+    }
+  });
+
+  return space;
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
+import { BadgeType, getBadge } from './lib/badge';
 import { name, version } from '../package.json';
 import VotesReport from './lib/votesReport';
 
@@ -68,6 +69,19 @@ router.post('/votes/:id', async (req, res) => {
       log.error(e);
       rpcError(res, e, id);
     }
+  } catch (e) {
+    log.error(e);
+    return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
+router.get('/badges/:type(space|proposal)/:id', async (req, res) => {
+  const { id, type } = req.params;
+
+  try {
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'public, max-age=18000, must-revalidate');
+    return res.end(await getBadge(type as BadgeType, id, req.query));
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
