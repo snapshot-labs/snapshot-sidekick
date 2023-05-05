@@ -7,7 +7,6 @@
     "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "Node"
+    "resolveJsonModule": true
   }
 }
