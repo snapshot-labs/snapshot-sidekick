@@ -23,7 +23,7 @@ class VotesReport {
     this.proposal = await this.fetchProposal();
 
     if (!this.proposal) {
-      return Promise.reject('PROPOSAL_NOT_FOUND');
+      return Promise.reject('ENTRY_NOT_FOUND');
     }
 
     if (this.proposal.state !== 'closed') {
