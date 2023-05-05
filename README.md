@@ -1,6 +1,6 @@
 # Snapshot/Sidekick
 
-Sidekick is the service serving all proposals' votes CSV report, as well as opengraph image.
+Sidekick is the service serving all proposals' votes CSV report, as well as OpenGraph image.
 
 ---
 
@@ -72,7 +72,7 @@ yarn test
 
 ##### `POST /votes/[PROPOSAL-ID]`
 
-Send a POST request with a proposal ID
+Send a `POST` request with a proposal ID
 
 ```bash
 curl -X POST localhost:3000/votes/[PROPOSAL-ID]
@@ -82,9 +82,9 @@ When cached, this request will respond with a stream to a CSV file.
 
 Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
 
-### Generate a cache file
+#### Generate a cache file
 
-Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
 ```bash
 curl -X POST localhost:3000/votes/generate \
@@ -106,7 +106,7 @@ Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
 ##### `GET /og/[TYPE]/[ID]`
 
-Send a GET request with an image type and ID
+Send a `GET` request with an image type and ID
 
 ```
 curl -X GET localhost:3000/og/(space|proposal)[PROPOSAL-ID]
@@ -124,7 +124,7 @@ The different image types are
 
 All the images are built-on demand, and will be cached after the first generation.
 
-Image dimension are 1200px x 600px, and default returned image format will be PNG.
+Image dimensions are 1200px x 600px, and default returned image format will be PNG.
 
 > For debug purpose, you can also use the `.svg` file extension when polling the endpoint, to preview a high-resolution rendering of the image before conversion to .png
 
@@ -132,7 +132,7 @@ Image dimension are 1200px x 600px, and default returned image format will be PN
 
 ##### `POST /og/refresh`
 
-Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
 ```
 curl -X POST localhost:3000/og/refresh \
@@ -141,7 +141,7 @@ curl -X POST localhost:3000/og/refresh \
 -d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
 ```
 
-This endpoint will force the generation of a new image i already cached, or create it if not exist, and is used to receive webhook in order to keep data in images up-to-date.
+This endpoint will force the generation of a new image if already cached, or create it if not exist, and is used to receive webhook in order to keep data in images up-to-date.
 
 On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
 
@@ -166,8 +166,6 @@ When not returning the expected result, all API endpoint will respond with a [JS
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
-
-Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
 
 ## Build for production
 

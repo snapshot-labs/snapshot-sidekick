@@ -55,11 +55,13 @@ class Aws implements IStorage {
         Key: this.#path(key)
       });
       const response = await this.client.send(command);
+
       log.info(`[storage:aws] File fetched from public/${this.#path(key)}`);
 
       return streamToBuffer(response.Body as Readable);
     } catch (e) {
       log.error('[storage:aws] Fetch file failed', e);
+
       return false;
     }
   }
