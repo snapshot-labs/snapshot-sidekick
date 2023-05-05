@@ -97,9 +97,13 @@ class VotesReport {
       totalResults += newVotes.length;
     } while (resultsSize === pageSize);
 
-    log.info(`[votereport] File cache ready to be saved with ${totalResults} items`);
+    log.info(`[vote report] File cache ready to be saved with ${totalResults} items`);
 
     return this.storage.set(this.filename, content);
+  };
+
+  fetchProposal = async () => {
+    return await fetchProposal(this.id);
   };
 
   #formatCsvLine = (vote: Vote) => {
@@ -117,10 +121,6 @@ class VotesReport {
     return [vote.voter, choices, vote.vp, vote.created, vote.ipfs, `"${vote.reason}"`]
       .flat()
       .join(',');
-  };
-
-  fetchProposal = async () => {
-    return await fetchProposal(this.id);
   };
 }
 

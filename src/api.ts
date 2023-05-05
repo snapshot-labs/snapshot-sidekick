@@ -1,10 +1,21 @@
 import express from 'express';
-import { voteReportWithStorage, rpcError, rpcSuccess } from './helpers/utils';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
 import getModerationList from './lib/moderationList';
+import VotesReport from './lib/votesReport';
+import { name, version } from '../package.json';
 
 const router = express.Router();
+
+router.get('/', (req, res) => {
+  const commit = process.env.COMMIT_HASH || '';
+  const v = commit ? `${version}#${commit.substr(0, 7)}` : version;
+  return res.json({
+    name,
+    version: v
+  });
+});
 
 router.post('/votes/generate', async (req, res) => {
   log.info(`[http] POST /votes/generate`);
@@ -14,7 +25,7 @@ router.post('/votes/generate', async (req, res) => {
   const id = body.id.toString().replace('proposal/', '');
 
   if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
-    return rpcError(res, 'UNAUTHORIZE', id);
+    return rpcError(res, 'UNAUTHORIZED', id);
   }
 
   if (!event || !id) {
@@ -26,7 +37,8 @@ router.post('/votes/generate', async (req, res) => {
   }
 
   try {
-    await voteReportWithStorage(id).canBeCached();
+    await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).canBeCached();
+
     queues.add(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
@@ -39,7 +51,7 @@ router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
   log.info(`[http] POST /votes/${id}`);
 
-  const votesReport = voteReportWithStorage(id);
+  const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
 
   try {
     const file = await votesReport.cachedFile();
@@ -50,16 +62,14 @@ router.post('/votes/:id', async (req, res) => {
       return res.send(Buffer.from(file));
     }
 
-    votesReport
-      .canBeCached()
-      .then(() => {
-        queues.add(id);
-        return rpcError(res, 'PENDING_GENERATION', id);
-      })
-      .catch((e: any) => {
-        log.error(e);
-        rpcError(res, e, id);
-      });
+    try {
+      await votesReport.canBeCached();
+      queues.add(id);
+      return rpcError(res, 'PENDING_GENERATION', id);
+    } catch (e: any) {
+      log.error(e);
+      rpcError(res, e, id);
+    }
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
