@@ -5,7 +5,7 @@ export default async function svg(proposalId: string) {
   const proposal = await fetchProposal(proposalId);
 
   if (!proposal) {
-    throw new Error('Proposal not found');
+    throw new Error('ENTRY_NOT_FOUND');
   }
 
   return (

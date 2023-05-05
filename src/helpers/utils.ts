@@ -1,12 +1,10 @@
-import ogImage, { ImageType } from '../lib/ogImage';
-import StorageEngine from '../lib/storage/file'; // aws | file
 import FileStorageEngine from '../lib/storage/file';
 import AwsStorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
 
 const ERROR_CODES: Record<string, number> = {
   'Invalid Request': -32600,
-  PROPOSAL_NOT_FOUND: -40001,
+  ENTRY_NOT_FOUND: -40001,
   PROPOSAL_NOT_CLOSED: -40004,
   PENDING_GENERATION: -40010,
   UNAUTHORIZED: 401
@@ -46,8 +44,4 @@ export function storageEngine(subDir?: string) {
   } else {
     return new FileStorageEngine(subDir);
   }
-}
-
-export function ogImageWithStorage(type: ImageType, id: string) {
-  return new ogImage(type, id, new StorageEngine('ogImages'));
 }

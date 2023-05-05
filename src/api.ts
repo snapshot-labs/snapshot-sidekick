@@ -1,10 +1,11 @@
 import express from 'express';
-import { rpcError, rpcSuccess, storageEngine, ogImageWithStorage } from './helpers/utils';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
 import { name, version } from '../package.json';
 import VotesReport from './lib/votesReport';
-import { ImageType } from './lib/ogImage';
+import ogImage from './lib/ogImage';
+import type { ImageType } from './lib/ogImage';
 
 const router = express.Router();
 
@@ -83,7 +84,7 @@ router.post('/og/refresh', async (req, res) => {
   const { type, id } = body.id.toString().split('/');
 
   if (req.headers['authenticate'] !== process.env.WEBHOOK_AUTH_TOKEN?.toString()) {
-    return rpcError(res, 'UNAUTHORIZE', id);
+    return rpcError(res, 'UNAUTHORIZED', id);
   }
 
   if (!event || !id) {
@@ -95,7 +96,7 @@ router.post('/og/refresh', async (req, res) => {
   }
 
   try {
-    const og = ogImageWithStorage(type as ImageType, id);
+    const og = new ogImage(type as ImageType, id, storageEngine(process.env.OG_IMAGES_SUBDIR));
     await og.getImage(true);
     return rpcSuccess(res, `Image card for ${type} refreshed`, id);
   } catch (e) {
@@ -108,7 +109,7 @@ router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res
   const { type, id = '', ext = 'png' } = req.params;
 
   try {
-    const og = ogImageWithStorage(type as ImageType, id);
+    const og = new ogImage(type as ImageType, id, storageEngine(process.env.OG_IMAGES_SUBDIR));
 
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);

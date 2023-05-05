@@ -51,7 +51,7 @@ describe('VotesReport', () => {
       const report = new VotesReport('test', storageEngine);
       const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce(null);
 
-      expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_FOUND');
+      expect(report.canBeCached()).rejects.toBe('ENTRY_NOT_FOUND');
       expect(votesReportSpy).toHaveBeenCalled();
     });
 

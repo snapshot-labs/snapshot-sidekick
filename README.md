@@ -145,6 +145,24 @@ This endpoint will force the generation of a new image if already cached, or cre
 
 On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
 
+#### 🛠️ Dev tools
+
+A script is provided to generate the image via command line (for dev/test purpose only).
+
+**Space image**
+
+```bash
+yarn ts-node scripts/og-image-refresh.ts space [SPACE_ID]
+// E.g yarn ts-node scripts/og-image-refresh.ts space cakevote.eth
+```
+
+**Proposal image**
+
+```bash
+yarn ts-node scripts/og-image-refresh.ts proposal [PROPOSAL_ID]
+// E.g yarn ts-node scripts/og-image-refresh.ts proposal 0xd61485f94b829d1c8189749d695600c06bef45a2b35b106e0630685fbb805362
+```
+
 ## Error response
 
 When not returning the expected result, all API endpoint will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
@@ -160,12 +178,13 @@ When not returning the expected result, all API endpoint will respond with a [JS
 }
 ```
 
-| Description                         | `CODE` | `MESSAGE`           |
-| ----------------------------------- | ------ | ------------------- |
-| When the proposal does not exist    | -40001 | PROPOSAL_NOT_FOUND  |
-| When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
-| When the file is pending generation | -40010 | PENDING_GENERATION  |
-| Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
+| Description                             | `CODE` | `MESSAGE`           |
+| --------------------------------------- | ------ | ------------------- |
+| When the requested entry does not exist | -40001 | ENTRY_NOT_FOUND     |
+| When the proposal is not closed         | -40004 | PROPOSAL_NOT_CLOSED |
+| When the file is pending generation     | -40010 | PENDING_GENERATION  |
+| Invalid parameters                      | -32600 | Invalid Request     |
+| Other/Unknown/Server Error              | -32603 | INTERNAL_ERROR      |
 
 ## Build for production
 
