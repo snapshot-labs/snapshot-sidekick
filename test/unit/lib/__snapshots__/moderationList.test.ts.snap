@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`moderationList ignores invalid fields, and only returns verifiedSpaces 1`] = `
+{
+  "verifiedSpaces": {
+    "space1.eth": 1,
+    "space2.eth": 2,
+  },
+}
+`;
+
 exports[`moderationList returns all fields by default 1`] = `
 {
   "flaggedLinks": [
@@ -17,7 +26,7 @@ exports[`moderationList returns all fields by default 1`] = `
 }
 `;
 
-exports[`moderationList returns multiple fields 1`] = `
+exports[`moderationList returns multiple list: flaggedLinks and verifiedSpaces 1`] = `
 {
   "flaggedLinks": [
     "https://gogle.com",

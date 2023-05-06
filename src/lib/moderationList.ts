@@ -2,8 +2,9 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 const FIELDS = ['flaggedLinks', 'flaggedProposalIds', 'verifiedSpaces'];
+const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
 
-export function getModerationList(fields = FIELDS) {
+export default function getModerationList(fields = FIELDS) {
   const result: Record<string, string[] | Record<string, number>> = {};
 
   return fields
@@ -15,6 +16,6 @@ export function getModerationList(fields = FIELDS) {
     }, result);
 }
 
-export const filePath = (filename: string) => {
-  return path.resolve(__dirname, `../../data/${filename}.json`);
+const filePath = (filename: string) => {
+  return path.join(CACHE_PATH, `${filename}.json`);
 };

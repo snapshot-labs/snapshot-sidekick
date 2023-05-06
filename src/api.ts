@@ -2,7 +2,7 @@ import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
-import { getModerationList } from './lib/moderationList';
+import getModerationList from './lib/moderationList';
 import { name, version } from '../package.json';
 import VotesReport from './lib/votesReport';
 
