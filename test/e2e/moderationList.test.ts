@@ -13,7 +13,7 @@ describe('GET /moderationList', () => {
   });
 
   describe('when fields params is set', () => {
-    it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposalIds'])(
+    it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals'])(
       'returns only the selected %s list',
       async field => {
         const response = await request(HOST).get(`/moderationList?fields=${field}`);
@@ -24,9 +24,9 @@ describe('GET /moderationList', () => {
     );
   });
 
-  it('returns multiple list: verifiedSpaces,flaggedProposalIds', async () => {
+  it('returns multiple list: verifiedSpaces,flaggedProposals', async () => {
     const response = await request(HOST).get(
-      `/moderationList?fields=verifiedSpaces,flaggedProposalIds`
+      `/moderationList?fields=verifiedSpaces,flaggedProposals`
     );
 
     expect(response.statusCode).toBe(200);

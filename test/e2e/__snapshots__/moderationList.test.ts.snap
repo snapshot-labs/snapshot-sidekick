@@ -9,9 +9,9 @@ exports[`GET /moderationList ignores invalid field, and returns only verifiedSpa
 }
 `;
 
-exports[`GET /moderationList returns multiple list: verifiedSpaces,flaggedProposalIds 1`] = `
+exports[`GET /moderationList returns multiple list: verifiedSpaces,flaggedProposals 1`] = `
 {
-  "flaggedProposalIds": [
+  "flaggedProposals": [
     "0x1",
     "0x2",
   ],
@@ -28,7 +28,7 @@ exports[`GET /moderationList when fields params is empty returns all the list 1`
     "https://gogle.com",
     "https://facebook.com",
   ],
-  "flaggedProposalIds": [
+  "flaggedProposals": [
     "0x1",
     "0x2",
   ],
@@ -48,9 +48,9 @@ exports[`GET /moderationList when fields params is set returns only the selected
 }
 `;
 
-exports[`GET /moderationList when fields params is set returns only the selected flaggedProposalIds list 1`] = `
+exports[`GET /moderationList when fields params is set returns only the selected flaggedProposals list 1`] = `
 {
-  "flaggedProposalIds": [
+  "flaggedProposals": [
     "0x1",
     "0x2",
   ],

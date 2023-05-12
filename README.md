@@ -129,7 +129,7 @@ curl localhost:3000/moderationList
 You can also choose to filter the list, with the `?fields=` query params.
 Valid values are:
 
-- flaggedProposalIds
+- flaggedProposals
 - flaggedLinks
 - verifiedSpaces
 

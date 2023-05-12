@@ -1,13 +1,10 @@
 import getModerationList from '../../../src/lib/moderationList';
 
 describe('moderationList', () => {
-  it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposalIds'])(
-    'returns only the %s',
-    field => {
-      const list = getModerationList([field]);
-      expect(list).toMatchSnapshot();
-    }
-  );
+  it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals'])('returns only the %s', field => {
+    const list = getModerationList([field]);
+    expect(list).toMatchSnapshot();
+  });
 
   it('returns multiple list: flaggedLinks and verifiedSpaces', () => {
     const list = getModerationList(['flaggedLinks', 'verifiedSpaces']);

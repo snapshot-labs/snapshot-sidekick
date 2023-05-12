@@ -15,7 +15,7 @@ exports[`moderationList returns all fields by default 1`] = `
     "https://gogle.com",
     "https://facebook.com",
   ],
-  "flaggedProposalIds": [
+  "flaggedProposals": [
     "0x1",
     "0x2",
   ],
@@ -48,9 +48,9 @@ exports[`moderationList returns only the flaggedLinks 1`] = `
 }
 `;
 
-exports[`moderationList returns only the flaggedProposalIds 1`] = `
+exports[`moderationList returns only the flaggedProposals 1`] = `
 {
-  "flaggedProposalIds": [
+  "flaggedProposals": [
     "0x1",
     "0x2",
   ],
