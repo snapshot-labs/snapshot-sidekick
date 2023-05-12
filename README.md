@@ -61,6 +61,7 @@ yarn dev
 yarn lint
 yarn typecheck
 yarn test
+yarn test:e2e
 ```
 
 ## Usage
@@ -116,6 +117,23 @@ curl -X POST localhost:3000/votes/generate \
 The endpoint has been designed to receive events from snapshot webhook service.
 
 Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
+
+### Return a moderationList
+
+Send a GET request
+
+```bash
+curl localhost:3000/moderationList
+```
+
+You can also choose to filter the list, with the `?fields=` query params.
+Valid values are:
+
+- flaggedProposals
+- flaggedLinks
+- verifiedSpaces
+
+Data are sourced from the json with the same, located in `/data`.
 
 ## Build for production
 

@@ -1,4 +1,4 @@
-name: Run Lint
+name: Build and run Lint
 on: [push]
 jobs:
   build-lint:

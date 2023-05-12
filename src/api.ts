@@ -2,6 +2,7 @@ import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
 import { queues } from './lib/queue';
+import getModerationList from './lib/moderationList';
 import { name, version } from '../package.json';
 import VotesReport from './lib/votesReport';
 
@@ -71,6 +72,17 @@ router.post('/votes/:id', async (req, res) => {
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
+router.get('/moderationList', async (req, res) => {
+  const { fields } = req.query;
+
+  try {
+    res.json(getModerationList(fields ? (fields as string).split(',') : undefined));
+  } catch (e) {
+    log.error(e);
+    return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
 
