@@ -13,7 +13,7 @@ return a CSV file with all the given proposal's votes.
 
 ### Requirements
 
-node >= 18.0.0
+node ">=16.0.0 <17.0.0"
 
 ### Dependencies
 

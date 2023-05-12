@@ -1,4 +1,5 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
+import fetch from 'cross-fetch';
 
 export type Proposal = {
   id: string;
@@ -15,7 +16,7 @@ export type Vote = {
 };
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: `${process.env.HUB_URL}/graphql` }),
+  link: new HttpLink({ uri: `${process.env.HUB_URL}/graphql`, fetch }),
   cache: new InMemoryCache({
     addTypename: false
   }),
