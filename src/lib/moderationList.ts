@@ -5,15 +5,14 @@ const FIELDS = ['flaggedLinks', 'flaggedProposals', 'verifiedSpaces'];
 const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
 
 export default function getModerationList(fields = FIELDS) {
-  const result: Record<string, string[] | Record<string, number>> = {};
+const result: Record<string, string[] | Record<string, number>> = {};
+fields.forEach(field => {
+  if (FIELDS.includes(field)) {
+    result[field] = JSON.parse(readFileSync(filePath(field), { encoding: 'utf8' }));
+  }
+});
 
-  return fields
-    .filter(field => FIELDS.includes(field))
-    .map(field => [field, JSON.parse(readFileSync(filePath(field), { encoding: 'utf8' }))])
-    .reduce((hash, [name, value]) => {
-      hash[name] = value;
-      return hash;
-    }, result);
+return result;
 }
 
 const filePath = (filename: string) => {
