@@ -5,6 +5,7 @@ import cors from 'cors';
 import api from './api';
 import log from './helpers/log';
 import './lib/queue';
+import { name, version } from '../package.json';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,15 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
 app.use(compression());
-app.use('/', api);
+app.use('/api', api);
+
+app.get('/', (req, res) => {
+  const commit = process.env.COMMIT_HASH || '';
+  const v = commit ? `${version}#${commit.substr(0, 7)}` : version;
+  return res.json({
+    name,
+    version: v
+  });
+});
 
 app.listen(PORT, () => log.info(`[http] Start server at http://localhost:${PORT}`));
