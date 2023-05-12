@@ -1,10 +1,11 @@
 import express from 'express';
-import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import log from './helpers/log';
-import { queues } from './lib/queue';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
-import { name, version } from '../package.json';
 import VotesReport from './lib/votesReport';
+import { queues } from './lib/queue';
+import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
+import { name, version } from '../package.json';
 
 const router = express.Router();
 
@@ -83,6 +84,22 @@ router.get('/moderationList', async (req, res) => {
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
+  }
+});
+
+router.post('/sign', async (req, res) => {
+  try {
+    const { type, address, id, salt } = req.body;
+    switch (type) {
+      case 'space':
+        return res.send(await signSpaceOwner(address, id, salt));
+      case 'proposal':
+        return res.send(await signValidProposal(address, id, salt));
+      default:
+        throw new Error('Invalid Request');
+    }
+  } catch (e: any) {
+    return rpcError(res, e, '');
   }
 });
 
