@@ -79,7 +79,7 @@ router.get('/moderationList', async (req, res) => {
   const { fields } = req.query;
 
   try {
-    res.send(getModerationList(fields ? (fields as string).split(',') : undefined));
+    res.json(getModerationList(fields ? (fields as string).split(',') : undefined));
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
