@@ -2,10 +2,10 @@
 
 exports[`moderationList ignores invalid fields, and only returns verifiedSpaces 1`] = `
 {
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -19,10 +19,14 @@ exports[`moderationList returns all fields by default 1`] = `
     "0x1",
     "0x2",
   ],
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "flaggedSpaces": [
+    "space3.eth",
+    "space4.eth",
+  ],
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -32,10 +36,10 @@ exports[`moderationList returns multiple list: flaggedLinks and verifiedSpaces 1
     "https://gogle.com",
     "https://facebook.com",
   ],
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -59,9 +63,9 @@ exports[`moderationList returns only the flaggedProposals 1`] = `
 
 exports[`moderationList returns only the verifiedSpaces 1`] = `
 {
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;

@@ -2,10 +2,10 @@
 
 exports[`GET /api/moderationList ignores invalid field, and returns only verifiedSpaces 1`] = `
 {
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -15,10 +15,10 @@ exports[`GET /api/moderationList returns multiple list: verifiedSpaces,flaggedPr
     "0x1",
     "0x2",
   ],
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -32,10 +32,14 @@ exports[`GET /api/moderationList when fields params is empty returns all the lis
     "0x1",
     "0x2",
   ],
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "flaggedSpaces": [
+    "space3.eth",
+    "space4.eth",
+  ],
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
 
@@ -59,9 +63,9 @@ exports[`GET /api/moderationList when fields params is set returns only the sele
 
 exports[`GET /api/moderationList when fields params is set returns only the selected verifiedSpaces list 1`] = `
 {
-  "verifiedSpaces": {
-    "space1.eth": 1,
-    "space2.eth": 2,
-  },
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
 }
 `;
