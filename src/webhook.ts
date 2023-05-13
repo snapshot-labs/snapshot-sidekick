@@ -7,7 +7,7 @@ import { queues } from './lib/queue';
 const router = express.Router();
 
 router.post('/webhook', async (req, res) => {
-  log.info(`[http] POST /votes/generate`);
+  log.info(`[http] POST /webhook`);
 
   const body = req.body || {};
   const event = body.event.toString();
