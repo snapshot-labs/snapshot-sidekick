@@ -17,7 +17,7 @@ app.use('/api', api);
 
 app.get('/', (req, res) => {
   const commit = process.env.COMMIT_HASH || '';
-  const v = commit ? `${version}#${commit.substr(0, 7)}` : version;
+  const v = commit ? `${version}#${commit.substring(0, 7)}` : version;
   return res.json({
     name,
     version: v
