@@ -3,6 +3,7 @@ import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import api from './api';
+import webhook from './webhook';
 import log from './helpers/log';
 import './lib/queue';
 import { name, version } from '../package.json';
@@ -14,6 +15,7 @@ app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
 app.use(compression());
 app.use('/api', api);
+app.use('/', webhook);
 
 app.get('/', (req, res) => {
   const commit = process.env.COMMIT_HASH || '';
