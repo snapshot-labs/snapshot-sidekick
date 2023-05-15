@@ -30,6 +30,8 @@ export const UnsubscribeTypes = {
   Unsubscribe: [{ name: 'email', type: 'string' }]
 };
 
+const NETWORK = process.env.NETWORK || '1';
+
 const signer = new Wallet(process.env.WALLET_PRIVATE_KEY as string);
 
 async function sign(message: Record<string, any>, type: Record<string, Array<TypedDataField>>) {
@@ -37,18 +39,23 @@ async function sign(message: Record<string, any>, type: Record<string, Array<Typ
 }
 
 function mintingAllowed(space: Space) {
-  return space.nftClaimer && space.nftClaimer.address && space.nftClaimer.enabled;
+  // TODO: Placeholder only for tests, remove once hub return nftClaimer results
+  // https://github.com/snapshot-labs/snapshot-hub/pull/581
+  // https://github.com/snapshot-labs/snapshot.js/pull/823
+  return true;
+
+  // return space.nftClaimer && space.nftClaimer.address && space.nftClaimer.enabled;
 }
 
 export async function signSpaceOwner(address: string, id: string, salt: number) {
   const space = await fetchSpace(id);
 
   if (!space) {
-    throw new Error('SPACE_NOT_FOUND');
+    throw new Error('RECORD_NOT_FOUND');
   }
 
-  if ((await snapshot.utils.getSpaceController(id, space.network)) !== getAddress(address)) {
-    throw new Error('Address is not space owner');
+  if ((await snapshot.utils.getSpaceController(id, NETWORK)) !== getAddress(address)) {
+    throw new Error('Address is not the space owner');
   }
 
   if (!mintingAllowed(space)) {
@@ -62,12 +69,12 @@ export async function signValidProposal(address: string, id: string, salt: numbe
   const proposal = await fetchProposal(id);
 
   if (!proposal) {
-    throw new Error('PROPOSAL_NOT_FOUND');
+    throw new Error('RECORD_NOT_FOUND');
   }
 
   if (!mintingAllowed(proposal.space)) {
     throw new Error('Space has not allowed minting');
   }
 
-  return sign({ recipient: getAddress(address), proposalId: id, salt }, SpaceType);
+  return sign({ recipient: getAddress(address), proposalId: id, salt }, MintType);
 }

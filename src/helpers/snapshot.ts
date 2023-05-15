@@ -29,7 +29,6 @@ export type NftClaimer = {
 export type Space = {
   id: string;
   network: string;
-  settings: string;
   nftClaimer?: NftClaimer;
 };
 
@@ -90,7 +89,6 @@ const SPACE_QUERY = gql`
     space(id: $id) {
       id
       network
-      settings
     }
   }
 `;

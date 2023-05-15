@@ -48,10 +48,10 @@ router.get('/moderationList', async (req, res) => {
   }
 });
 
-router.post('/sign', async (req, res) => {
+router.post('/nftClaimer/:type(space|proposal)/sign', async (req, res) => {
   try {
-    const { type, address, id, salt } = req.body;
-    switch (type) {
+    const { address, id, salt } = req.body;
+    switch (req.params.type) {
       case 'space':
         return res.send(await signSpaceOwner(address, id, salt));
       case 'proposal':
@@ -60,6 +60,7 @@ router.post('/sign', async (req, res) => {
         throw new Error('Invalid Request');
     }
   } catch (e: any) {
+    log.error(e);
     return rpcError(res, e, '');
   }
 });
