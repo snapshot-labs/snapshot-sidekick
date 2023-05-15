@@ -1,13 +1,11 @@
 # Snapshot/Sidekick
 
-Sidekick is the service serving all proposal's votes CSV report
+Sidekick is the service serving:
+
+- all proposal's votes CSV report
+- static moderation list
 
 ---
-
-This service is exposing an API endpoint expecting a closed proposal ID, and will
-return a CSV file with all the given proposal's votes.
-
-> NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
 
 ## Project Setup
 
@@ -66,19 +64,66 @@ yarn test:e2e
 
 ## Usage
 
-Retrieving and generating the cache file have their own respective endpoint
+### Votes CSV report
 
-### Fetch a cache file
+Generate and serve votes CSV report for closed proposals.
 
-Send a POST request with a proposal ID
+> NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
+
+#### Fetch a cache file
+
+Send a `POST` request with a proposal ID
 
 ```bash
-curl -X POST localhost:3000/votes/[PROPOSAL-ID]
+curl -X POST localhost:3000/api/votes/[PROPOSAL-ID]
 ```
 
 When cached, this request will respond with a stream to a CSV file.
+When votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
 
-On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
+#### Generate a cache file
+
+Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+
+```bash
+curl -X POST localhost:3000/webhook \
+-H "Authenticate: WEBHOOK_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
+```
+
+On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
+
+> This endpoint has been designed to receive events from snapshot webhook service.
+
+Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
+
+### Static moderation list
+
+Return a curated list of moderated data.
+
+#### Retrieve the list
+
+Send a `GET` request
+
+```bash
+curl localhost:3000/api/moderationList
+```
+
+You can also choose to filter the list, with the `?fields=` query params.
+Valid values are:
+
+- `flaggedProposals`
+- `flaggedLinks`
+- `verifiedSpaces`
+
+You can pass multiple list, separated by a comma.
+
+Data are sourced from the json files with the same name, located in this repo `/data` directory.
+
+### Errors
+
+All endpoints will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response on error:
 
 ```bash
 {
@@ -87,7 +132,7 @@ On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.or
     "code": CODE,
     "message": MESSAGE
   },
-  "id": PROPOSAL-ID
+  "id": ID
 }
 ```
 
@@ -98,43 +143,6 @@ On all other cases, it will respond with a [JSON-RPC 2.0](https://www.jsonrpc.or
 | When the file is pending generation | -40010 | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
 
-Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
-
-### Generate a cache file
-
-Send a POST request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
-
-```bash
-curl -X POST localhost:3000/votes/generate \
--H "Authenticate: WEBHOOK_AUTH_TOKEN" \
--H "Content-Type: application/json" \
--d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
-```
-
-- On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
-- On error, will respond with the same result and codes as the `fetch` endpoint above
-
-The endpoint has been designed to receive events from snapshot webhook service.
-
-Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
-
-### Return a moderationList
-
-Send a GET request
-
-```bash
-curl localhost:3000/moderationList
-```
-
-You can also choose to filter the list, with the `?fields=` query params.
-Valid values are:
-
-- flaggedProposals
-- flaggedLinks
-- verifiedSpaces
-
-Data are sourced from the json with the same, located in `/data`.
-
 ## Build for production
 
 ```bash
@@ -144,4 +152,4 @@ yarn start
 
 ## License
 
-[MIT](https://github.com/snapshot-labs/snapshot-sidekick/blob/main/LICENCE)
+[MIT](LICENCE)

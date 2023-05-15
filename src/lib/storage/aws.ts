@@ -17,7 +17,7 @@ class Aws implements IStorage {
       throw new Error('[storage:aws] AWS credentials missing');
     }
 
-    this.client = new S3Client({});
+    this.client = new S3Client({ endpoint: process.env.AWS_ENDPOINT });
     this.subDir = subDir;
   }
 

@@ -7,7 +7,7 @@
   "scripts": {
     "lint:nofix": "eslint src/ --ext .ts",
     "lint": "yarn lint:nofix --fix",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && copyfiles data/*.json dist/",
     "dev": "nodemon src/index.ts -e js,ts",
     "start": "node dist/src/index.js",
     "start:test": "dotenv -e test/.env.test yarn dev",
@@ -45,6 +45,7 @@
     "@types/node": "^18.15.11",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "copyfiles": "^2.4.1",
     "dotenv": "^16.0.3",
     "dotenv-cli": "^7.2.1",
     "eslint": "^8.38.0",
