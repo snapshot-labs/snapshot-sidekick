@@ -2,21 +2,21 @@ import request from 'supertest';
 
 const HOST = `http://localhost:${process.env.PORT || 3000}`;
 
-describe('GET /api/moderationList', () => {
-  describe('when fields params is empty', () => {
+describe('GET /api/moderation', () => {
+  describe('when list params is empty', () => {
     it('returns all the list', async () => {
-      const response = await request(HOST).get('/api/moderationList');
+      const response = await request(HOST).get('/api/moderation');
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchSnapshot();
     });
   });
 
-  describe('when fields params is set', () => {
+  describe('when list params is set', () => {
     it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals'])(
       'returns only the selected %s list',
       async field => {
-        const response = await request(HOST).get(`/api/moderationList?fields=${field}`);
+        const response = await request(HOST).get(`/api/moderation?list=${field}`);
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toMatchSnapshot();
@@ -26,7 +26,7 @@ describe('GET /api/moderationList', () => {
 
   it('returns multiple list: verifiedSpaces,flaggedProposals', async () => {
     const response = await request(HOST).get(
-      `/api/moderationList?fields=verifiedSpaces,flaggedProposals`
+      `/api/moderation?list=verifiedSpaces,flaggedProposals`
     );
 
     expect(response.statusCode).toBe(200);
@@ -34,9 +34,7 @@ describe('GET /api/moderationList', () => {
   });
 
   it('ignores invalid field, and returns only verifiedSpaces', async () => {
-    const response = await request(HOST).get(
-      `/api/moderationList?fields=verifiedSpaces,testInvalid`
-    );
+    const response = await request(HOST).get(`/api/moderation?list=verifiedSpaces,testInvalid`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toMatchSnapshot();

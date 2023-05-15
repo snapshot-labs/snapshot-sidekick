@@ -36,11 +36,11 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/moderationList', async (req, res) => {
-  const { fields } = req.query;
+router.get('/moderation', async (req, res) => {
+  const { list } = req.query;
 
   try {
-    res.json(getModerationList(fields ? (fields as string).split(',') : undefined));
+    res.json(getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');

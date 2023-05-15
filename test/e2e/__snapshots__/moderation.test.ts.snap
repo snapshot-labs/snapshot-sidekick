@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET /api/moderationList ignores invalid field, and returns only verifiedSpaces 1`] = `
+exports[`GET /api/moderation ignores invalid field, and returns only verifiedSpaces 1`] = `
 {
   "verifiedSpaces": [
     "space1.eth",
@@ -9,7 +9,7 @@ exports[`GET /api/moderationList ignores invalid field, and returns only verifie
 }
 `;
 
-exports[`GET /api/moderationList returns multiple list: verifiedSpaces,flaggedProposals 1`] = `
+exports[`GET /api/moderation returns multiple list: verifiedSpaces,flaggedProposals 1`] = `
 {
   "flaggedProposals": [
     "0x1",
@@ -22,7 +22,7 @@ exports[`GET /api/moderationList returns multiple list: verifiedSpaces,flaggedPr
 }
 `;
 
-exports[`GET /api/moderationList when fields params is empty returns all the list 1`] = `
+exports[`GET /api/moderation when list params is empty returns all the list 1`] = `
 {
   "flaggedLinks": [
     "https://gogle.com",
@@ -43,7 +43,7 @@ exports[`GET /api/moderationList when fields params is empty returns all the lis
 }
 `;
 
-exports[`GET /api/moderationList when fields params is set returns only the selected flaggedLinks list 1`] = `
+exports[`GET /api/moderation when list params is set returns only the selected flaggedLinks list 1`] = `
 {
   "flaggedLinks": [
     "https://gogle.com",
@@ -52,7 +52,7 @@ exports[`GET /api/moderationList when fields params is set returns only the sele
 }
 `;
 
-exports[`GET /api/moderationList when fields params is set returns only the selected flaggedProposals list 1`] = `
+exports[`GET /api/moderation when list params is set returns only the selected flaggedProposals list 1`] = `
 {
   "flaggedProposals": [
     "0x1",
@@ -61,7 +61,7 @@ exports[`GET /api/moderationList when fields params is set returns only the sele
 }
 `;
 
-exports[`GET /api/moderationList when fields params is set returns only the selected verifiedSpaces list 1`] = `
+exports[`GET /api/moderation when list params is set returns only the selected verifiedSpaces list 1`] = `
 {
   "verifiedSpaces": [
     "space1.eth",
