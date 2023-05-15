@@ -48,7 +48,7 @@ router.get('/moderationList', async (req, res) => {
   }
 });
 
-router.post('/nftClaimer/:type(space|proposal)/sign', async (req, res) => {
+router.post('/nft-claimer/:type(space|proposal)/sign', async (req, res) => {
   try {
     const { address, id, salt } = req.body;
     switch (req.params.type) {

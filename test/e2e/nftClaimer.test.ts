@@ -11,7 +11,7 @@ describe('nftClaimer', () => {
 
     it('returns an error when the space does not exist', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/space/sign')
+        .post('/api/nft-claimer/space/sign')
         .send({ address, id: 'invalid-id', salt });
 
       expect(response.statusCode).toBe(404);
@@ -19,7 +19,7 @@ describe('nftClaimer', () => {
 
     it('returns an error when the address is not the space owner', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/space/sign')
+        .post('/api/nft-claimer/space/sign')
         .send({ address, id: 'cakevote.eth', salt });
 
       expect(response.statusCode).toBe(500);
@@ -27,7 +27,7 @@ describe('nftClaimer', () => {
 
     it.skip('returns an error when the space has not allowed minting', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/space/sign')
+        .post('/api/nft-claimer/space/sign')
         .send({ address, id: 'cakevote.eth', salt });
 
       expect(response.statusCode).toBe(500);
@@ -35,7 +35,7 @@ describe('nftClaimer', () => {
 
     it('returns a signature when the address is the space owner, and the space has allowed minting', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/space/sign')
+        .post('/api/nft-claimer/space/sign')
         .send({ address, id, salt: '12345' });
 
       expect(response.statusCode).toBe(200);
@@ -50,7 +50,7 @@ describe('nftClaimer', () => {
 
     it('returns an error when the proposal does not exist', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/proposal/sign')
+        .post('/api/nft-claimer/proposal/sign')
         .send({ address, id: 'invalid-id', salt });
 
       expect(response.statusCode).toBe(404);
@@ -58,7 +58,7 @@ describe('nftClaimer', () => {
 
     it.skip('returns an error when the space has not allowed minting', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/proposal/sign')
+        .post('/api/nft-claimer/proposal/sign')
         .send({ address, id, salt });
 
       expect(response.statusCode).toBe(500);
@@ -66,7 +66,7 @@ describe('nftClaimer', () => {
 
     it('returns a signature if the space has allowed minting', async () => {
       const response = await request(HOST)
-        .post('/api/nftClaimer/proposal/sign')
+        .post('/api/nft-claimer/proposal/sign')
         .send({ address, id, salt });
 
       expect(response.statusCode).toBe(200);
