@@ -107,15 +107,16 @@ Return a curated list of moderated data.
 Send a `GET` request
 
 ```bash
-curl localhost:3000/api/moderationList
+curl localhost:3000/api/moderation
 ```
 
-You can also choose to filter the list, with the `?fields=` query params.
+You can also choose to filter the list, with the `?list=` query params.
 Valid values are:
 
 - `flaggedProposals`
 - `flaggedLinks`
 - `verifiedSpaces`
+- `flaggedSpaces`
 
 You can pass multiple list, separated by a comma.
 
