@@ -1,7 +1,13 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 
-const FIELDS = ['flaggedLinks', 'flaggedProposals', 'verifiedSpaces', 'flaggedSpaces'];
+const FIELDS = [
+  'flaggedLinks',
+  'flaggedProposals',
+  'verifiedSpaces',
+  'flaggedSpaces',
+  'verifiedTokens'
+];
 const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
 
 export default function getModerationList(fields = FIELDS) {
