@@ -62,6 +62,12 @@ yarn test
 yarn test:e2e
 ```
 
+If you have added any E2E tests requiring snapshots update, run:
+
+```bash
+yarn test:e2e:update-snapshot
+```
+
 ## Usage
 
 ### Votes CSV report
