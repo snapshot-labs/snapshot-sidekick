@@ -5,7 +5,7 @@
   "repository": "snapshot-labs/snapshot-sidekick",
   "license": "MIT",
   "scripts": {
-    "lint:nofix": "eslint . --ext .ts,.json",
+    "lint:nofix": "eslint . --ext .ts,.json --ignore-pattern '/dist/*'",
     "lint": "yarn lint:nofix --fix",
     "build": "tsc -p tsconfig.json && copyfiles data/*.json dist/",
     "dev": "nodemon src/index.ts -e js,ts",
