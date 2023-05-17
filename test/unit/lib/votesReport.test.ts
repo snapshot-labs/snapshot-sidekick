@@ -8,6 +8,7 @@ describe('VotesReport', () => {
   let cacheFolder: string;
   let cachePath: string;
   let storageEngine: FileStorage;
+  const space = { id: '', network: '', settings: '' };
 
   function cachedFilePath(id: string) {
     return `${cachePath}/snapshot-votes-report-${id}.csv`;
@@ -57,7 +58,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'pending', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'pending', id: '', choices: [], space });
 
       expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -67,7 +68,7 @@ describe('VotesReport', () => {
       const report = new VotesReport(id, storageEngine);
       const votesReportSpy = jest
         .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'closed', id: '', choices: [] });
+        .mockResolvedValueOnce({ state: 'closed', id: '', choices: [], space });
 
       expect(await report.canBeCached()).toBe(true);
       expect(votesReportSpy).toHaveBeenCalled();

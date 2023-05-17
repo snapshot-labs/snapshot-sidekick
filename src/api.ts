@@ -3,6 +3,7 @@ import log from './helpers/log';
 import { rpcError, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
+import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
 import { queues } from './lib/queue';
 
 const router = express.Router();
@@ -44,6 +45,23 @@ router.get('/moderation', async (req, res) => {
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
+  }
+});
+
+router.post('/nft-claimer/:type(space|proposal)/sign', async (req, res) => {
+  try {
+    const { address, id, salt } = req.body;
+    switch (req.params.type) {
+      case 'space':
+        return res.send(await signSpaceOwner(address, id, salt));
+      case 'proposal':
+        return res.send(await signValidProposal(address, id, salt));
+      default:
+        throw new Error('Invalid Request');
+    }
+  } catch (e: any) {
+    log.error(e);
+    return rpcError(res, e, '');
   }
 });
 
