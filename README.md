@@ -76,7 +76,7 @@ Generate and serve votes CSV report for closed proposals.
 Send a `POST` request with a proposal ID
 
 ```bash
-curl -X POST localhost:3000/api/votes/[PROPOSAL-ID]
+curl -X POST localhost:3005/api/votes/[PROPOSAL-ID]
 ```
 
 When cached, this request will respond with a stream to a CSV file.
@@ -87,7 +87,7 @@ When votes report can be cached, but does not exist yet, a cache generation task
 Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
 ```bash
-curl -X POST localhost:3000/webhook \
+curl -X POST localhost:3005/webhook \
 -H "Authenticate: WEBHOOK_AUTH_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
@@ -108,7 +108,7 @@ Return a curated list of moderated data.
 Send a `GET` request
 
 ```bash
-curl localhost:3000/api/moderation
+curl localhost:3005/api/moderation
 ```
 
 You can also choose to filter the list, with the `?list=` query params.
@@ -132,7 +132,7 @@ Validate offchain data, and return a signature
 Send a `POST` request with a wallet address, a space ID and a salt
 
 ```bash
-curl -X localhost:3000/api/nft-claimer/space/sign -H "Content-Type: application/json" -d '{"id": "gitcoindao.eth", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
+curl -X localhost:3005/api/nft-claimer/space/sign -H "Content-Type: application/json" -d '{"id": "gitcoindao.eth", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
 ```
 
 If the given `address` is the space creator, and the space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
@@ -142,7 +142,7 @@ If the given `address` is the space creator, and the space has enabled NFT claim
 Send a `POST` request with a wallet address, a proposal ID and a salt
 
 ```bash
-curl -X localhost:3000/api/nft-claimer/proposal/sign -H "Content-Type: application/json" -d '{"id": "0x6b703b90d3cd1f82f7c176fc2e566a2bb79e8eb6618a568b52a4f29cb2f8d57b", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
+curl -X localhost:3005/api/nft-claimer/proposal/sign -H "Content-Type: application/json" -d '{"id": "0x6b703b90d3cd1f82f7c176fc2e566a2bb79e8eb6618a568b52a4f29cb2f8d57b", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
 ```
 
 If given proposal's space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
