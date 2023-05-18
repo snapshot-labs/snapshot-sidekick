@@ -27,10 +27,6 @@ export const MintType = {
   ]
 };
 
-export const UnsubscribeTypes = {
-  Unsubscribe: [{ name: 'email', type: 'string' }]
-};
-
 const NETWORK = process.env.NETWORK || '1';
 
 const signer = new Wallet(process.env.WALLET_PRIVATE_KEY as string);
