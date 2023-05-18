@@ -53,9 +53,9 @@ router.post('/nft-claimer/:type(space|proposal)/sign', async (req, res) => {
     const { address, id, salt } = req.body;
     switch (req.params.type) {
       case 'space':
-        return res.send(await signSpaceOwner(address, id, salt));
+        return res.json(await signSpaceOwner(address, id, salt));
       case 'proposal':
-        return res.send(await signValidProposal(address, id, salt));
+        return res.json(await signValidProposal(address, id, salt));
       default:
         throw new Error('Invalid Request');
     }
