@@ -1,10 +1,12 @@
 import 'dotenv/config';
+import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
+import morgan from 'morgan';
+import favicon from 'serve-favicon';
 import api from './api';
 import webhook from './webhook';
-import log from './helpers/log';
 import './lib/queue';
 import { name, version } from '../package.json';
 
@@ -14,6 +16,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
 app.use(compression());
+app.use(
+  morgan(
+    '[http] :remote-addr - :remote-user [:date[clf]] ' +
+      '":method :url HTTP/:http-version" :status :res[content-length] ' +
+      '":referrer" ":user-agent" - :response-time ms'
+  )
+);
+app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
 app.use('/api', api);
 app.use('/', webhook);
 
@@ -26,4 +36,4 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(PORT, () => log.info(`[http] Start server at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`[http] Start server at http://localhost:${PORT}`));

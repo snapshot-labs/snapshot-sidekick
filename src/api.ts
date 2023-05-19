@@ -1,5 +1,4 @@
 import express from 'express';
-import log from './helpers/log';
 import { rpcError, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
@@ -10,8 +9,6 @@ const router = express.Router();
 
 router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
-  log.info(`[http] POST /votes/${id}`);
-
   const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
 
   try {
@@ -28,11 +25,11 @@ router.post('/votes/:id', async (req, res) => {
       queues.add(id);
       return rpcError(res, 'PENDING_GENERATION', id);
     } catch (e: any) {
-      log.error(e);
+      console.error(e);
       rpcError(res, e, id);
     }
   } catch (e) {
-    log.error(e);
+    console.error(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -43,7 +40,7 @@ router.get('/moderation', async (req, res) => {
   try {
     res.json(getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
-    log.error(e);
+    console.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -60,7 +57,7 @@ router.post('/nft-claimer/:type(space|proposal)/sign', async (req, res) => {
         throw new Error('Invalid Request');
     }
   } catch (e: any) {
-    log.error(e);
+    console.error(e);
     return rpcError(res, e, '');
   }
 });
