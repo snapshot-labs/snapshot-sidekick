@@ -118,3 +118,4 @@ alexec.eth
 deskvoting.eth
 kuwaoracle.eth
 nftfinance.eth
+votezksync.eth
