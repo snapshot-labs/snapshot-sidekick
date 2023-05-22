@@ -27,7 +27,7 @@ function parseFileContent(content: string, parser: string): LIST {
   }
 }
 
-function initFiles() {
+export function initFiles() {
   readdirSync(CACHE_PATH).map(fn => {
     const [filename, ext] = fn.split('.');
     if (FILE_TYPES.includes(ext) && FIELDS.includes(filename)) {
@@ -37,13 +37,13 @@ function initFiles() {
       );
     }
   });
+
+  if (Object.keys(files).length !== FIELDS.length) {
+    throw new Error('Missing data files');
+  }
 }
 
 export default function getModerationList(fields = FIELDS) {
-  if (Object.keys(files).length === 0) {
-    initFiles();
-  }
-
   const result: MODERATION_LIST = {};
   fields.forEach(field => FIELDS.includes(field) && (result[field] = files[field]));
 
