@@ -40,6 +40,7 @@ exports[`GET /api/moderation when list params is empty returns all the list 1`] 
     "space1.eth",
     "space2.eth",
   ],
+  "verifiedTokens": {},
 }
 `;
 

@@ -27,6 +27,7 @@ exports[`moderationList returns all fields by default 1`] = `
     "space1.eth",
     "space2.eth",
   ],
+  "verifiedTokens": {},
 }
 `;
 

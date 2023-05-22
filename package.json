@@ -5,7 +5,7 @@
   "repository": "snapshot-labs/snapshot-sidekick",
   "license": "MIT",
   "scripts": {
-    "lint:nofix": "eslint src/ --ext .ts",
+    "lint:nofix": "eslint . --ext .ts,.json --ignore-pattern '/dist/*'",
     "lint": "yarn lint:nofix --fix",
     "build": "tsc -p tsconfig.json && copyfiles data/*.json dist/",
     "dev": "nodemon src/index.ts -e js,ts",
@@ -13,7 +13,8 @@
     "start:test": "dotenv -e test/.env.test yarn dev",
     "typecheck": "tsc --noEmit",
     "test": "dotenv -e test/.env.test jest test/unit/",
-    "test:e2e": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'jest --runInBand test/e2e/'"
+    "test:e2e": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'jest --runInBand test/e2e/'",
+    "test:e2e:update-snapshot": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'jest --runInBand --updateSnapshot test/e2e/'"
   },
   "eslintConfig": {
     "extends": "@snapshot-labs"
@@ -25,6 +26,9 @@
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@aws-sdk/client-s3": "^3.316.0",
+    "@ethersproject/address": "^5.7.0",
+    "@ethersproject/wallet": "^5.7.0",
+    "@snapshot-labs/snapshot.js": "^0.4.82",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.5",

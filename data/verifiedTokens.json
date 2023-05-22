@@ -1,0 +1,13 @@
+{
+  "name": "Snapshot Labs Default",
+  "timestamp": "2023-05-17T00:00:00.000Z",
+  "version": {
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "",
+  "keywords": ["snapshot", "default"],
+  "tokens": []
+}

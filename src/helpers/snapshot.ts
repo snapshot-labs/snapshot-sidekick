@@ -5,7 +5,9 @@ export type Proposal = {
   id: string;
   state: string;
   choices: string[];
+  space: Space;
 };
+
 export type Vote = {
   ipfs: string;
   voter: string;
@@ -13,6 +15,21 @@ export type Vote = {
   vp: number;
   reason: string;
   created: number;
+};
+
+export type NftClaimer = {
+  maxSupply: number;
+  mintPrice: number;
+  proposerCut: number;
+  address: string;
+  network: string;
+  enabled: boolean;
+};
+
+export type Space = {
+  id: string;
+  network: string;
+  nftClaimer?: NftClaimer;
 };
 
 const client = new ApolloClient({
@@ -33,6 +50,10 @@ const PROPOSAL_QUERY = gql`
       id
       state
       choices
+      space {
+        id
+        network
+      }
     }
   }
 `;
@@ -59,6 +80,15 @@ const VOTES_QUERY = gql`
       vp
       reason
       created
+    }
+  }
+`;
+
+const SPACE_QUERY = gql`
+  query Space($id: String) {
+    space(id: $id) {
+      id
+      network
     }
   }
 `;
@@ -95,4 +125,17 @@ export async function fetchVotes(
   });
 
   return votes;
+}
+
+export async function fetchSpace(id: string) {
+  const {
+    data: { space }
+  }: { data: { space: Space | null } } = await client.query({
+    query: SPACE_QUERY,
+    variables: {
+      id
+    }
+  });
+
+  return space;
 }
