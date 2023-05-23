@@ -1,12 +1,14 @@
 import express from 'express';
 import log from './helpers/log';
 import { rpcError, storageEngine } from './helpers/utils';
-import getModerationList from './lib/moderationList';
+import getModerationList, { initFiles } from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
 import { queues } from './lib/queue';
 
 const router = express.Router();
+
+initFiles();
 
 router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
@@ -53,9 +55,9 @@ router.post('/nft-claimer/:type(space|proposal)/sign', async (req, res) => {
     const { address, id, salt } = req.body;
     switch (req.params.type) {
       case 'space':
-        return res.send(await signSpaceOwner(address, id, salt));
+        return res.json(await signSpaceOwner(address, id, salt));
       case 'proposal':
-        return res.send(await signValidProposal(address, id, salt));
+        return res.json(await signValidProposal(address, id, salt));
       default:
         throw new Error('Invalid Request');
     }

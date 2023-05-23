@@ -39,8 +39,10 @@ describe('nftClaimer', () => {
         .send({ address, id, salt: '12345' });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers['content-type']).toMatch(/text\/html/);
-      expect(response.text).toHaveLength(132);
+      expect(response.headers['content-type']).toMatch(/application\/json/);
+      expect(response.body).toHaveProperty('r');
+      expect(response.body).toHaveProperty('s');
+      expect(response.body).toHaveProperty('v');
     });
   });
 
@@ -70,8 +72,10 @@ describe('nftClaimer', () => {
         .send({ address, id, salt });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers['content-type']).toMatch(/text\/html/);
-      expect(response.text).toHaveLength(132);
+      expect(response.headers['content-type']).toMatch(/application\/json/);
+      expect(response.body).toHaveProperty('r');
+      expect(response.body).toHaveProperty('s');
+      expect(response.body).toHaveProperty('v');
     });
   });
 });

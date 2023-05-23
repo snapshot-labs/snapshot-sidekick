@@ -1,5 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { Wallet } from '@ethersproject/wallet';
+import { splitSignature } from '@ethersproject/bytes';
 import snapshot from '@snapshot-labs/snapshot.js';
 import type { TypedDataField } from '@ethersproject/abstract-signer';
 import { fetchProposal, fetchSpace, Space } from '../helpers/snapshot';
@@ -7,7 +8,7 @@ import { fetchProposal, fetchSpace, Space } from '../helpers/snapshot';
 const domain = {
   name: 'SpaceName',
   version: '0.1',
-  chainId: '137'
+  chainId: '5' //TODO Use process.env.NETWORK once live
 };
 
 export const SpaceType = {
@@ -35,7 +36,7 @@ const NETWORK = process.env.NETWORK || '1';
 const signer = new Wallet(process.env.WALLET_PRIVATE_KEY as string);
 
 async function sign(message: Record<string, any>, type: Record<string, Array<TypedDataField>>) {
-  return await signer._signTypedData(domain, type, message);
+  return splitSignature(await signer._signTypedData(domain, type, message));
 }
 
 function mintingAllowed(space: Space) {

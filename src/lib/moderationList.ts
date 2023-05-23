@@ -1,5 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import path from 'path';
+
+type LIST = string[] | JSON;
+type MODERATION_LIST = Record<string, LIST>;
 
 const FIELDS = [
   'flaggedLinks',
@@ -8,19 +11,41 @@ const FIELDS = [
   'flaggedSpaces',
   'verifiedTokens'
 ];
+const FILE_TYPES = ['json', 'txt'];
 const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
 
-export default function getModerationList(fields = FIELDS) {
-  const result: Record<string, string[] | Record<string, number>> = {};
-  fields.forEach(field => {
-    if (FIELDS.includes(field)) {
-      result[field] = JSON.parse(readFileSync(filePath(field), { encoding: 'utf8' }));
+const files: MODERATION_LIST = {};
+
+function parseFileContent(content: string, parser: string): LIST {
+  switch (parser) {
+    case 'txt':
+      return content.split('\n').filter(value => value !== '');
+    case 'json':
+      return JSON.parse(content);
+    default:
+      throw new Error('Invalid file type');
+  }
+}
+
+export function initFiles() {
+  readdirSync(CACHE_PATH).map(fn => {
+    const [filename, ext] = fn.split('.');
+    if (FILE_TYPES.includes(ext) && FIELDS.includes(filename)) {
+      files[filename] = parseFileContent(
+        readFileSync(path.join(CACHE_PATH, fn), { encoding: 'utf8' }),
+        ext
+      );
     }
   });
 
-  return result;
+  if (Object.keys(files).length !== FIELDS.length) {
+    throw new Error('Missing data files');
+  }
 }
 
-const filePath = (filename: string) => {
-  return path.join(CACHE_PATH, `${filename}.json`);
-};
+export default function getModerationList(fields = FIELDS) {
+  const result: MODERATION_LIST = {};
+  fields.forEach(field => FIELDS.includes(field) && (result[field] = files[field]));
+
+  return result;
+}
