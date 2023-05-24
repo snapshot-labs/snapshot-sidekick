@@ -219,3 +219,4 @@ turbovote.eth
 luchadores.eth
 safe.eth
 magicappstore.eth
+seedifyhodlers.eth
