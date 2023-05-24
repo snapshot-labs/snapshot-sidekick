@@ -7,7 +7,7 @@
   "scripts": {
     "lint:nofix": "eslint . --ext .ts,.json --ignore-pattern '/dist/*'",
     "lint": "yarn lint:nofix --fix",
-    "build": "tsc -p tsconfig.json && copyfiles data/*.json dist/",
+    "build": "tsc -p tsconfig.json && copyfiles data/*.json data/*.txt dist/",
     "dev": "nodemon src/index.ts -e js,ts",
     "start": "node dist/src/index.js",
     "start:test": "dotenv -e test/.env.test yarn dev",
