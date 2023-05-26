@@ -220,3 +220,4 @@ luchadores.eth
 safe.eth
 magicappstore.eth
 seedifyhodlers.eth
+linea-build.eth

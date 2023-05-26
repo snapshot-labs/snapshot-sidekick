@@ -119,3 +119,4 @@ deskvoting.eth
 kuwaoracle.eth
 nftfinance.eth
 votezksync.eth
+theheaddao.eth
