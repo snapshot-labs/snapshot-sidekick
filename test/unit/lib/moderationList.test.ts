@@ -1,6 +1,10 @@
-import getModerationList from '../../../src/lib/moderationList';
+import getModerationList, { initFiles } from '../../../src/lib/moderationList';
 
 describe('moderationList', () => {
+  beforeEach(() => {
+    initFiles();
+  });
+
   it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals'])('returns only the %s', field => {
     const list = getModerationList([field]);
     expect(list).toMatchSnapshot();

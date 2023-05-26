@@ -1,0 +1,2 @@
+space1.eth
+space2.eth
