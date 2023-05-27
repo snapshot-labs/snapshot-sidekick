@@ -156,3 +156,9 @@ greatmetaverse.eth
 goodoneday.eth
 nwork.eth
 lendaave.eth
+optimismio.eth
+yourdictionary.eth
+iwtbf.eth
+600092.eth
+6000134.eth
+newspaceforfuture.eth
