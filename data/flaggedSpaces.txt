@@ -168,3 +168,4 @@ uniswap-snapshot.eth
 givenname.eth
 uniswaptoken.eth
 urbanbase.eth
+joe-defi.eth
