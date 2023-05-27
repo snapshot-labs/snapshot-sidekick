@@ -9,7 +9,7 @@ import './lib/queue';
 import { name, version } from '../package.json';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
