@@ -216,3 +216,5 @@ lens15553.eth
 lens60360.eth
 lens60760.eth
 lens.punklens.eth
+0x4e3.eth
+0xlido.eth
