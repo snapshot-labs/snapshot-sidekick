@@ -222,3 +222,4 @@ lens.punklens.eth
 lianweb.eth
 sushininja.eth
 sushivote.eth
+🇷🇺telegram.eth
