@@ -169,3 +169,11 @@ givenname.eth
 uniswaptoken.eth
 urbanbase.eth
 joe-defi.eth
+freeboy.eth
+2coin.eth
+gitcoingov.eth
+buyethcoin.eth
+gtcswap.eth
+gitcoins.eth
+722858.eth
+aboba1337.eth
