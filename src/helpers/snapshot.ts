@@ -34,7 +34,7 @@ export type Space = {
 };
 
 const httpLink = createHttpLink({
-  uri: `${process.env.HUB_URL}/graphql`,
+  uri: `${process.env.HUB_URL || 'https://hub.snapshot.org'}/graphql`,
   fetch
 });
 
