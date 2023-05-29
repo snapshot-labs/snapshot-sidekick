@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-const HOST = `http://localhost:${process.env.PORT || 3000}`;
+const HOST = `http://localhost:${process.env.PORT || 3003}`;
 
 describe('GET /api/moderation', () => {
   describe('when list params is empty', () => {
