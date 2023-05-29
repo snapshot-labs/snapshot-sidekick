@@ -1,12 +1,14 @@
 import express from 'express';
 import log from './helpers/log';
 import { rpcError, storageEngine } from './helpers/utils';
-import getModerationList from './lib/moderationList';
+import getModerationList, { initFiles } from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
 import { queues } from './lib/queue';
 
 const router = express.Router();
+
+initFiles();
 
 router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
