@@ -63,7 +63,7 @@ class VotesReport {
           'address',
           newVotes.length === 0 || typeof newVotes[0].choice === 'number'
             ? 'choice'
-            : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+            : this.proposal?.choices.map((_choice, index) => `choice.${index + 1}`),
           'voting_power',
           'timestamp',
           'author_ipfs_hash',

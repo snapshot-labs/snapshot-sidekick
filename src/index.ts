@@ -9,7 +9,7 @@ import './lib/queue';
 import { name, version } from '../package.json';
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT ?? 3005;
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
@@ -18,7 +18,7 @@ app.use('/api', api);
 app.use('/', webhook);
 
 app.get('/', (req, res) => {
-  const commit = process.env.COMMIT_HASH || '';
+  const commit = process.env.COMMIT_HASH ?? '';
   const v = commit ? `${version}#${commit.substring(0, 7)}` : version;
   return res.json({
     name,
