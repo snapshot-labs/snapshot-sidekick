@@ -39,7 +39,6 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@ethersproject/hash": "^5.7.0",
     "@snapshot-labs/eslint-config": "^0.1.0-beta.9",
     "@snapshot-labs/prettier-config": "^0.1.0-beta.7",
     "@types/compression": "^1.7.2",
