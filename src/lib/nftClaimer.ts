@@ -83,7 +83,7 @@ export async function signMint(address: string, id: string, salt: number) {
 
   const message = {
     recipient: getAddress(address),
-    proposalId: BigNumber.from(id).toNumber(),
+    proposalId: BigNumber.from(id).toString(),
     salt
   };
 
