@@ -1,6 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { Wallet } from '@ethersproject/wallet';
 import { splitSignature } from '@ethersproject/bytes';
+import { BigNumber } from '@ethersproject/bignumber';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { fetchProposal, fetchSpace, Space } from '../helpers/snapshot';
 
@@ -23,7 +24,13 @@ const MintType = {
 const HUB_NETWORK = process.env.NETWORK || '1';
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
-const signer = new Wallet(process.env.WALLET_PRIVATE_KEY as string);
+const PRIVATE_KEY = process.env.NFT_CLAIMER_PRIVATE_KEY;
+
+if (!PRIVATE_KEY || !process.env.NFT_CLAIMER_VERIFYING_CONTRACT) {
+  throw new Error('NFT Claimer configuration incomplete');
+}
+
+export const signer = new Wallet(PRIVATE_KEY);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mintingAllowed(space: Space) {
@@ -64,25 +71,32 @@ export async function signSpaceOwner(address: string, id: string, salt: number) 
 }
 
 export async function signValidProposal(address: string, id: string, salt: number) {
-  const proposal = await fetchProposal(id);
+  // const proposal = await fetchProposal(id);
 
-  if (!proposal) {
-    throw new Error('RECORD_NOT_FOUND');
-  }
+  // if (!proposal) {
+  //   throw new Error('RECORD_NOT_FOUND');
+  // }
 
-  if (!mintingAllowed(proposal.space)) {
-    throw new Error('Space has not allowed minting');
-  }
+  // if (!mintingAllowed(proposal.space)) {
+  //   throw new Error('Space has not allowed minting');
+  // }
+
+  const message = {
+    recipient: getAddress(address),
+    proposalId: BigNumber.from(id).toNumber(),
+    salt
+  };
 
   return splitSignature(
     await signer._signTypedData(
       {
-        name: 'TestTrustedBackend',
+        name: 'NFT-CLAIMER',
         version: '0.1',
-        chainId: NFT_CLAIMER_NETWORK
+        chainId: NFT_CLAIMER_NETWORK,
+        verifyingContract: process.env.NFT_CLAIMER_VERIFYING_CONTRACT
       },
       MintType,
-      { recipient: getAddress(address), proposalId: 100, salt }
+      message
     )
   );
 }
