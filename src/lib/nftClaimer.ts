@@ -87,7 +87,11 @@ export async function signMint(address: string, id: string, salt: number) {
     salt
   };
 
-  return signValidProposal(proposal.space.id, message);
+  // TODO
+  // Enforcce only proposal.space.id as allowed value on live prod
+  const domain = proposal.space.id === 'NFT-CLAIMER' ? 'NFT-CLAIMER' : 'TestTrustedBackend';
+
+  return signValidProposal(domain, message);
 }
 
 async function signValidProposal(domain: string, message: Record<string, string | number>) {
