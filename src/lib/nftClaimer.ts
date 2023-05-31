@@ -77,7 +77,7 @@ export async function signValidProposal(address: string, id: string, salt: numbe
   return splitSignature(
     await signer._signTypedData(
       {
-        name: 'NFT-CLAIMER',
+        name: 'TestTrustedBackend',
         version: '0.1',
         chainId: NFT_CLAIMER_NETWORK
       },
