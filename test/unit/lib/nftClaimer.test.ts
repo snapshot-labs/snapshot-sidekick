@@ -25,7 +25,7 @@ describe('nftClaimer', () => {
   });
 
   describe('signValidProposal()', () => {
-    it('generates the same signature as the smart contract', async () => {
+    it('generates the same signature as the smart contract from the data', async () => {
       const signature = await signValidProposal(
         recipient,
         BigNumber.from(proposalId).toHexString(),
@@ -60,6 +60,10 @@ describe('nftClaimer', () => {
       );
 
       expect(digest).toEqual(expectedDigest);
+    });
+
+    it('generates the same signature as the smart contract from the digest', () => {
+      expect(signer._signingKey().signDigest(expectedDigest));
     });
 
     it('can recover the signer from the digest', async () => {
