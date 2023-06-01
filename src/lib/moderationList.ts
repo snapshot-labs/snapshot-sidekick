@@ -53,14 +53,16 @@ export default async function getModerationList(fields = Array.from(FIELDS.keys(
     }
   });
 
-  const dbResults = await db.queryAsync(
-    `SELECT * FROM moderation WHERE ${queryWhereStatement.join(' OR ')}`,
-    queryWhereArgs
-  );
+  if (queryWhereStatement.length > 0) {
+    const dbResults = await db.queryAsync(
+      `SELECT * FROM moderation WHERE ${queryWhereStatement.join(' OR ')}`,
+      queryWhereArgs
+    );
 
-  dbResults.forEach(row => {
-    (list[reverseMapping[`${row.action}-${row.type}`]] as string[]).push(row.value as string);
-  });
+    dbResults.forEach(row => {
+      (list[reverseMapping[`${row.action}-${row.type}`]] as string[]).push(row.value as string);
+    });
+  }
 
   return list;
 }
