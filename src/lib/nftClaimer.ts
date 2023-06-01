@@ -88,8 +88,8 @@ export async function signMint(address: string, id: string, salt: number) {
   };
 
   // TODO
-  // Enforcce only proposal.space.id as allowed value on live prod
-  const domain = proposal.space.id === 'NFT-CLAIMER' ? 'NFT-CLAIMER' : 'TestTrustedBackend';
+  // Enforce only proposal.space.id as allowed value on live prod
+  const domain = 'TestTrustedBackend';
 
   return signValidProposal(domain, message);
 }

@@ -3,7 +3,7 @@ import { recoverAddress } from '@ethersproject/transactions';
 import { getAddress } from '@ethersproject/address';
 import { signMint } from '../../../src/lib/nftClaimer';
 
-const TEST_DOMAIN = 'NFT-CLAIMER';
+const TEST_DOMAIN = 'TestTrustedBackend';
 
 const mockFetchProposal = jest.fn((id: string): any => {
   return { id: id, space: { id: TEST_DOMAIN, nftClaimer: { enabled: true } } };
@@ -17,16 +17,16 @@ describe('nftClaimer', () => {
   const recipient = getAddress('0x0000000000000000000000000000000000001234');
   const proposalId = 42;
   const hexProposalId = BigNumber.from(proposalId).toHexString();
-  const salt = 1;
+  const salt = 0;
 
   // Signature expected by the smart contract
   const expectedScSignature = {
-    r: '0x7da33fa78525bfadc622d103cbf2b24e8458738cf39c31c2ae82636e237f6bde',
-    s: '0x3ca59107e30e3e02bd8783aac34cdf3af163e243ce47e5649eb39f9efb453b9f',
-    v: 28
+    r: '0x1d9a724d7da1d2d85b1da09ce5ea5f7a5d797a39cdcec6deb884ab3f8203192d',
+    s: '0x10af673455278ac7f4cdeb608bc0ac1ac46a5fdff10afb4b607c8b23d871cc1e',
+    v: 27
   };
 
-  const expectedDigest = '0x92d00cfc08046cc4f5511b2f357c81c85c8b476ffb889f7b87153eebf716b7f9';
+  const expectedDigest = '0xa2075324f2af7babd621b5dcacce268ac105cb716d3c11ffe8818181ff45b29b';
 
   describe('signMint()', () => {
     describe('when mintable', () => {
