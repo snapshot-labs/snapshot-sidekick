@@ -1,6 +1,7 @@
 import getModerationList from '../../../src/lib/moderationList';
 import { SqlFixtures } from '../../fixtures/moderation';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockDbQueryAsync = jest.fn((query: string, args?: string[]): any[] => {
   return [];
 });
