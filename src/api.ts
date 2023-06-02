@@ -1,14 +1,12 @@
 import express from 'express';
 import log from './helpers/log';
 import { rpcError, storageEngine } from './helpers/utils';
-import getModerationList, { initFiles } from './lib/moderationList';
+import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
 import { queues } from './lib/queue';
 
 const router = express.Router();
-
-initFiles();
 
 router.post('/votes/:id', async (req, res) => {
   const { id } = req.params;
@@ -43,7 +41,7 @@ router.get('/moderation', async (req, res) => {
   const { list } = req.query;
 
   try {
-    res.json(getModerationList(list ? (list as string).split(',') : undefined));
+    res.json(await getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
     log.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
