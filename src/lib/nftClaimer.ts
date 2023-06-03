@@ -28,8 +28,13 @@ export const MintType = {
 };
 
 const NETWORK = process.env.NETWORK || '1';
+const PRIVATE_KEY = process.env.NFT_CLAIMER_PRIVATE_KEY;
 
-const signer = new Wallet(process.env.WALLET_PRIVATE_KEY as string);
+if (!PRIVATE_KEY) {
+  throw new Error('NFT Claimer private key missing');
+}
+
+const signer = new Wallet(PRIVATE_KEY);
 
 async function sign(message: Record<string, any>, type: Record<string, Array<TypedDataField>>) {
   return splitSignature(await signer._signTypedData(domain, type, message));
