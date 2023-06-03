@@ -221,3 +221,5 @@ safe.eth
 magicappstore.eth
 seedifyhodlers.eth
 linea-build.eth
+synapseprotocol.eth
+diadao.eth

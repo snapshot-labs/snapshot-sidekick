@@ -1,5 +1,4 @@
 import { fetchProposal, fetchVotes } from '../helpers/snapshot';
-import log from '../helpers/log';
 import type { Proposal, Vote } from '../helpers/snapshot';
 import type { IStorage } from './storage/types';
 
@@ -46,7 +45,7 @@ class VotesReport {
     let headersAppended = false;
     let content = '';
 
-    log.info(`[votereport] Generating cache file for ${this.id}`);
+    console.log(`[votes-report] Generating cache file for ${this.id}`);
 
     do {
       let newVotes = await fetchVotes(this.id, {
@@ -97,7 +96,7 @@ class VotesReport {
       totalResults += newVotes.length;
     } while (resultsSize === pageSize);
 
-    log.info(`[vote report] File cache ready to be saved with ${totalResults} items`);
+    console.log(`[votes-report] File cache ready to be saved with ${totalResults} items`);
 
     return this.storage.set(this.filename, content);
   };
@@ -118,7 +117,14 @@ class VotesReport {
       choices.push(vote.choice);
     }
 
-    return [vote.voter, choices, vote.vp, vote.created, vote.ipfs, `"${vote.reason}"`]
+    return [
+      vote.voter,
+      choices,
+      vote.vp,
+      vote.created,
+      vote.ipfs,
+      `"${vote.reason.replace(/(\r\n|\n|\r)/gm, '')}"`
+    ]
       .flat()
       .join(',');
   };
