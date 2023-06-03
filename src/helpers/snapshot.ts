@@ -1,4 +1,5 @@
-import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
+import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
 import fetch from 'cross-fetch';
 
 export type Proposal = {
@@ -32,8 +33,29 @@ export type Space = {
   nftClaimer?: NftClaimer;
 };
 
+const httpLink = createHttpLink({
+  uri: `${process.env.HUB_URL}/graphql`,
+  fetch
+});
+
+const authLink = setContext((_, { headers }) => {
+  const apiHeaders: Record<string, string> = {};
+  const apiKey = process.env.KEYCARD_API_KEY;
+
+  if (apiKey && apiKey.length > 0) {
+    apiHeaders['x-api-key'] = apiKey;
+  }
+
+  return {
+    headers: {
+      ...headers,
+      ...apiHeaders
+    }
+  };
+});
+
 const client = new ApolloClient({
-  link: new HttpLink({ uri: `${process.env.HUB_URL}/graphql`, fetch }),
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     addTypename: false
   }),

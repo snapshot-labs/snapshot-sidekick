@@ -117,7 +117,14 @@ class VotesReport {
       choices.push(vote.choice);
     }
 
-    return [vote.voter, choices, vote.vp, vote.created, vote.ipfs, `"${vote.reason}"`]
+    return [
+      vote.voter,
+      choices,
+      vote.vp,
+      vote.created,
+      vote.ipfs,
+      `"${vote.reason.replace(/(\r\n|\n|\r)/gm, '')}"`
+    ]
       .flat()
       .join(',');
   };
