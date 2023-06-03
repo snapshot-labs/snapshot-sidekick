@@ -35,6 +35,7 @@ async function sign(message: Record<string, any>, type: Record<string, Array<Typ
   return splitSignature(await signer._signTypedData(domain, type, message));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mintingAllowed(space: Space) {
   // TODO: Placeholder only for tests, remove once hub return nftClaimer results
   // https://github.com/snapshot-labs/snapshot-hub/pull/581

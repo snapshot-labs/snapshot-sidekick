@@ -1,5 +1,4 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import log from '../../helpers/log';
 import type { IStorage } from './types';
 
 const CACHE_PATH = 'public';
@@ -31,11 +30,11 @@ class Aws implements IStorage {
       });
 
       await this.client.send(command);
-      log.error(`[storage:aws] File saved to public/${this.subDir}/${key}`);
+      console.error(`[storage:aws] File saved to ${this.#path(key)}`);
 
       return true;
     } catch (e) {
-      log.error('[storage:aws] Store file failed', e);
+      console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
   }
@@ -50,7 +49,7 @@ class Aws implements IStorage {
 
       return response.Body?.transformToString() || false;
     } catch (e) {
-      log.error('[storage:aws] Create file failed', e);
+      console.error('[storage:aws] File fetch failed', e);
       return false;
     }
   }
