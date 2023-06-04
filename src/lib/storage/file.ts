@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from 'fs';
 import type { IStorage } from './types';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;
@@ -37,6 +37,10 @@ class File implements IStorage {
       console.error('[storage:file] Fetch file failed', e);
       return false;
     }
+  }
+
+  async list() {
+    return readdirSync(this.#path());
   }
 
   #path(key?: string) {

@@ -1,4 +1,9 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  ListObjectsV2Command
+} from '@aws-sdk/client-s3';
 import type { IStorage } from './types';
 
 const CACHE_PATH = 'public';
@@ -50,6 +55,18 @@ class Aws implements IStorage {
       return response.Body?.transformToString() || false;
     } catch (e) {
       console.error('[storage:aws] File fetch failed', e);
+      return false;
+    }
+  }
+
+  async list() {
+    try {
+      const command = new ListObjectsV2Command({
+        Bucket: process.env.AWS_BUCKET_NAME
+      });
+      return await this.client.send(command);
+    } catch (e) {
+      console.error('[storage:aws] List fetch failed', e);
       return false;
     }
   }
