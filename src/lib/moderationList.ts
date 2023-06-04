@@ -1,22 +1,26 @@
-import { readFileSync, readdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import path from 'path';
+import db from '../helpers/mysql';
 
-type LIST = string[] | JSON;
-type MODERATION_LIST = Record<string, LIST>;
+type MODERATION_LIST = Record<string, string[] | JSON>;
 
-const FIELDS = [
-  'flaggedLinks',
-  'flaggedProposals',
-  'verifiedSpaces',
-  'flaggedSpaces',
-  'verifiedTokens'
-];
-const FILE_TYPES = ['json', 'txt'];
 const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
+const FIELDS = new Map<keyof MODERATION_LIST, Record<string, string>>([
+  ['flaggedLinks', { action: 'flag', type: 'link' }],
+  ['flaggedProposals', { action: 'flag', type: 'proposal' }],
+  ['flaggedSpaces', { action: 'flag', type: 'space' }],
+  ['verifiedSpaces', { action: 'verify', type: 'space' }],
+  ['verifiedTokens', { file: 'verifiedTokens.json' }]
+]);
 
-const files: MODERATION_LIST = {};
+export function readFile(filename: string) {
+  return parseFileContent(
+    readFileSync(path.join(CACHE_PATH, filename), { encoding: 'utf8' }),
+    filename.split('.')[1]
+  );
+}
 
-function parseFileContent(content: string, parser: string): LIST {
+function parseFileContent(content: string, parser: string): MODERATION_LIST[keyof MODERATION_LIST] {
   switch (parser) {
     case 'txt':
       return content.split('\n').filter(value => value !== '');
@@ -27,25 +31,38 @@ function parseFileContent(content: string, parser: string): LIST {
   }
 }
 
-export function initFiles() {
-  readdirSync(CACHE_PATH).map(fn => {
-    const [filename, ext] = fn.split('.');
-    if (FILE_TYPES.includes(ext) && FIELDS.includes(filename)) {
-      files[filename] = parseFileContent(
-        readFileSync(path.join(CACHE_PATH, fn), { encoding: 'utf8' }),
-        ext
-      );
+export default async function getModerationList(fields = Array.from(FIELDS.keys())) {
+  const list: Partial<MODERATION_LIST> = {};
+  const reverseMapping: Record<string, keyof MODERATION_LIST> = {};
+  const queryWhereStatement: string[] = [];
+  let queryWhereArgs: string[] = [];
+
+  fields.forEach(field => {
+    if (FIELDS.has(field)) {
+      const args = FIELDS.get(field) as Record<string, string>;
+
+      if (!args.file) {
+        list[field] = [];
+        reverseMapping[`${args.action}-${args.type}`] = field;
+
+        queryWhereStatement.push(`(action = ? AND type = ?)`);
+        queryWhereArgs = queryWhereArgs.concat([args.action, args.type]);
+      } else {
+        list[field] = readFile(args.file);
+      }
     }
   });
 
-  if (Object.keys(files).length !== FIELDS.length) {
-    throw new Error('Missing data files');
+  if (queryWhereStatement.length > 0) {
+    const dbResults = await db.queryAsync(
+      `SELECT * FROM moderation WHERE ${queryWhereStatement.join(' OR ')}`,
+      queryWhereArgs
+    );
+
+    dbResults.forEach(row => {
+      (list[reverseMapping[`${row.action}-${row.type}`]] as string[]).push(row.value as string);
+    });
   }
-}
 
-export default function getModerationList(fields = FIELDS) {
-  const result: MODERATION_LIST = {};
-  fields.forEach(field => FIELDS.includes(field) && (result[field] = files[field]));
-
-  return result;
+  return list;
 }
