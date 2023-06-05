@@ -1997,10 +1997,10 @@
   resolved "https://registry.yarnpkg.com/@snapshot-labs/prettier-config/-/prettier-config-0.1.0-beta.7.tgz#c8e07e7e9baabee245020a72ac05835b65139823"
   integrity sha512-k/FUf4VWhwLFUmKuWs2mNvmPe691hqhvCJuujD4TfbIivWysmL1TqthwfdQUrQEAQUqVQ2ZKEiGkbufp5J27eQ==
 
-"@snapshot-labs/snapshot.js@^0.4.82":
-  version "0.4.82"
-  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot.js/-/snapshot.js-0.4.82.tgz#5e37e7075fbacba9e4bed0fcc67461bf9f9d5751"
-  integrity sha512-JQPemFSPST+z4TPkpUTpzGzXJPJemp/xuDd2VY8btw7/SWtBZ+LupuLfzrNQzssELr0I5GkJJwUX5yyphnWuDg==
+"@snapshot-labs/snapshot.js@^0.4.93":
+  version "0.4.93"
+  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot.js/-/snapshot.js-0.4.93.tgz#578f2152fabf57082875de958d58ed943fc3dada"
+  integrity sha512-Ih0c1EBrHtF8WeSkHSFcMeaniyuXiG7UMLfOLrVsJ5Vs9fFV1PYUhAd4p/lhiXNgMjMU32kwIoiwv9geaNDEqw==
   dependencies:
     "@ensdomains/eth-ens-namehash" "^2.0.15"
     "@ethersproject/abi" "^5.6.4"
@@ -2012,7 +2012,7 @@
     "@ethersproject/wallet" "^5.6.2"
     ajv "^8.11.0"
     ajv-formats "^2.1.1"
-    cross-fetch "^3.1.5"
+    cross-fetch "^3.1.6"
     json-to-graphql-query "^2.2.4"
     lodash.set "^4.3.2"
 
@@ -2978,7 +2978,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@^3.1.5, cross-fetch@^3.1.6:
+cross-fetch@^3.1.6:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.6.tgz#bae05aa31a4da760969756318feeee6e70f15d6c"
   integrity sha512-riRvo06crlE8HiqOwIpQhxwdOk4fOeR7FVM/wXoxchFEqMNUjvbs3bfo4OTgMEMHzppd4DxFBDbyySj8Cv781g==
