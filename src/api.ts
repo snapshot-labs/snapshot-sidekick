@@ -2,7 +2,8 @@ import express from 'express';
 import { rpcError, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
-import { signDeploy, signMint } from './lib/nftClaimer';
+import { signMint } from './lib/nftClaimer/mint';
+import { signDeploy } from './lib/nftClaimer/deploy';
 import { queues } from './lib/queue';
 
 const router = express.Router();
@@ -47,10 +48,10 @@ router.get('/moderation', async (req, res) => {
 
 router.post('/nft-claimer/:type(deploy|mint)/sign', async (req, res) => {
   try {
-    const { address, id, salt } = req.body;
+    const { address, id, salt, maxSupply, mintPrice } = req.body;
     switch (req.params.type) {
       case 'deploy':
-        return res.json(await signDeploy(address, id, salt));
+        return res.json(await signDeploy(address, id, maxSupply, mintPrice, salt));
       case 'mint':
         return res.json(await signMint(address, id, salt));
       default:
