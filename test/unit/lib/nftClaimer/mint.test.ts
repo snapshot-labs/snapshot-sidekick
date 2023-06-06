@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { recoverAddress } from '@ethersproject/transactions';
 import { getAddress } from '@ethersproject/address';
-import { signMint } from '../../../../src/lib/nftClaimer/mint';
+import payload from '../../../../src/lib/nftClaimer/mint';
 
 const TEST_MINT_DOMAIN = 'TestTrustedBackend';
 
@@ -14,7 +14,8 @@ jest.mock('../../../../src/helpers/snapshot', () => ({
 }));
 
 describe('nftClaimer', () => {
-  describe('signMint()', () => {
+  describe('payload()', () => {
+    const signer = '0xD60349c24dB7F1053086eF0D6364b64B1e0313f0';
     const recipient = getAddress('0x0000000000000000000000000000000000001234');
     const proposalId = 42;
     const hexProposalId = BigNumber.from(proposalId).toHexString();
@@ -31,7 +32,7 @@ describe('nftClaimer', () => {
 
     describe('when mintable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
-        const signature = await signMint(recipient, hexProposalId, salt);
+        const { signature } = await payload(recipient, hexProposalId, salt);
 
         expect(mockFetchProposal).toHaveBeenCalledWith(hexProposalId);
         expect(signature.r).toEqual(expectedScSignature.r);
@@ -40,13 +41,13 @@ describe('nftClaimer', () => {
       });
 
       it('can recover the signer from the digest', async () => {
-        const signer = recoverAddress(expectedDigest, {
+        const recoveredSigner = recoverAddress(expectedDigest, {
           r: expectedScSignature.r,
           s: expectedScSignature.s,
           v: expectedScSignature.v
         });
 
-        expect(signer).toEqual(process.env.NFT_CLAIMER_ADDRESS);
+        expect(recoveredSigner).toEqual(signer);
       });
     });
 
@@ -54,7 +55,7 @@ describe('nftClaimer', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       mockFetchProposal.mockImplementationOnce((id: string) => null);
 
-      expect(async () => await signMint(recipient, hexProposalId, salt)).rejects.toThrow(
+      expect(async () => await payload(recipient, hexProposalId, salt)).rejects.toThrow(
         'RECORD_NOT_FOUND'
       );
     });
@@ -64,7 +65,7 @@ describe('nftClaimer', () => {
         return { id: id, space: { id: TEST_MINT_DOMAIN, nftClaimer: { enabled: false } } };
       });
 
-      expect(async () => await signMint(recipient, hexProposalId, salt)).rejects.toThrow(/minting/);
+      expect(async () => await payload(recipient, hexProposalId, salt)).rejects.toThrow(/minting/);
     });
   });
 });

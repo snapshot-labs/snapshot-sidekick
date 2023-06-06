@@ -15,34 +15,36 @@ const DeployType = {
 };
 
 const HUB_NETWORK = process.env.NETWORK || '1';
-const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
-export async function signDeploy(
+export default async function payload(
   address: string,
-  id: number,
+  id: string,
   maxSupply: number,
   mintPrice: number,
-  salt: string
+  proposerFee: number,
+  salt: string,
+  spaceTreasury: string
 ) {
-  const space = await fetchSpace(`${id}`);
+  const space = await fetchSpace(id);
   // await validateSpace(address, space);
 
-  const abiInterface = new Interface(abi);
-  const initializeParams = [
-    'NFT-CLAIMER',
-    '0.1',
-    space?.id,
+  const initializer = getInitializer(
+    address,
+    space?.id as string,
     maxSupply,
     mintPrice,
-    address,
-    getAddress(process.env.NFT_CLAIMER_TREASURY_ADDRESS as string)
-  ];
-
-  return generateSignature(
-    getAddress(process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string),
-    abiInterface.encodeFunctionData('initialize', initializeParams),
-    salt
+    proposerFee,
+    spaceTreasury
   );
+
+  return {
+    initializer,
+    signature: await generateSignature(
+      getAddress(process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string),
+      initializer,
+      salt
+    )
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,10 +56,32 @@ async function validateSpace(address: string, space: Space | null) {
   if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
     throw new Error('Address is not the space owner');
   }
+}
 
-  if (!mintingAllowed(space)) {
-    throw new Error('Space has not allowed minting');
-  }
+function getInitializer(
+  signerAddress: string,
+  spaceId: string,
+  maxSupply: number,
+  mintPrice: number,
+  proposerFee: number,
+  spaceTreasury: string
+) {
+  const abiInterface = new Interface(abi);
+  const params = [
+    'NFT-CLAIMER',
+    '0.1',
+    spaceId,
+    maxSupply,
+    mintPrice,
+    proposerFee,
+    parseInt(process.env.NFT_CLAIMER_SNAPSHOT_FEE as string),
+    getAddress(signerAddress),
+    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_ADDRESS as string),
+    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_TREASURY as string),
+    getAddress(spaceTreasury)
+  ];
+
+  return abiInterface.encodeFunctionData('initialize', params);
 }
 
 async function generateSignature(implementation: string, initializer: string, salt: string) {
@@ -65,19 +89,16 @@ async function generateSignature(implementation: string, initializer: string, sa
     domain: {
       name: 'ProxySpaceCollectionFactory',
       version: '1.0',
-      chainId: NFT_CLAIMER_NETWORK,
-      verifyingContract: process.env.NFT_CLAIMER_VERIFYING_CONTRACT
+      chainId: process.env.NFT_CLAIMER_NETWORK || '1',
+      verifyingContract: process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT
     },
     types: DeployType,
     value: {
-      implementation: '0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f',
-      initializer:
-        '0x964e3c39000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000d60349c24db7f1053086ef0d6364b64b1e0313f0000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000000000000000000022220000000000000000000000000000000000000000000000000000000000003333000000000000000000000000000000000000000000000000000000000000000b4e46542d434c41494d45520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e31000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000077370616365496400000000000000000000000000000000000000000000000000',
+      implementation,
+      initializer,
       salt
     }
   };
-
-  console.log(params);
 
   return splitSignature(await signer._signTypedData(params.domain, params.types, params.value));
 }

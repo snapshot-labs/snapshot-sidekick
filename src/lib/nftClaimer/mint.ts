@@ -15,7 +15,7 @@ const MintType = {
 
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
-export async function signMint(address: string, id: string, salt: number) {
+export default async function payload(address: string, id: string, salt: number) {
   const proposal = await fetchProposal(id);
   validateProposal(proposal);
 
@@ -29,7 +29,7 @@ export async function signMint(address: string, id: string, salt: number) {
   // Enforce only proposal.space.id as allowed value on live prod
   const domain = 'TestTrustedBackend';
 
-  return generateSignature(domain, message);
+  return { signature: await generateSignature(domain, message) };
 }
 
 function validateProposal(proposal: Proposal | null) {
@@ -49,7 +49,7 @@ async function generateSignature(domain: string, message: Record<string, string 
         name: domain,
         version: '0.1',
         chainId: NFT_CLAIMER_NETWORK,
-        verifyingContract: process.env.NFT_CLAIMER_VERIFYING_CONTRACT
+        verifyingContract: process.env.NFT_CLAIMER_MINT_VERIFYING_CONTRACT
       },
       MintType,
       message

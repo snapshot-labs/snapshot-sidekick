@@ -1,18 +1,30 @@
 import { Wallet } from '@ethersproject/wallet';
 import { Space } from '../../helpers/snapshot';
 
-const PRIVATE_KEY = process.env.NFT_CLAIMER_PRIVATE_KEY;
+const requiredEnvKeys = [
+  'NFT_CLAIMER_PRIVATE_KEY',
+  'NFT_CLAIMER_MINT_VERIFYING_CONTRACT',
+  'NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT',
+  'NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS',
+  'NFT_CLAIMER_SNAPSHOT_FEE',
+  'NFT_CLAIMER_SNAPSHOT_ADDRESS',
+  'NFT_CLAIMER_SNAPSHOT_TREASURY'
+];
 
-if (
-  !PRIVATE_KEY ||
-  !process.env.NFT_CLAIMER_VERIFYING_CONTRACT ||
-  !process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS ||
-  !process.env.NFT_CLAIMER_TREASURY_ADDRESS
-) {
-  throw new Error('NFT Claimer configuration incomplete');
+const missingEnvKeys: string[] = [];
+requiredEnvKeys.forEach(key => {
+  if (!process.env[key]) {
+    missingEnvKeys.push(key);
+  }
+});
+
+if (missingEnvKeys.length > 0) {
+  throw new Error(
+    `NFT Claimer not configured properly, missing env keys: ${missingEnvKeys.join(', ')}`
+  );
 }
 
-export const signer = new Wallet(PRIVATE_KEY);
+export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function mintingAllowed(space: Space) {

@@ -1,4 +1,10 @@
 [
+  { "inputs": [], "name": "CallerIsNotSnapshot", "type": "error" },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "proposerFee", "type": "uint8" }],
+    "name": "InvalidFee",
+    "type": "error"
+  },
   { "inputs": [], "name": "InvalidSignature", "type": "error" },
   { "inputs": [], "name": "MaxSupplyReached", "type": "error" },
   { "inputs": [], "name": "SaltAlreadyUsed", "type": "error" },
@@ -61,10 +67,51 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "uint256", "name": "spaceId", "type": "uint256" },
+      { "indexed": false, "internalType": "uint8", "name": "proposerFee", "type": "uint8" }
+    ],
+    "name": "ProposerFeeUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint8", "name": "snapshotFee", "type": "uint8" }
+    ],
+    "name": "SnapshotFeeUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "snapshotOwner", "type": "address" }
+    ],
+    "name": "SnapshotOwnerUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "snapshotTreasury", "type": "address" }
+    ],
+    "name": "SnapshotTreasuryUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "string", "name": "spaceId", "type": "string" },
       { "indexed": false, "internalType": "uint256", "name": "mintPrice", "type": "uint256" },
       { "indexed": false, "internalType": "uint128", "name": "maxSupply", "type": "uint128" },
+      { "indexed": false, "internalType": "uint8", "name": "proposerFee", "type": "uint8" },
+      { "indexed": false, "internalType": "uint8", "name": "snapshotFee", "type": "uint8" },
       { "indexed": false, "internalType": "address", "name": "trustedBackend", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "snapshotOwner", "type": "address" },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "snapshotTreasury",
+        "type": "address"
+      },
       { "indexed": false, "internalType": "address", "name": "spaceTreasury", "type": "address" }
     ],
     "name": "SpaceCollectionCreated",
@@ -135,10 +182,14 @@
     "inputs": [
       { "internalType": "string", "name": "name", "type": "string" },
       { "internalType": "string", "name": "version", "type": "string" },
-      { "internalType": "uint256", "name": "_spaceId", "type": "uint256" },
+      { "internalType": "string", "name": "_spaceId", "type": "string" },
       { "internalType": "uint128", "name": "_maxSupply", "type": "uint128" },
       { "internalType": "uint256", "name": "_mintPrice", "type": "uint256" },
+      { "internalType": "uint8", "name": "_proposerFee", "type": "uint8" },
+      { "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" },
       { "internalType": "address", "name": "_trustedBackend", "type": "address" },
+      { "internalType": "address", "name": "_snapshotOwner", "type": "address" },
+      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" },
       { "internalType": "address", "name": "_spaceTreasury", "type": "address" }
     ],
     "name": "initialize",
@@ -165,6 +216,7 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "proposer", "type": "address" },
       { "internalType": "uint256", "name": "proposalId", "type": "uint256" },
       { "internalType": "uint256", "name": "salt", "type": "uint256" },
       { "internalType": "uint8", "name": "v", "type": "uint8" },
@@ -259,6 +311,48 @@
     "name": "setMintPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_proposerFee", "type": "uint8" }],
+    "name": "setProposerFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" }],
+    "name": "setSnapshotFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "_snapshotOwner", "type": "address" }],
+    "name": "setSnapshotOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "_snapshotTreasury", "type": "address" }],
+    "name": "setSnapshotTreasury",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "snapshotOwner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "snapshotTreasury",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {

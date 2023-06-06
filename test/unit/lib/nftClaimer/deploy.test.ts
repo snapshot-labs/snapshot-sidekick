@@ -1,5 +1,5 @@
 import { recoverAddress } from '@ethersproject/transactions';
-import { signDeploy } from '../../../../src/lib/nftClaimer/deploy';
+import payload from '../../../../src/lib/nftClaimer/deploy';
 
 const mockFetchSpace = jest.fn((id: string): any => {
   return { id: id, nftClaimer: { enabled: true } };
@@ -10,10 +10,13 @@ jest.mock('../../../../src/helpers/snapshot', () => ({
 }));
 
 describe('nftClaimer', () => {
-  describe('signDeploy()', () => {
-    const spaceId = 1337;
+  describe('payload()', () => {
+    const signer = '0xD60349c24dB7F1053086eF0D6364b64B1e0313f0';
+    const spaceTreasury = '0x0000000000000000000000000000000000003333';
+    const spaceId = 'spaceId';
     const maxSupply = 10;
     const mintPrice = 1;
+    const proposerFee = 10;
     const salt = '0x618f48e4d12670f57ebb3372d41a4462f8c4f79e5a44dbb9da442a83a50fca45';
 
     // Signature expected by the smart contract
@@ -23,34 +26,49 @@ describe('nftClaimer', () => {
       v: 28
     };
 
-    const expectedDigest = '0x0eb8d4d54b248ac944fbde5709d650affe82920266be33f828641a6b906231f3';
-    // const expectedInitializer =
-    //   '0x911a4f6c00000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000539000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000d60349c24db7f1053086ef0d6364b64b1e0313f0000000000000000000000000000000000000000000000000000000000000abcd000000000000000000000000000000000000000000000000000000000000000b4e46542d434c41494d45520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e310000000000000000000000000000000000000000000000000000000000';
+    const expectedDigest = '0x95f1c2d95a2d7918d1390e56ff2b5ccac5fd8c39985b6a7220cbd9432103b35b';
+    const expectedInitializer =
+      '0x964e3c39000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000d60349c24db7f1053086ef0d6364b64b1e0313f0000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000000000000000000022220000000000000000000000000000000000000000000000000000000000003333000000000000000000000000000000000000000000000000000000000000000b4e46542d434c41494d45520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e31000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000077370616365496400000000000000000000000000000000000000000000000000';
 
     describe('when mintable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
-        const signature = await signDeploy(
-          process.env.NFT_CLAIMER_ADDRESS as string,
+        const { signature } = await payload(
+          signer,
           spaceId,
           maxSupply,
           mintPrice,
-          salt
+          proposerFee,
+          salt,
+          spaceTreasury
         );
 
-        // expect(mockFetchSpace).toHaveBeenCalledWith(spaceId);
         expect(signature.r).toEqual(expectedScSignature.r);
         expect(signature.s).toEqual(expectedScSignature.s);
         expect(signature.v).toEqual(expectedScSignature.v);
       });
 
+      it('generates the same initializer as the smart contract from the data', async () => {
+        const { initializer } = await payload(
+          signer,
+          spaceId,
+          maxSupply,
+          mintPrice,
+          proposerFee,
+          salt,
+          spaceTreasury
+        );
+
+        expect(initializer).toEqual(expectedInitializer);
+      });
+
       it('can recover the signer from the digest', async () => {
-        const signer = recoverAddress(expectedDigest, {
+        const recoveredSigner = recoverAddress(expectedDigest, {
           r: expectedScSignature.r,
           s: expectedScSignature.s,
           v: expectedScSignature.v
         });
 
-        expect(signer).toEqual(process.env.NFT_CLAIMER_ADDRESS);
+        expect(recoveredSigner).toEqual(signer);
       });
     });
   });
