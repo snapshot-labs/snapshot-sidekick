@@ -3,7 +3,7 @@ import { splitSignature } from '@ethersproject/bytes';
 import { Interface } from '@ethersproject/abi';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { Space, fetchSpace } from '../../helpers/snapshot';
-import { mintingAllowed, signer } from './utils';
+import { signer } from './utils';
 import abi from './deployAbi.json';
 
 const DeployType = {
