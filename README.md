@@ -173,7 +173,7 @@ All endpoints will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specifi
 | When the proposal does not exist    | 404    | PROPOSAL_NOT_FOUND  |
 | When the record does not exist      | 404    | RECORD_NOT_FOUND    |
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
-| When the file is pending generation | -40010 | PENDING_GENERATION  |
+| When the file is pending generation | 201    | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
 
 ## Build for production
