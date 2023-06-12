@@ -1,5 +1,6 @@
 import { recoverAddress } from '@ethersproject/transactions';
 import payload from '../../../../src/lib/nftClaimer/deploy';
+import type { Space } from '../../../../src/helpers/snapshot';
 
 const mockFetchSpace = jest.fn((id: string): any => {
   return { id: id, nftClaimer: { enabled: true } };
@@ -8,6 +9,20 @@ jest.mock('../../../../src/helpers/snapshot', () => ({
   __esModule: true,
   fetchSpace: (id: string) => mockFetchSpace(id)
 }));
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockValidateSpace = jest.fn((address: string, space: Space | null): any => {
+  return true;
+});
+jest.mock('../../../../src/lib/nftClaimer/utils', () => {
+  const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    validateSpace: (address: string, space: Space | null) => mockValidateSpace(address, space)
+  };
+});
 
 describe('nftClaimer', () => {
   describe('payload()', () => {
@@ -42,6 +57,7 @@ describe('nftClaimer', () => {
           spaceTreasury
         );
 
+        expect(mockValidateSpace).toHaveBeenCalled();
         expect(signature.r).toEqual(expectedScSignature.r);
         expect(signature.s).toEqual(expectedScSignature.s);
         expect(signature.v).toEqual(expectedScSignature.v);
@@ -58,6 +74,7 @@ describe('nftClaimer', () => {
           spaceTreasury
         );
 
+        expect(mockValidateSpace).toHaveBeenCalled();
         expect(initializer).toEqual(expectedInitializer);
       });
 

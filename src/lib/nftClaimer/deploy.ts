@@ -1,9 +1,8 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
 import { Interface } from '@ethersproject/abi';
-import snapshot from '@snapshot-labs/snapshot.js';
-import { Space, fetchSpace } from '../../helpers/snapshot';
-import { signer } from './utils';
+import { fetchSpace } from '../../helpers/snapshot';
+import { signer, validateSpace } from './utils';
 import abi from './deployAbi.json';
 
 const DeployType = {
@@ -13,8 +12,6 @@ const DeployType = {
     { name: 'salt', type: 'bytes32' }
   ]
 };
-
-const HUB_NETWORK = process.env.NETWORK || '1';
 
 export default async function payload(
   address: string,
@@ -26,7 +23,7 @@ export default async function payload(
   spaceTreasury: string
 ) {
   const space = await fetchSpace(id);
-  // await validateSpace(address, space);
+  await validateSpace(address, space);
 
   const initializer = getInitializer(
     address,
@@ -45,17 +42,6 @@ export default async function payload(
       salt
     )
   };
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function validateSpace(address: string, space: Space | null) {
-  if (!space) {
-    throw new Error('RECORD_NOT_FOUND');
-  }
-
-  if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
-    throw new Error('Address is not the space owner');
-  }
 }
 
 function getInitializer(
