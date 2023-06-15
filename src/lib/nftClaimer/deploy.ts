@@ -9,7 +9,7 @@ const DeployType = {
   Deploy: [
     { name: 'implementation', type: 'address' },
     { name: 'initializer', type: 'bytes' },
-    { name: 'salt', type: 'bytes32' }
+    { name: 'salt', type: 'uint256' }
   ]
 };
 
@@ -17,13 +17,13 @@ export default async function payload(
   address: string,
   id: string,
   maxSupply: number,
-  mintPrice: number,
+  mintPrice: string,
   proposerFee: number,
   salt: string,
   spaceTreasury: string
 ) {
   const space = await fetchSpace(id);
-  await validateSpace(address, space);
+  // await validateSpace(address, space);
 
   const initializer = getInitializer(
     address,
@@ -48,23 +48,24 @@ function getInitializer(
   signerAddress: string,
   spaceId: string,
   maxSupply: number,
-  mintPrice: number,
+  mintPrice: string,
   proposerFee: number,
   spaceTreasury: string
 ) {
   const abiInterface = new Interface(abi);
   const params = [
-    'NFT-CLAIMER',
+    'TestDAO',
     '0.1',
     spaceId,
     maxSupply,
-    mintPrice,
+    BigInt(mintPrice),
     proposerFee,
-    parseInt(process.env.NFT_CLAIMER_SNAPSHOT_FEE as string),
+    getAddress(spaceTreasury),
     getAddress(signerAddress),
+    parseInt(process.env.NFT_CLAIMER_SNAPSHOT_FEE as string),
+    '0xE67e3A73C5b1ff82fD9Bd08f869d94B249d79e2F',
     getAddress(process.env.NFT_CLAIMER_SNAPSHOT_ADDRESS as string),
-    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_TREASURY as string),
-    getAddress(spaceTreasury)
+    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_TREASURY as string)
   ];
 
   return abiInterface.encodeFunctionData('initialize', params);
@@ -73,8 +74,8 @@ function getInitializer(
 async function generateSignature(implementation: string, initializer: string, salt: string) {
   const params = {
     domain: {
-      name: 'ProxySpaceCollectionFactory',
-      version: '1.0',
+      name: 'SpaceCollectionFactory',
+      version: '0.1',
       chainId: process.env.NFT_CLAIMER_NETWORK || '1',
       verifyingContract: process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT
     },
@@ -82,7 +83,7 @@ async function generateSignature(implementation: string, initializer: string, sa
     value: {
       implementation,
       initializer,
-      salt
+      salt: BigInt(salt)
     }
   };
 

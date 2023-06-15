@@ -1,5 +1,6 @@
 [
   { "inputs": [], "name": "CallerIsNotSnapshot", "type": "error" },
+  { "inputs": [], "name": "CallerIsNotTreasury", "type": "error" },
   {
     "inputs": [{ "internalType": "uint8", "name": "proposerFee", "type": "uint8" }],
     "name": "InvalidFee",
@@ -100,19 +101,15 @@
     "anonymous": false,
     "inputs": [
       { "indexed": false, "internalType": "string", "name": "spaceId", "type": "string" },
-      { "indexed": false, "internalType": "uint256", "name": "mintPrice", "type": "uint256" },
       { "indexed": false, "internalType": "uint128", "name": "maxSupply", "type": "uint128" },
+      { "indexed": false, "internalType": "uint256", "name": "mintPrice", "type": "uint256" },
       { "indexed": false, "internalType": "uint8", "name": "proposerFee", "type": "uint8" },
+      { "indexed": false, "internalType": "address", "name": "spaceTreasury", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "spaceOwner", "type": "address" },
       { "indexed": false, "internalType": "uint8", "name": "snapshotFee", "type": "uint8" },
       { "indexed": false, "internalType": "address", "name": "trustedBackend", "type": "address" },
       { "indexed": false, "internalType": "address", "name": "snapshotOwner", "type": "address" },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "snapshotTreasury",
-        "type": "address"
-      },
-      { "indexed": false, "internalType": "address", "name": "spaceTreasury", "type": "address" }
+      { "indexed": false, "internalType": "address", "name": "snapshotTreasury", "type": "address" }
     ],
     "name": "SpaceCollectionCreated",
     "type": "event"
@@ -179,6 +176,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "fees",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "string", "name": "name", "type": "string" },
       { "internalType": "string", "name": "version", "type": "string" },
@@ -186,11 +190,12 @@
       { "internalType": "uint128", "name": "_maxSupply", "type": "uint128" },
       { "internalType": "uint256", "name": "_mintPrice", "type": "uint256" },
       { "internalType": "uint8", "name": "_proposerFee", "type": "uint8" },
+      { "internalType": "address", "name": "_spaceTreasury", "type": "address" },
+      { "internalType": "address", "name": "_spaceOwner", "type": "address" },
       { "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" },
       { "internalType": "address", "name": "_trustedBackend", "type": "address" },
       { "internalType": "address", "name": "_snapshotOwner", "type": "address" },
-      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" },
-      { "internalType": "address", "name": "_spaceTreasury", "type": "address" }
+      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -224,6 +229,20 @@
       { "internalType": "bytes32", "name": "s", "type": "bytes32" }
     ],
     "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "proposers", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "proposalIds", "type": "uint256[]" },
+      { "internalType": "uint256", "name": "salt", "type": "uint256" },
+      { "internalType": "uint8", "name": "v", "type": "uint8" },
+      { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+      { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+    ],
+    "name": "mintBatch",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -343,6 +362,20 @@
   },
   {
     "inputs": [],
+    "name": "snapshotBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "snapshotClaim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "snapshotOwner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
@@ -353,6 +386,20 @@
     "name": "snapshotTreasury",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "spaceBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "spaceClaim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
