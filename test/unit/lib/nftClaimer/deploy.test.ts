@@ -1,6 +1,7 @@
 import { recoverAddress } from '@ethersproject/transactions';
 import payload from '../../../../src/lib/nftClaimer/deploy';
 import type { Space } from '../../../../src/helpers/snapshot';
+import { signer } from '../../../../src/lib/nftClaimer/utils';
 
 const mockFetchSpace = jest.fn((id: string): any => {
   return { id: id, nftClaimer: { enabled: true } };
@@ -26,7 +27,7 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
 
 describe('nftClaimer', () => {
   describe('payload()', () => {
-    const signer = '0x5EF29cf961cf3Fc02551B9BdaDAa4418c446c5dd';
+    const spaceOwner = '0x5EF29cf961cf3Fc02551B9BdaDAa4418c446c5dd';
     const spaceTreasury = '0x5EF29cf961cf3Fc02551B9BdaDAa4418c446c5dd';
     const spaceId = 'spaceId';
     const maxSupply = 10;
@@ -48,7 +49,7 @@ describe('nftClaimer', () => {
     describe('when mintable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
         const { signature } = await payload(
-          signer,
+          spaceOwner,
           spaceId,
           maxSupply,
           mintPrice,
@@ -57,7 +58,7 @@ describe('nftClaimer', () => {
           spaceTreasury
         );
 
-        // expect(mockValidateSpace).toHaveBeenCalled();
+        expect(mockValidateSpace).toHaveBeenCalled();
         expect(signature.r).toEqual(expectedScSignature.r);
         expect(signature.s).toEqual(expectedScSignature.s);
         expect(signature.v).toEqual(expectedScSignature.v);
@@ -65,7 +66,7 @@ describe('nftClaimer', () => {
 
       it('generates the same initializer as the smart contract from the data', async () => {
         const { initializer } = await payload(
-          signer,
+          spaceOwner,
           spaceId,
           maxSupply,
           mintPrice,
@@ -74,7 +75,7 @@ describe('nftClaimer', () => {
           spaceTreasury
         );
 
-        // expect(mockValidateSpace).toHaveBeenCalled();
+        expect(mockValidateSpace).toHaveBeenCalled();
         expect(initializer).toEqual(expectedInitializer);
       });
 
@@ -85,7 +86,7 @@ describe('nftClaimer', () => {
           v: expectedScSignature.v
         });
 
-        expect(recoveredSigner).toEqual(signer);
+        expect(recoveredSigner).toEqual(signer.address);
       });
     });
   });

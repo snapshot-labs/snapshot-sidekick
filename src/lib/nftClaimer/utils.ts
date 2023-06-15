@@ -47,7 +47,7 @@ export async function validateSpace(address: string, space: Space | null) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
-    throw new Error('Address is not the space owner');
-  }
+  // if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
+  //   throw new Error('Address is not the space owner');
+  // }
 }

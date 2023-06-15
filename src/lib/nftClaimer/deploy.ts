@@ -14,7 +14,7 @@ const DeployType = {
 };
 
 export default async function payload(
-  address: string,
+  spaceOwner: string,
   id: string,
   maxSupply: number,
   mintPrice: string,
@@ -23,10 +23,10 @@ export default async function payload(
   spaceTreasury: string
 ) {
   const space = await fetchSpace(id);
-  // await validateSpace(address, space);
+  await validateSpace(spaceOwner, space);
 
   const initializer = getInitializer(
-    address,
+    spaceOwner,
     space?.id as string,
     maxSupply,
     mintPrice,
@@ -45,7 +45,7 @@ export default async function payload(
 }
 
 function getInitializer(
-  signerAddress: string,
+  spaceOwner: string,
   spaceId: string,
   maxSupply: number,
   mintPrice: string,
@@ -61,7 +61,7 @@ function getInitializer(
     BigInt(mintPrice),
     proposerFee,
     getAddress(spaceTreasury),
-    getAddress(signerAddress)
+    getAddress(spaceOwner)
   ];
 
   const initializer = abiInterface.encodeFunctionData('initialize', params);
