@@ -61,14 +61,12 @@ function getInitializer(
     BigInt(mintPrice),
     proposerFee,
     getAddress(spaceTreasury),
-    getAddress(signerAddress),
-    parseInt(process.env.NFT_CLAIMER_SNAPSHOT_FEE as string),
-    '0xE67e3A73C5b1ff82fD9Bd08f869d94B249d79e2F',
-    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_ADDRESS as string),
-    getAddress(process.env.NFT_CLAIMER_SNAPSHOT_TREASURY as string)
+    getAddress(signerAddress)
   ];
 
-  return abiInterface.encodeFunctionData('initialize', params);
+  const initializer = abiInterface.encodeFunctionData('initialize', params);
+
+  return `${process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 }
 
 async function generateSignature(implementation: string, initializer: string, salt: string) {

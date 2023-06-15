@@ -191,11 +191,7 @@
       { "internalType": "uint256", "name": "_mintPrice", "type": "uint256" },
       { "internalType": "uint8", "name": "_proposerFee", "type": "uint8" },
       { "internalType": "address", "name": "_spaceTreasury", "type": "address" },
-      { "internalType": "address", "name": "_spaceOwner", "type": "address" },
-      { "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" },
-      { "internalType": "address", "name": "_trustedBackend", "type": "address" },
-      { "internalType": "address", "name": "_snapshotOwner", "type": "address" },
-      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" }
+      { "internalType": "address", "name": "_spaceOwner", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
