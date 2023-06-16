@@ -33,14 +33,14 @@ export default async function payload(
     proposerFee,
     spaceTreasury
   );
+  const implementationAddress = getAddress(
+    process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string
+  );
 
   return {
     initializer,
-    signature: await generateSignature(
-      getAddress(process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string),
-      initializer,
-      salt
-    )
+    implementation: implementationAddress,
+    signature: await generateSignature(implementationAddress, initializer, salt)
   };
 }
 

@@ -29,7 +29,7 @@ export default async function payload(address: string, id: string, salt: number)
   // Enforce only proposal.space.id as allowed value on live prod
   const domain = 'TestTrustedBackend';
 
-  return { signature: await generateSignature(domain, message) };
+  return { signature: await generateSignature(domain, message), ...message };
 }
 
 function validateProposal(proposal: Proposal | null) {
