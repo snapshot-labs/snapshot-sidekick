@@ -22,6 +22,14 @@ export function queue(id: string) {
   queues.add(id);
 }
 
+export function getProgress(id: string) {
+  if (processingItems.has(id)) {
+    return processingItems.get(id)?.generationProgress as number;
+  }
+
+  return 0;
+}
+
 async function run() {
   try {
     console.log(`[queue] Poll queue (found ${queues.size} items)`);
