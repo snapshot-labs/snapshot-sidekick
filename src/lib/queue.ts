@@ -1,7 +1,7 @@
 import { sleep, storageEngine } from '../helpers/utils';
 import VotesReport from './votesReport';
 
-export const queues = new Set<string>();
+const queues = new Set<string>();
 const processingItems = new Set<string>();
 
 async function processItem(id: string) {
@@ -15,6 +15,10 @@ async function processItem(id: string) {
     queues.delete(id);
     processingItems.delete(id);
   }
+}
+
+export function queue(id: string) {
+  queues.add(id);
 }
 
 async function run() {

@@ -3,7 +3,7 @@ import { rpcError, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import { signSpaceOwner, signValidProposal } from './lib/nftClaimer';
-import { queues } from './lib/queue';
+import { queue } from './lib/queue';
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.post('/votes/:id', async (req, res) => {
 
     try {
       await votesReport.canBeCached();
-      queues.add(id);
+      queue(id);
       return rpcError(res, 'PENDING_GENERATION', id);
     } catch (e: any) {
       console.error(e);

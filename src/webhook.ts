@@ -1,7 +1,7 @@
 import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import VotesReport from './lib/votesReport';
-import { queues } from './lib/queue';
+import { queue } from './lib/queue';
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.post('/webhook', async (req, res) => {
 
   try {
     await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).canBeCached();
-    queues.add(id);
+    queue(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
     console.error(e);
