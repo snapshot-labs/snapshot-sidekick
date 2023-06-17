@@ -7,6 +7,7 @@ import { mintingAllowed, signer } from './utils';
 
 const MintType = {
   Mint: [
+    { name: 'proposer', type: 'address' },
     { name: 'recipient', type: 'address' },
     { name: 'proposalId', type: 'uint256' },
     { name: 'salt', type: 'uint256' }
@@ -15,12 +16,13 @@ const MintType = {
 
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
-export default async function payload(address: string, id: string, salt: number) {
+export default async function payload(recipient: string, id: string, salt: number) {
   const proposal = await fetchProposal(id);
   validateProposal(proposal);
 
   const message = {
-    recipient: getAddress(address),
+    proposer: getAddress(proposal?.author as string),
+    recipient: getAddress(recipient),
     proposalId: BigNumber.from(id).toString(),
     salt
   };

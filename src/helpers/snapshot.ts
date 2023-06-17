@@ -7,6 +7,7 @@ export type Proposal = {
   state: string;
   choices: string[];
   space: Space;
+  author: string;
 };
 
 export type Vote = {
@@ -72,6 +73,7 @@ const PROPOSAL_QUERY = gql`
       id
       state
       choices
+      author
       space {
         id
         network
