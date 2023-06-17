@@ -7,11 +7,13 @@ class VotesReport {
   filename: string;
   proposal?: Proposal | null;
   storage: IStorage;
+  generationProgress: number;
 
   constructor(id: string, storage: IStorage) {
     this.id = id;
     this.filename = `snapshot-votes-report-${this.id}.csv`;
     this.storage = storage;
+    this.generationProgress = 0;
   }
 
   cachedFile = () => {
@@ -94,6 +96,9 @@ class VotesReport {
 
       votes = newVotes;
       totalResults += newVotes.length;
+      this.generationProgress = Number(
+        ((totalResults / (this.proposal?.votes as number)) * 100).toFixed(2)
+      );
     } while (resultsSize === pageSize);
 
     console.log(`[votes-report] File cache ready to be saved with ${totalResults} items`);
