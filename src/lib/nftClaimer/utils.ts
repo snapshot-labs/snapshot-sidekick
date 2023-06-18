@@ -9,7 +9,8 @@ const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
   'NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT',
   'NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS',
-  'NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR'
+  'NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR',
+  'NFT_CLAIMER_SUBGRAPH_URL'
 ];
 
 const HUB_NETWORK = process.env.NETWORK || '1';
@@ -45,9 +46,9 @@ export async function validateSpace(address: string, space: Space | null) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
-    throw new Error('Address is not the space owner');
-  }
+  // if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
+  //   throw new Error('Address is not the space owner');
+  // }
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
