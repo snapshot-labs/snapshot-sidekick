@@ -1,3 +1,5 @@
+import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
+import fetch from 'cross-fetch';
 import { Wallet } from '@ethersproject/wallet';
 import { getAddress } from '@ethersproject/address';
 import snapshot from '@snapshot-labs/snapshot.js';
@@ -62,7 +64,43 @@ export function validateProposal(proposal: Proposal | null, proposer: string) {
   }
 }
 
-// Should use subgraph to return the correct contract for the proposal ID
-export function getProposalContract(proposal: Proposal) {
-  return '0x4fb82ff0b9c3a62dfb91ba4762a3b95dc27d0ff0';
+export async function getProposalContract(proposal: Proposal) {
+  return (await getSpaceCollection(proposal.space.id)).id;
+}
+
+const client = new ApolloClient({
+  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch }),
+  cache: new InMemoryCache({
+    addTypename: false
+  }),
+  defaultOptions: {
+    query: {
+      fetchPolicy: 'no-cache'
+    }
+  }
+});
+
+const SPACE_COLLECTION_QUERY = gql`
+  query SpaceCollections($spaceId: String) {
+    spaceCollections(where: { spaceId: $spaceId }, first: 1) {
+      id
+    }
+  }
+`;
+
+type SpaceCollection = {
+  id: string;
+};
+
+export async function getSpaceCollection(spaceId: string) {
+  const {
+    data: { spaceCollections }
+  }: { data: { spaceCollections: SpaceCollection[] } } = await client.query({
+    query: SPACE_COLLECTION_QUERY,
+    variables: {
+      spaceId
+    }
+  });
+
+  return spaceCollections[0];
 }
