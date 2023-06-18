@@ -1,9 +1,8 @@
 import { getAddress } from '@ethersproject/address';
-
 import { splitSignature } from '@ethersproject/bytes';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Proposal, fetchProposal } from '../../helpers/snapshot';
-import { mintingAllowed, signer } from './utils';
+import { validateProposal, getProposalContract, signer } from './utils';
 
 const MintType = {
   Mint: [
@@ -16,12 +15,19 @@ const MintType = {
 
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
-export default async function payload(recipient: string, id: string, salt: number) {
+export default async function payload(
+  proposalAuthor: string,
+  recipient: string,
+  id: string,
+  salt: number
+) {
   const proposal = await fetchProposal(id);
-  validateProposal(proposal);
+  validateProposal(proposal, proposalAuthor);
+
+  const verifyingContract = getProposalContract(proposal as Proposal);
 
   const message = {
-    proposer: getAddress(proposal?.author as string),
+    proposer: getAddress(proposalAuthor),
     recipient: getAddress(recipient),
     proposalId: BigNumber.from(id).toString(),
     salt
@@ -29,29 +35,23 @@ export default async function payload(recipient: string, id: string, salt: numbe
 
   // TODO
   // Enforce only proposal.space.id as allowed value on live prod
-  const domain = 'TestTrustedBackend';
+  const domain = 'TestDAO';
 
-  return { signature: await generateSignature(domain, message), ...message };
+  return { signature: await generateSignature(verifyingContract, domain, message), ...message };
 }
 
-function validateProposal(proposal: Proposal | null) {
-  if (!proposal) {
-    throw new Error('RECORD_NOT_FOUND');
-  }
-
-  if (!mintingAllowed(proposal.space)) {
-    throw new Error('Space has not allowed minting');
-  }
-}
-
-async function generateSignature(domain: string, message: Record<string, string | number>) {
+async function generateSignature(
+  verifyingContract: string,
+  domain: string,
+  message: Record<string, string | number>
+) {
   return splitSignature(
     await signer._signTypedData(
       {
         name: domain,
         version: '0.1',
         chainId: NFT_CLAIMER_NETWORK,
-        verifyingContract: process.env.NFT_CLAIMER_MINT_VERIFYING_CONTRACT
+        verifyingContract
       },
       MintType,
       message

@@ -59,9 +59,9 @@ router.post('/nft-claimer/deploy', async (req, res) => {
 });
 
 router.post('/nft-claimer/mint', async (req, res) => {
-  const { address, id, salt } = req.body;
+  const { proposalAuthor, address, id, salt } = req.body;
   try {
-    return res.json(await mintPayload(address, id, salt));
+    return res.json(await mintPayload(proposalAuthor, address, id, salt));
   } catch (e: any) {
     console.error(e);
     return rpcError(res, e, salt);
