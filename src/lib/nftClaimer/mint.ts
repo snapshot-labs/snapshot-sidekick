@@ -1,8 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { BigNumber } from '@ethersproject/bignumber';
 import { Proposal, fetchProposal } from '../../helpers/snapshot';
-import { validateProposal, getProposalContract, signer } from './utils';
+import { validateProposal, getProposalContract, signer, numberizeProposalId } from './utils';
 
 const MintType = {
   Mint: [
@@ -29,7 +28,7 @@ export default async function payload(
   const message = {
     proposer: getAddress(proposalAuthor),
     recipient: getAddress(recipient),
-    proposalId: BigNumber.from(id).toString(),
+    proposalId: numberizeProposalId(id),
     salt
   };
 

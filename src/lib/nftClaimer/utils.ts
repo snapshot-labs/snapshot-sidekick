@@ -3,7 +3,9 @@ import fetch from 'cross-fetch';
 import { Wallet } from '@ethersproject/wallet';
 import { getAddress } from '@ethersproject/address';
 import snapshot from '@snapshot-labs/snapshot.js';
+import bs58 from 'bs58';
 import type { Proposal, Space } from '../../helpers/snapshot';
+import { BigNumber } from '@ethersproject/bignumber';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
@@ -66,7 +68,13 @@ export function validateProposal(proposal: Proposal | null, proposer: string) {
 }
 
 export async function getProposalContract(proposal: Proposal) {
-  return (await getSpaceCollection(proposal.space.id)).id;
+  const contract = await getSpaceCollection(proposal.space.id);
+
+  if (!contract) {
+    throw new Error(`SpaceCollection contract is not found for proposal ${proposal.id}`);
+  }
+
+  return contract.id;
 }
 
 const client = new ApolloClient({
@@ -104,4 +112,13 @@ export async function getSpaceCollection(spaceId: string) {
   });
 
   return spaceCollections[0];
+}
+
+export function numberizeProposalId(id: string) {
+  let value: any = id;
+  if (id.match(/Qm[1-9A-HJ-NP-Za-km-z]{44}/)) {
+    value = bs58.decode(id);
+  }
+
+  return BigNumber.from(value).toString();
 }
