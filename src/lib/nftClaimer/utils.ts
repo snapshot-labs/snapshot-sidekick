@@ -32,17 +32,10 @@ if (missingEnvKeys.length > 0) {
 
 export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function mintingAllowed(space: Space) {
-  // TODO: Placeholder only for tests, remove once hub return nftClaimer results
-  // https://github.com/snapshot-labs/snapshot-hub/pull/581
-  // https://github.com/snapshot-labs/snapshot.js/pull/823
-  return space.nftClaimer?.enabled ?? true;
-
-  // return space.nftClaimer && space.nftClaimer.address && space.nftClaimer.enabled;
+async function mintingAllowed(space: Space) {
+  return (await getSpaceCollection(space.id)).enabled;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function validateSpace(address: string, space: Space | null) {
   if (!space) {
     throw new Error('RECORD_NOT_FOUND');
@@ -67,11 +60,11 @@ export function validateProposal(proposal: Proposal | null, proposer: string) {
   }
 }
 
-export async function getProposalContract(proposal: Proposal) {
-  const contract = await getSpaceCollection(proposal.space.id);
+export async function getProposalContract(spaceId: string) {
+  const contract = await getSpaceCollection(spaceId);
 
   if (!contract) {
-    throw new Error(`SpaceCollection contract is not found for proposal ${proposal.id}`);
+    throw new Error(`SpaceCollection contract is not found for space ${spaceId}`);
   }
 
   return contract.id;
@@ -93,12 +86,14 @@ const SPACE_COLLECTION_QUERY = gql`
   query SpaceCollections($spaceId: String) {
     spaceCollections(where: { spaceId: $spaceId }, first: 1) {
       id
+      enabled
     }
   }
 `;
 
 type SpaceCollection = {
   id: string;
+  enabled: boolean;
 };
 
 export async function getSpaceCollection(spaceId: string) {

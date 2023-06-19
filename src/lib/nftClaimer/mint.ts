@@ -23,7 +23,7 @@ export default async function payload(
   const proposal = await fetchProposal(id);
   validateProposal(proposal, proposalAuthor);
 
-  const verifyingContract = await getProposalContract(proposal as Proposal);
+  const verifyingContract = await getProposalContract(proposal?.space.id as string);
 
   const message = {
     proposer: getAddress(proposalAuthor),
