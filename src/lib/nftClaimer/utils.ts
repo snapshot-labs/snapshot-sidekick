@@ -43,7 +43,7 @@ export async function validateSpace(address: string, space: Space | null) {
   }
 
   if (
-    process.env.NFT_CLAIMER_NETWORK !== '5' &&
+    (process.env.NFT_CLAIMER_NETWORK !== '5' || process.env.NODE_ENV === 'test') &&
     (await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)
   ) {
     throw new Error('Address is not the space owner');
