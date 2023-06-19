@@ -1,7 +1,7 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
 import fetch from 'cross-fetch';
-import bs58 from 'bs58';
 import snapshot from '@snapshot-labs/snapshot.js';
+import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -114,10 +114,5 @@ export async function getSpaceCollection(spaceId: string) {
 }
 
 export function numberizeProposalId(id: string) {
-  let value: any = id;
-  if (id.match(/Qm[1-9A-HJ-NP-Za-km-z]{44}/)) {
-    value = bs58.decode(id);
-  }
-
-  return BigNumber.from(value).toString();
+  return BigNumber.from(id.startsWith('0x') ? id : CID.parse(id).bytes).toString();
 }

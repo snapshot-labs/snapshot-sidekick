@@ -40,7 +40,8 @@ export default async function payload(
     signature: await generateSignature(verifyingContract, domain, message),
     contractAddress: verifyingContract,
     spaceId: proposal?.space.id,
-    ...message
+    ...message,
+    salt
   };
 }
 
