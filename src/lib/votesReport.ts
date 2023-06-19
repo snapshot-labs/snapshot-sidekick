@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs';
 import { fetchAllVotes, fetchProposal } from '../helpers/snapshot';
 import type { Proposal, Vote } from '../helpers/snapshot';
 import type { IStorage } from './storage/types';
