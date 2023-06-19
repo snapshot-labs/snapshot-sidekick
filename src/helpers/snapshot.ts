@@ -7,6 +7,8 @@ export type Proposal = {
   state: string;
   choices: string[];
   space: Space;
+  votes: number;
+  author: string;
 };
 
 export type Vote = {
@@ -72,6 +74,8 @@ const PROPOSAL_QUERY = gql`
       id
       state
       choices
+      votes
+      author
       space {
         id
         network
@@ -132,6 +136,13 @@ export async function fetchVotes(
   id: string,
   { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
 ) {
+  console.log(id, {
+    first,
+    skip,
+    orderBy,
+    orderDirection,
+    created_gte
+  });
   const {
     data: { votes }
   }: { data: { votes: Vote[] } } = await client.query({
@@ -145,6 +156,46 @@ export async function fetchVotes(
       created_gte
     }
   });
+
+  return votes;
+}
+
+export async function fetchAllVotes(id: string) {
+  let votes: Vote[] = [];
+  let page = 0;
+  let createdPivot = 0;
+  const pageSize = 1000;
+  let resultsSize = 0;
+  const maxPage = 5;
+
+  do {
+    let newVotes = await fetchVotes(id, {
+      first: pageSize,
+      skip: page * pageSize,
+      created_gte: createdPivot,
+      orderBy: 'created',
+      orderDirection: 'asc'
+    });
+    resultsSize = newVotes.length;
+
+    if (page === 0 && createdPivot > 0) {
+      // Loosely assuming that there will never be more than 1000 duplicates
+      const existingIpfs = votes.slice(-pageSize).map(vote => vote.ipfs);
+
+      newVotes = newVotes.filter(vote => {
+        return !existingIpfs.includes(vote.ipfs);
+      });
+    }
+
+    if (page === maxPage) {
+      page = 0;
+      createdPivot = newVotes[newVotes.length - 1].created;
+    } else {
+      page++;
+    }
+
+    votes = votes.concat(newVotes);
+  } while (resultsSize === pageSize);
 
   return votes;
 }
