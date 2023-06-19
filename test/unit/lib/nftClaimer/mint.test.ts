@@ -44,7 +44,7 @@ describe('nftClaimer', () => {
     const recipient = getAddress('0x0000000000000000000000000000000000001234');
     const proposalId = 42;
     const hexProposalId = BigNumber.from(proposalId).toHexString();
-    const salt = 0;
+    const salt = '0';
 
     // Signature expected by the smart contract
     const expectedScSignature = {

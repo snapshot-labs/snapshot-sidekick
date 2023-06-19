@@ -18,7 +18,7 @@ export default async function payload(
   proposalAuthor: string,
   recipient: string,
   id: string,
-  salt: number
+  salt: string
 ) {
   const proposal = await fetchProposal(id);
   validateProposal(proposal, proposalAuthor);
@@ -29,7 +29,7 @@ export default async function payload(
     proposer: getAddress(proposalAuthor),
     recipient: getAddress(recipient),
     proposalId: numberizeProposalId(id),
-    salt
+    salt: BigInt(salt)
   };
 
   // TODO
@@ -47,7 +47,7 @@ export default async function payload(
 async function generateSignature(
   verifyingContract: string,
   domain: string,
-  message: Record<string, string | number>
+  message: Record<string, string | bigint>
 ) {
   return splitSignature(
     await signer._signTypedData(
