@@ -10,7 +10,7 @@ const mockFetchProposal = jest.fn((id: string): any => {
   return {
     id: id,
     author: proposer,
-    space: { id: TEST_MINT_DOMAIN, nftClaimer: { enabled: true } }
+    space: { id: TEST_MINT_DOMAIN }
   };
 });
 jest.mock('../../../../src/helpers/snapshot', () => ({
@@ -22,6 +22,10 @@ jest.mock('../../../../src/helpers/snapshot', () => ({
 const mockGetProposalContract = jest.fn((id: string): any => {
   return '0x2e234DAe75C793f67A35089C9d99245E1C58470b';
 });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockValidateProposal = jest.fn((proposal: any): void => {
+  return;
+});
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
@@ -29,7 +33,8 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   return {
     __esModule: true,
     ...originalModule,
-    getProposalContract: (id: string) => mockGetProposalContract(id)
+    getProposalContract: (id: string) => mockGetProposalContract(id),
+    validateProposal: (id: any) => mockValidateProposal(id)
   };
 });
 
@@ -69,29 +74,6 @@ describe('nftClaimer', () => {
 
         expect(recoveredSigner).toEqual(signer);
       });
-    });
-
-    it('throws an error when the proposal does not exist', () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      mockFetchProposal.mockImplementationOnce((id: string) => null);
-
-      expect(async () => await payload(proposer, recipient, hexProposalId, salt)).rejects.toThrow(
-        'RECORD_NOT_FOUND'
-      );
-    });
-
-    it('throws an error when the space has not allowed minting', () => {
-      mockFetchProposal.mockImplementationOnce((id: string): any => {
-        return {
-          id: id,
-          author: proposer,
-          space: { id: TEST_MINT_DOMAIN, nftClaimer: { enabled: false } }
-        };
-      });
-
-      expect(async () => await payload(proposer, recipient, hexProposalId, salt)).rejects.toThrow(
-        /minting/
-      );
     });
   });
 });

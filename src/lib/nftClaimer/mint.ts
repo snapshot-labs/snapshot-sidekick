@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { Proposal, fetchProposal } from '../../helpers/snapshot';
+import { fetchProposal } from '../../helpers/snapshot';
 import { validateProposal, getProposalContract, signer, numberizeProposalId } from './utils';
 
 const MintType = {

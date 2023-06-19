@@ -1,14 +1,15 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
 import fetch from 'cross-fetch';
+import bs58 from 'bs58';
+import snapshot from '@snapshot-labs/snapshot.js';
 import { Wallet } from '@ethersproject/wallet';
 import { getAddress } from '@ethersproject/address';
-import snapshot from '@snapshot-labs/snapshot.js';
-import bs58 from 'bs58';
-import type { Proposal, Space } from '../../helpers/snapshot';
 import { BigNumber } from '@ethersproject/bignumber';
+import type { Proposal, Space } from '../../helpers/snapshot';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
+  'NFT_CLAIMER_NETWORK',
   'NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT',
   'NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS',
   'NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR',
@@ -41,9 +42,12 @@ export async function validateSpace(address: string, space: Space | null) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  // if ((await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)) {
-  //   throw new Error('Address is not the space owner');
-  // }
+  if (
+    process.env.NFT_CLAIMER_NETWORK !== '5' &&
+    (await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)
+  ) {
+    throw new Error('Address is not the space owner');
+  }
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
