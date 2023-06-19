@@ -39,6 +39,7 @@ export default async function payload(
 
   return {
     initializer,
+    salt,
     implementation: implementationAddress,
     signature: await generateSignature(implementationAddress, initializer, salt)
   };
