@@ -21,9 +21,9 @@ describe('nftClaimer', () => {
 
   // Signature expected by the smart contract
   const expectedScSignature = {
-    r: '0x1d9a724d7da1d2d85b1da09ce5ea5f7a5d797a39cdcec6deb884ab3f8203192d',
-    s: '0x10af673455278ac7f4cdeb608bc0ac1ac46a5fdff10afb4b607c8b23d871cc1e',
-    v: 27
+    r: '0xe63fd54360640015330a8f4589dfc3ceb23492ade38ef81f18f75825066a0be0',
+    s: '0x745065b979a06d0bde23a1af591d8c3e5425528a064e2696025f1f47d5bfe4b9',
+    v: 28
   };
 
   const expectedDigest = '0xa2075324f2af7babd621b5dcacce268ac105cb716d3c11ffe8818181ff45b29b';
