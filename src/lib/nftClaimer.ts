@@ -102,7 +102,7 @@ async function signValidProposal(domain: string, message: Record<string, string 
         name: domain,
         version: '0.1',
         chainId: NFT_CLAIMER_NETWORK,
-        verifyingContract: process.env.NFT_CLAIMER_VERIFYING_CONTRACT
+        verifyingContract: NFT_CLAIMER_VERIFYING_CONTRACT
       },
       MintType,
       message
