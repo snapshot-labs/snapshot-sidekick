@@ -3,7 +3,7 @@
 Sidekick is the service serving:
 
 - all proposal's votes CSV report
-- static moderation list
+- Moderation list
 - NFT Claimer trusted backend server
 
 ---
@@ -127,7 +127,7 @@ Valid values are:
 
 You can pass multiple list, separated by a comma.
 
-Data are sourced from the json files with the same name, located in this repo `/data` directory.
+Data are sourced from the json files with the same name, located in this repo `/data` directory, and a remote read-only SQL database.
 
 ### NFT Claimer trusted backend
 
