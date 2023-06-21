@@ -26,7 +26,8 @@ const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
 
 const PRIVATE_KEY = process.env.NFT_CLAIMER_PRIVATE_KEY;
 
-if (!PRIVATE_KEY || !process.env.NFT_CLAIMER_VERIFYING_CONTRACT) {
+const NFT_CLAIMER_VERIFYING_CONTRACT = process.env.NFT_CLAIMER_VERIFYING_CONTRACT
+if (!PRIVATE_KEY || !NFT_CLAIMER_VERIFYING_CONTRACT) {
   throw new Error('NFT Claimer configuration incomplete');
 }
 
