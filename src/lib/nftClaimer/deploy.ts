@@ -55,9 +55,8 @@ function getInitializer(
 ) {
   const abiInterface = new Interface(abi);
   const params = [
-    'TestDAO',
-    '0.1',
     spaceId,
+    '0.1',
     maxSupply,
     BigInt(mintPrice),
     proposerFee,
