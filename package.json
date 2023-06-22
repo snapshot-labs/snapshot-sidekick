@@ -25,7 +25,7 @@
   "prettier": "@snapshot-labs/prettier-config",
   "dependencies": {
     "@apollo/client": "^3.7.15",
-    "@aws-sdk/client-s3": "^3.316.0",
+    "@aws-sdk/client-s3": "^3.357.0",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/transactions": "^5.7.0",
