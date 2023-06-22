@@ -39,10 +39,22 @@ describe('VotesReport', () => {
     ['weighted', weightedId]
   ])('caches a %s choices votes report', async (type: string, pid: string) => {
     const report = new VotesReport(pid, storageEngine);
+    const fetchProposalSpy = jest
+      .spyOn(report, 'fetchProposal')
+      .mockResolvedValueOnce(
+        JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-proposal-${pid}.json`, 'utf8'))
+      );
+    const fetchAllVotesSpy = jest
+      .spyOn(report, 'fetchAllVotes')
+      .mockResolvedValueOnce(
+        JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-votes-${pid}.json`, 'utf8'))
+      );
 
     await report.generateCacheFile();
 
-    return expect(readFileSync(cachedFilePath(pid))).toEqual(readFileSync(fixtureFilePath(pid)));
+    expect(readFileSync(cachedFilePath(pid))).toEqual(readFileSync(fixtureFilePath(pid)));
+    expect(fetchProposalSpy).toHaveBeenCalled();
+    expect(fetchAllVotesSpy).toHaveBeenCalled();
   });
 
   describe('canBeCached()', () => {
@@ -56,9 +68,14 @@ describe('VotesReport', () => {
 
     it('raises an error when the proposal is not closed', async () => {
       const report = new VotesReport(id, storageEngine);
-      const votesReportSpy = jest
-        .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'pending', id: '', votes: 0, choices: [], space });
+      const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce({
+        state: 'pending',
+        id: '',
+        votes: 0,
+        author: '',
+        choices: [],
+        space
+      });
 
       expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -66,9 +83,14 @@ describe('VotesReport', () => {
 
     it('returns true when the proposal can be cached', async () => {
       const report = new VotesReport(id, storageEngine);
-      const votesReportSpy = jest
-        .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({ state: 'closed', id: '', votes: 0, choices: [], space });
+      const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce({
+        state: 'closed',
+        id: '',
+        votes: 0,
+        author: '',
+        choices: [],
+        space
+      });
 
       expect(await report.canBeCached()).toBe(true);
       expect(votesReportSpy).toHaveBeenCalled();

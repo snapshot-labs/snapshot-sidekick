@@ -18,7 +18,7 @@ app.use(cors({ maxAge: 86400 }));
 app.use(compression());
 app.use(
   morgan(
-    '[http] :remote-addr - :remote-user [:date[clf]] ' +
+    '[http] [:date[clf]] ' +
       '":method :url HTTP/:http-version" :status :res[content-length] ' +
       '":referrer" ":user-agent" - :response-time ms'
   )
