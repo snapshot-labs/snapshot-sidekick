@@ -9,6 +9,7 @@ import api from './api';
 import webhook from './webhook';
 import './lib/queue';
 import { name, version } from '../package.json';
+import { rpcError } from './helpers/utils';
 
 const app = express();
 const PORT = process.env.PORT || 3005;
@@ -18,7 +19,7 @@ app.use(cors({ maxAge: 86400 }));
 app.use(compression());
 app.use(
   morgan(
-    '[http] :remote-addr - :remote-user [:date[clf]] ' +
+    '[http] [:date[clf]] ' +
       '":method :url HTTP/:http-version" :status :res[content-length] ' +
       '":referrer" ":user-agent" - :response-time ms'
   )
@@ -34,6 +35,10 @@ app.get('/', (req, res) => {
     name,
     version: v
   });
+});
+
+app.use((_, res) => {
+  rpcError(res, 'RECORD_NOT_FOUND', '');
 });
 
 app.listen(PORT, () => console.log(`[http] Start server at http://localhost:${PORT}`));

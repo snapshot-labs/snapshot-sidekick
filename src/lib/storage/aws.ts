@@ -48,8 +48,11 @@ class Aws implements IStorage {
       const response = await this.client.send(command);
 
       return response.Body?.transformToString() || false;
-    } catch (e) {
-      console.error('[storage:aws] File fetch failed', e);
+    } catch (e: any) {
+      if (e['$metadata']?.httpStatusCode !== 404) {
+        console.error('[storage:aws] File fetch failed', e);
+      }
+
       return false;
     }
   }

@@ -3,7 +3,7 @@
 Sidekick is the service serving:
 
 - all proposal's votes CSV report
-- static moderation list
+- Moderation list
 - NFT Claimer trusted backend server
 
 ---
@@ -127,7 +127,7 @@ Valid values are:
 
 You can pass multiple list, separated by a comma.
 
-Data are sourced from the json files with the same name, located in this repo `/data` directory.
+Data are sourced from the json files with the same name, located in this repo `/data` directory, and a remote read-only SQL database.
 
 ### NFT Claimer trusted backend
 
@@ -138,7 +138,7 @@ Validate offchain data, and return a signature
 Send a `POST` request with a wallet address, a space ID and a salt
 
 ```bash
-curl -X localhost:3005/api/nft-claimer/space/sign -H "Content-Type: application/json" -d '{"id": "gitcoindao.eth", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
+curl -X POST http://localhost:3005/api/nft-claimer/deploy/sign -H "Content-Type: application/json" -d '{"id": "gitcoindao.eth", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
 ```
 
 If the given `address` is the space creator, and the space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
@@ -148,7 +148,7 @@ If the given `address` is the space creator, and the space has enabled NFT claim
 Send a `POST` request with a wallet address, a proposal ID and a salt
 
 ```bash
-curl -X localhost:3005/api/nft-claimer/proposal/sign -H "Content-Type: application/json" -d '{"id": "0x6b703b90d3cd1f82f7c176fc2e566a2bb79e8eb6618a568b52a4f29cb2f8d57b", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
+curl -X POST http://localhost:3005/api/nft-claimer/mint/sign -H "Content-Type: application/json" -d '{"id": "0x6b703b90d3cd1f82f7c176fc2e566a2bb79e8eb6618a568b52a4f29cb2f8d57b", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
 ```
 
 If given proposal's space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
@@ -173,7 +173,7 @@ All endpoints will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specifi
 | When the proposal does not exist    | 404    | PROPOSAL_NOT_FOUND  |
 | When the record does not exist      | 404    | RECORD_NOT_FOUND    |
 | When the proposal is not closed     | -40004 | PROPOSAL_NOT_CLOSED |
-| When the file is pending generation | -40010 | PENDING_GENERATION  |
+| When the file is pending generation | 202    | PENDING_GENERATION  |
 | Other/Unknown/Server Error          | -32603 | INTERNAL_ERROR      |
 
 ## Build for production
