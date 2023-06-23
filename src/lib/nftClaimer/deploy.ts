@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
 import { Interface } from '@ethersproject/abi';
 import { fetchSpace } from '../../helpers/snapshot';
-import { signer, validateSpace } from './utils';
+import { signer, validateAddresses, validateSpace } from './utils';
 import abi from './deployAbi.json';
 
 const DeployType = {
@@ -24,6 +24,10 @@ export default async function payload(
 ) {
   const space = await fetchSpace(id);
   await validateSpace(spaceOwner, space);
+  if (proposerFee < 0 || proposerFee > 100) {
+    throw new Error('proposerFee should be between 0 and 100');
+  }
+  validateAddresses({ spaceOwner, spaceTreasury });
 
   const initializer = getInitializer({
     spaceOwner,

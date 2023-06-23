@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import type { Proposal, Space } from '../../helpers/snapshot';
 
@@ -120,4 +120,12 @@ export async function getSpaceCollection(spaceId: string) {
 
 export function numberizeProposalId(id: string) {
   return BigNumber.from(id.startsWith('0x') ? id : CID.parse(id).bytes).toString();
+}
+
+export function validateAddresses(addresses: Record<string, string>) {
+  Object.keys(addresses).map(key => {
+    if (!isAddress(addresses[key])) {
+      throw new Error(`Value for ${key} is not a valid address (${addresses[key]})`);
+    }
+  });
 }
