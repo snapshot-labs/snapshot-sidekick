@@ -25,48 +25,55 @@ export default async function payload(
   const space = await fetchSpace(id);
   await validateSpace(spaceOwner, space);
 
-  const initializer = getInitializer(
+  const initializer = getInitializer({
     spaceOwner,
-    space?.id as string,
+    spaceId: space?.id as string,
     maxSupply,
     mintPrice,
     proposerFee,
     spaceTreasury
-  );
+  });
   const implementationAddress = getAddress(
     process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string
   );
-
-  return {
+  const result = {
     initializer,
     salt,
     implementation: implementationAddress,
     signature: await generateSignature(implementationAddress, initializer, salt)
   };
+
+  console.debug('Signer', signer.address);
+  console.debug('Payload', result);
+
+  return result;
 }
 
-function getInitializer(
-  spaceOwner: string,
-  spaceId: string,
-  maxSupply: number,
-  mintPrice: string,
-  proposerFee: number,
-  spaceTreasury: string
-) {
+function getInitializer(args: {
+  spaceId: string;
+  maxSupply: number;
+  mintPrice: string;
+  proposerFee: number;
+  spaceTreasury: string;
+  spaceOwner: string;
+}) {
   const abiInterface = new Interface(abi);
   const params = [
-    spaceId,
+    args.spaceId,
     '0.1',
-    maxSupply,
-    BigInt(mintPrice),
-    proposerFee,
-    getAddress(spaceTreasury),
-    getAddress(spaceOwner)
+    args.maxSupply,
+    BigInt(args.mintPrice),
+    args.proposerFee,
+    getAddress(args.spaceTreasury),
+    getAddress(args.spaceOwner)
   ];
 
   const initializer = abiInterface.encodeFunctionData('initialize', params);
+  const result = `${process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 
-  return `${process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR}${initializer.slice(10)}`;
+  console.debug('Initializer params', params);
+
+  return result;
 }
 
 async function generateSignature(implementation: string, initializer: string, salt: string) {
