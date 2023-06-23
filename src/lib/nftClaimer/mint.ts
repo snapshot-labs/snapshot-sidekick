@@ -1,7 +1,13 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
 import { fetchProposal } from '../../helpers/snapshot';
-import { validateProposal, getProposalContract, signer, numberizeProposalId } from './utils';
+import {
+  validateProposal,
+  getProposalContract,
+  signer,
+  numberizeProposalId,
+  validateAddresses
+} from './utils';
 
 const MintType = {
   Mint: [
@@ -22,6 +28,7 @@ export default async function payload(
 ) {
   const proposal = await fetchProposal(id);
   validateProposal(proposal, proposalAuthor);
+  validateAddresses({ proposalAuthor, recipient });
 
   const verifyingContract = await getProposalContract(proposal?.space.id as string);
 
