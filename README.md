@@ -86,7 +86,18 @@ curl -X POST localhost:3005/api/votes/[PROPOSAL-ID]
 ```
 
 When cached, this request will respond with a stream to a CSV file.
-When votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
+
+When votes report can be cached, but does not exist yet, a cache generation task will be queued.
+This enable cache to be generated on-demand.
+A JSON-RPC success with status code `202` will then be returned, with the progress percentage as `result` message.
+
+```
+{
+  "jsonrpc":"2.0",
+  "result":"15.45",
+  "id":"0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98"
+}
+```
 
 #### Generate a cache file
 
