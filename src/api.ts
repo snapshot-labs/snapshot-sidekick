@@ -1,9 +1,9 @@
 import express from 'express';
-import { rpcError, storageEngine } from './helpers/utils';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import { signDeploy, signMint } from './lib/nftClaimer';
-import { queues } from './lib/queue';
+import { queue, getProgress } from './lib/queue';
 
 const router = express.Router();
 
@@ -22,8 +22,8 @@ router.post('/votes/:id', async (req, res) => {
 
     try {
       await votesReport.canBeCached();
-      queues.add(id);
-      return rpcError(res, 'PENDING_GENERATION', id);
+      queue(id);
+      return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
       console.error(e);
       rpcError(res, e, id);

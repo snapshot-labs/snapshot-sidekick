@@ -7,11 +7,13 @@ class VotesReport {
   filename: string;
   proposal?: Proposal | null;
   storage: IStorage;
+  generationProgress: number;
 
   constructor(id: string, storage: IStorage) {
     this.id = id;
     this.filename = `snapshot-votes-report-${this.id}.csv`;
     this.storage = storage;
+    this.generationProgress = 0;
   }
 
   cachedFile = () => {
@@ -51,8 +53,6 @@ class VotesReport {
       'author_ipfs_hash',
       'reason'
     ].flat();
-
-    console.log(this.proposal?.id);
 
     content += headers.join(',');
     content += `\n${votes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
