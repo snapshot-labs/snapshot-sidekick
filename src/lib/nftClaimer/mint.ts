@@ -29,8 +29,9 @@ export default async function payload(
   const proposal = await fetchProposal(id);
   validateProposal(proposal, proposalAuthor);
   validateAddresses({ proposalAuthor, recipient });
+  const spaceId = proposal?.space.id as string;
 
-  const verifyingContract = await getProposalContract(proposal?.space.id as string);
+  const verifyingContract = await getProposalContract(spaceId);
 
   const message = {
     proposer: getAddress(proposalAuthor),
@@ -39,12 +40,8 @@ export default async function payload(
     salt: BigInt(salt)
   };
 
-  // TODO
-  // Enforce only proposal.space.id as allowed value on live prod
-  const domain = 'TestDAO';
-
   return {
-    signature: await generateSignature(verifyingContract, domain, message),
+    signature: await generateSignature(verifyingContract, spaceId, message),
     contractAddress: verifyingContract,
     spaceId: proposal?.space.id,
     ...message,
