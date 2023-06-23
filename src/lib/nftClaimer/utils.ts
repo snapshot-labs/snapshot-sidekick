@@ -48,6 +48,11 @@ export async function validateSpace(address: string, space: Space | null) {
   ) {
     throw new Error('Address is not the space owner');
   }
+
+  const contract = await getSpaceCollection(space.id);
+  if (contract) {
+    throw new Error(`SpaceCollection contract already exist (${contract.id})`);
+  }
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
