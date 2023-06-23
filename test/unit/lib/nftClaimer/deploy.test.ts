@@ -3,8 +3,6 @@ import payload from '../../../../src/lib/nftClaimer/deploy';
 import type { Space } from '../../../../src/helpers/snapshot';
 import { signer } from '../../../../src/lib/nftClaimer/utils';
 
-jest.useFakeTimers({ advanceTimers: true });
-
 const mockFetchSpace = jest.fn((id: string): any => {
   return { id: id, nftClaimer: { enabled: true } };
 });
