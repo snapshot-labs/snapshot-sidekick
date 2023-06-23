@@ -31,7 +31,7 @@
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/transactions": "^5.7.0",
     "@ethersproject/wallet": "^5.7.0",
-    "@snapshot-labs/snapshot.js": "^0.4.98",
+    "@snapshot-labs/snapshot.js": "0.4.97",
     "bluebird": "^3.7.2",
     "compression": "^1.7.4",
     "connection-string": "^4.3.6",
