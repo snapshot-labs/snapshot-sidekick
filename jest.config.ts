@@ -16,9 +16,5 @@ export default {
   testEnvironment: 'jest-environment-node-single-context',
   setupFiles: ['dotenv/config'],
   //setupFilesAfterEnv: ['<rootDir>src/setupTests.ts'],
-  moduleFileExtensions: ['js', 'ts'],
-  fakeTimers: {
-    enableGlobally: true,
-    advanceTimers: true
-  }
+  moduleFileExtensions: ['js', 'ts']
 };
