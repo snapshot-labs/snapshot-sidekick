@@ -32,9 +32,9 @@ export default async function payload(
   if (proposerFee < 0 || proposerFee > 100) {
     throw new Error('proposerFee should be between 0 and 100');
   }
+  validateAddresses({ spaceOwner, spaceTreasury });
   const space = await fetchSpace(id);
   await validateSpace(spaceOwner, space);
-  validateAddresses({ spaceOwner, spaceTreasury });
 
   const initializer = getInitializer({
     spaceOwner,
