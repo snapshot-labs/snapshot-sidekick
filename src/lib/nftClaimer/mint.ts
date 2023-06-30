@@ -18,7 +18,7 @@ const MintType = {
   ]
 };
 
-const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK || '1';
+const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK;
 
 export default async function payload(
   proposalAuthor: string,

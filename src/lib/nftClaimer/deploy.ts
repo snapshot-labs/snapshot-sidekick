@@ -13,6 +13,13 @@ const DeployType = {
   ]
 };
 
+const VERIFYING_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
+const IMPLEMENTATION_ADDRESS = getAddress(
+  process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string
+);
+const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK;
+const INITIALIZE_SELECTOR = process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR;
+
 export default async function payload(
   spaceOwner: string,
   id: string,
@@ -37,15 +44,12 @@ export default async function payload(
     proposerFee,
     spaceTreasury
   });
-  const implementationAddress = getAddress(
-    process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string
-  );
   const result = {
     initializer,
     salt,
-    verifyingContract: getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string),
-    implementation: implementationAddress,
-    signature: await generateSignature(implementationAddress, initializer, salt)
+    verifyingContract: VERIFYING_CONTRACT,
+    implementation: IMPLEMENTATION_ADDRESS,
+    signature: await generateSignature(IMPLEMENTATION_ADDRESS, initializer, salt)
   };
 
   console.debug('Signer', signer.address);
@@ -74,7 +78,7 @@ function getInitializer(args: {
   ];
 
   const initializer = abiInterface.encodeFunctionData('initialize', params);
-  const result = `${process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR}${initializer.slice(10)}`;
+  const result = `${INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 
   console.debug('Initializer params', params);
 
@@ -86,8 +90,8 @@ async function generateSignature(implementation: string, initializer: string, sa
     domain: {
       name: 'SpaceCollectionFactory',
       version: '0.1',
-      chainId: process.env.NFT_CLAIMER_NETWORK || '1',
-      verifyingContract: process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT
+      chainId: NFT_CLAIMER_NETWORK,
+      verifyingContract: VERIFYING_CONTRACT
     },
     types: DeployType,
     value: {
