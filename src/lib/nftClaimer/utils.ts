@@ -123,9 +123,11 @@ export function numberizeProposalId(id: string) {
 }
 
 export function validateAddresses(addresses: Record<string, string>) {
-  Object.keys(addresses).map(key => {
-    if (!isAddress(addresses[key])) {
-      throw new Error(`Value for ${key} is not a valid address (${addresses[key]})`);
+  Object.entries(addresses).forEach(([key, value]) => {
+    if (!isAddress(value)) {
+      throw new Error(`Value for ${key} is not a valid address (${value})`);
     }
   });
+
+  return true;
 }
