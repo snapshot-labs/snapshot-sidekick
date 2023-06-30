@@ -60,7 +60,7 @@ export function validateProposal(proposal: Proposal | null, proposer: string) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  if (getAddress(proposer) !== getAddress(proposal.author as string)) {
+  if (getAddress(proposer) !== getAddress(proposal.author)) {
     throw new Error('Proposal author is not matching');
   }
 
