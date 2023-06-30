@@ -3,7 +3,7 @@ import { splitSignature } from '@ethersproject/bytes';
 import { Interface } from '@ethersproject/abi';
 import { fetchSpace } from '../../helpers/snapshot';
 import { signer, validateAddresses, validateSpace } from './utils';
-import abi from './deployAbi.json';
+import abi from './deployImplementationAbi.json';
 
 const DeployType = {
   Deploy: [
