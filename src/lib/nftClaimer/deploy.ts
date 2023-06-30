@@ -77,6 +77,10 @@ function getInitializer(args: {
     getAddress(args.spaceOwner)
   ];
 
+  // This encodeFunctionData should ignore the last 4 params compared to
+  // the smart contract version
+  // TODO Do not forget to remove the last 4 params in the ABI when copy/pasting
+  // from the smart contract
   const initializer = abiInterface.encodeFunctionData('initialize', params);
   const result = `${INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 
