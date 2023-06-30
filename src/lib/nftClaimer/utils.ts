@@ -16,7 +16,7 @@ const requiredEnvKeys = [
   'NFT_CLAIMER_SUBGRAPH_URL'
 ];
 
-const HUB_NETWORK = process.env.NETWORK || '1';
+const HUB_NETWORK = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
 
 const missingEnvKeys: string[] = [];
 requiredEnvKeys.forEach(key => {
