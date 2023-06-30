@@ -141,16 +141,27 @@ export function validateAddresses(addresses: Record<string, string>) {
 export async function snapshotFee() {
   const storage = storageEngine('nft-claimer');
   const keyname = 'snapshotFee';
+  const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
   try {
     const cache = await storage.get(keyname);
     if (typeof cache === 'string') {
-      return cache;
+      const result = JSON.parse(cache);
+
+      if (result.lastUpdate > +new Date() - CACHE_TTL) {
+        return result.snapshotFee;
+      }
     }
 
-    const provider = getDefaultProvider(NFT_CLAIMER_NETWORK, {
-      etherscan: process.env.ETHERSCAN_API_KEY as string
+    const providerOptions: Record<string, string> = {};
+    ['etherscan'].forEach(key => {
+      const envValue = process.env[`${key.toUpperCase()}_API_KEY`];
+      if (!!envValue) {
+        providerOptions[key] = envValue;
+      }
     });
+
+    const provider = getDefaultProvider(NFT_CLAIMER_NETWORK, providerOptions);
 
     const contract = new Contract(
       DEPLOY_CONTRACT,
@@ -158,8 +169,7 @@ export async function snapshotFee() {
       provider
     );
     const result = await contract.snapshotFee();
-
-    await storage.set(keyname, result.toString());
+    await storage.set(keyname, JSON.stringify({ lastUpdate: +new Date(), snapshotFee: result }));
 
     return result;
   } catch (e: any) {
