@@ -42,10 +42,7 @@ export async function validateSpace(address: string, space: Space | null) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  if (
-    process.env.NFT_CLAIMER_NETWORK !== '5' &&
-    (await snapshot.utils.getSpaceController(space.id, HUB_NETWORK)) !== getAddress(address)
-  ) {
+  if (process.env.NFT_CLAIMER_NETWORK !== '5' && !(await isSpaceOwner(space.id, address))) {
     throw new Error('Address is not the space owner');
   }
 
@@ -53,6 +50,10 @@ export async function validateSpace(address: string, space: Space | null) {
   if (contract) {
     throw new Error(`SpaceCollection contract already exist (${contract.id})`);
   }
+}
+
+async function isSpaceOwner(spaceId: string, address: string) {
+  return (await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK)) === getAddress(address);
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
