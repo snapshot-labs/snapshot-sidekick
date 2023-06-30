@@ -43,6 +43,7 @@ export default async function payload(
   const result = {
     initializer,
     salt,
+    verifyingContract: getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string),
     implementation: implementationAddress,
     signature: await generateSignature(implementationAddress, initializer, salt)
   };
