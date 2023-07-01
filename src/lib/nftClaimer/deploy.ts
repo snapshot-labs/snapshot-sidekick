@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { AbiCoder, FormatTypes, Interface } from '@ethersproject/abi';
+import { FormatTypes, Interface } from '@ethersproject/abi';
 import { fetchSpace } from '../../helpers/snapshot';
 import { signer, validateAddresses, validateSpace } from './utils';
 import spaceCollectionAbi from './spaceCollectionImplementationAbi.json';
