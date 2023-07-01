@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET /api/moderation ignores invalid field, and returns only verifiedSpaces 1`] = `
+{
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
+}
+`;
+
+exports[`GET /api/moderation returns multiple list: verifiedSpaces,flaggedProposals 1`] = `
+{
+  "flaggedProposals": [
+    "0x1",
+    "0x2",
+  ],
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
+}
+`;
+
+exports[`GET /api/moderation when list params is empty returns all the list 1`] = `
+{
+  "flaggedLinks": [
+    "https://gogle.com",
+    "https://facebook.com",
+  ],
+  "flaggedProposals": [
+    "0x1",
+    "0x2",
+  ],
+  "flaggedSpaces": [
+    "space3.eth",
+    "space4.eth",
+  ],
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
+  "verifiedTokens": {},
+}
+`;
+
+exports[`GET /api/moderation when list params is set returns only the selected flaggedLinks list 1`] = `
+{
+  "flaggedLinks": [
+    "https://gogle.com",
+    "https://facebook.com",
+  ],
+}
+`;
+
+exports[`GET /api/moderation when list params is set returns only the selected flaggedProposals list 1`] = `
+{
+  "flaggedProposals": [
+    "0x1",
+    "0x2",
+  ],
+}
+`;
+
+exports[`GET /api/moderation when list params is set returns only the selected verifiedSpaces list 1`] = `
+{
+  "verifiedSpaces": [
+    "space1.eth",
+    "space2.eth",
+  ],
+}
+`;

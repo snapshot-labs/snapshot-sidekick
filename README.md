@@ -1,20 +1,18 @@
 # Snapshot/Sidekick
 
-Sidekick is the service serving all proposals' votes CSV report, as well as OpenGraph image.
+Sidekick is the service serving:
+
+- all proposal's votes CSV report
+- Moderation list
+- NFT Claimer trusted backend server
 
 ---
-
-This service is exposing:
-
-- an API endpoint expecting a closed proposal ID, and will
-  return a CSV file with all the given proposal's votes.
-- an API endpoint to fetch [OpenGraph](https://ogp.me/) image for proposal and space
 
 ## Project Setup
 
 ### Requirements
 
-node >= 18.0.0
+node ">=16.0.0 <17.0.0"
 
 ### Dependencies
 
@@ -62,110 +60,113 @@ yarn dev
 yarn lint
 yarn typecheck
 yarn test
+yarn test:e2e
+```
+
+If you have added any E2E tests requiring snapshots update, run:
+
+```bash
+yarn test:e2e:update-snapshot
 ```
 
 ## Usage
 
-### CSV votes report
+### Votes CSV report
+
+Generate and serve votes CSV report for closed proposals.
+
+> NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
 
 #### Fetch a cache file
-
-##### `POST /votes/[PROPOSAL-ID]`
 
 Send a `POST` request with a proposal ID
 
 ```bash
-curl -X POST localhost:3000/votes/[PROPOSAL-ID]
+curl -X POST localhost:3005/api/votes/[PROPOSAL-ID]
 ```
 
 When cached, this request will respond with a stream to a CSV file.
 
-Furthermore, when votes report can be cached, but does not exist yet, a cache generation task will be queued. This enable cache to be generated on-demand.
+When votes report can be cached, but does not exist yet, a cache generation task will be queued.
+This enable cache to be generated on-demand.
+A JSON-RPC success with status code `202` will then be returned, with the progress percentage as `result` message.
+
+```
+{
+  "jsonrpc":"2.0",
+  "result":"15.45",
+  "id":"0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98"
+}
+```
 
 #### Generate a cache file
 
 Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
 
 ```bash
-curl -X POST localhost:3000/votes/generate \
+curl -X POST localhost:3005/webhook \
 -H "Authenticate: WEBHOOK_AUTH_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
 ```
-
-- On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
-- On error, will respond with the same result and codes as the `fetch` endpoint above
-
-The endpoint has been designed to receive events from snapshot webhook service.
-
-Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
-
-### OpenGraph images
-
-#### Fetch an image
-
-##### `GET /og/[TYPE]/[ID]`
-
-Send a `GET` request with an image type and ID
-
-```
-curl -X GET localhost:3000/og/(space|proposal)[PROPOSAL-ID]
-```
-
-This endpoint will return a .png image designed to be used with [OpenGraph](https://ogp.me/) `og:image` meta tag.
-
-The different image types are
-
-| TYPE       | Description                                       | Url format                |
-| ---------- | ------------------------------------------------- | ------------------------- |
-| `space`    | A space image                                     | `/og/space/SPACE_ID`      |
-| `proposal` | A proposal image                                  | `og/proposal/PROPOSAL_ID` |
-| `home`     | A generic image (static image with just the logo) | `og/home`                 |
-
-All the images are built-on demand, and will be cached after the first generation.
-
-Image dimensions are 1200px x 600px, and default returned image format will be PNG.
-
-> For debug purpose, you can also use the `.svg` file extension when polling the endpoint, to preview a high-resolution rendering of the image before conversion to .png
-
-#### Refresh an image
-
-##### `POST /og/refresh`
-
-Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
-
-```
-curl -X POST localhost:3000/og/refresh \
--H "Authenticate: WEBHOOK_AUTH_TOKEN" \
--H "Content-Type: application/json" \
--d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
-```
-
-This endpoint will force the generation of a new image if already cached, or create it if not exist, and is used to receive webhook in order to keep data in images up-to-date.
 
 On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
 
-#### 🛠️ Dev tools
+> This endpoint has been designed to receive events from snapshot webhook service.
 
-A script is provided to generate the image via command line (for dev/test purpose only).
+Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
 
-**Space image**
+### Static moderation list
+
+Return a curated list of moderated data.
+
+#### Retrieve the list
+
+Send a `GET` request
 
 ```bash
-yarn ts-node scripts/og-image-refresh.ts space [SPACE_ID]
-// E.g yarn ts-node scripts/og-image-refresh.ts space cakevote.eth
+curl localhost:3005/api/moderation
 ```
 
-**Proposal image**
+You can also choose to filter the list, with the `?list=` query params.
+Valid values are:
+
+- `flaggedProposals`
+- `flaggedLinks`
+- `verifiedSpaces`
+- `flaggedSpaces`
+
+You can pass multiple list, separated by a comma.
+
+Data are sourced from the json files with the same name, located in this repo `/data` directory, and a remote read-only SQL database.
+
+### NFT Claimer trusted backend
+
+Validate offchain data, and return a signature
+
+#### Sign space
+
+Send a `POST` request with a wallet address, a space ID and a salt
 
 ```bash
-yarn ts-node scripts/og-image-refresh.ts proposal [PROPOSAL_ID]
-// E.g yarn ts-node scripts/og-image-refresh.ts proposal 0xd61485f94b829d1c8189749d695600c06bef45a2b35b106e0630685fbb805362
+curl -X POST http://localhost:3005/api/nft-claimer/deploy/sign -H "Content-Type: application/json" -d '{"id": "gitcoindao.eth", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
 ```
 
-## Error response
+If the given `address` is the space creator, and the space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
 
-When not returning the expected result, all API endpoint will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response:
+#### Sign mint
+
+Send a `POST` request with a wallet address, a proposal ID and a salt
+
+```bash
+curl -X POST http://localhost:3005/api/nft-claimer/mint/sign -H "Content-Type: application/json" -d '{"id": "0x6b703b90d3cd1f82f7c176fc2e566a2bb79e8eb6618a568b52a4f29cb2f8d57b", "address": "0xc2E2B715d9e302947Ec7e312fd2384b5a1296099", "salt": "12345"}'
+```
+
+If given proposal's space has enabled NFT claimer, this endpoint will return a `signature` (e.g. `123abc`).
+
+### Errors
+
+All endpoints will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response on error:
 
 ```bash
 {
@@ -174,17 +175,16 @@ When not returning the expected result, all API endpoint will respond with a [JS
     "code": CODE,
     "message": MESSAGE
   },
-  "id": PROPOSAL-ID
+  "id": ID
 }
 ```
 
-| Description                             | `CODE` | `MESSAGE`           |
-| --------------------------------------- | ------ | ------------------- |
-| When the requested entry does not exist | -40001 | ENTRY_NOT_FOUND     |
-| When the proposal is not closed         | -40004 | PROPOSAL_NOT_CLOSED |
-| When the file is pending generation     | -40010 | PENDING_GENERATION  |
-| Invalid parameters                      | -32600 | Invalid Request     |
-| Other/Unknown/Server Error              | -32603 | INTERNAL_ERROR      |
+| Description                      | `CODE` | `MESSAGE`           |
+| -------------------------------- | ------ | ------------------- |
+| When the proposal does not exist | 404    | PROPOSAL_NOT_FOUND  |
+| When the record does not exist   | 404    | RECORD_NOT_FOUND    |
+| When the proposal is not closed  | -40004 | PROPOSAL_NOT_CLOSED |
+| Other/Unknown/Server Error       | -32603 | INTERNAL_ERROR      |
 
 ## Build for production
 
@@ -195,4 +195,4 @@ yarn start
 
 ## License
 
-[MIT](https://github.com/snapshot-labs/snapshot-sidekick/blob/main/LICENCE)
+[MIT](LICENCE)

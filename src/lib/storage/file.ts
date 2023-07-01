@@ -1,5 +1,4 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
-import log from '../../helpers/log';
 import type { IStorage } from './types';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;
@@ -18,12 +17,11 @@ class File implements IStorage {
   async set(key: string, value: string | Buffer) {
     try {
       writeFileSync(this.#path(key), value);
-      log.info(`[storage:file] File saved to ${this.#path(key)}`);
+      console.log(`[storage:file] File saved to ${this.#path(key)}`);
 
       return true;
     } catch (e) {
-      log.error('[storage:file] Create file failed', e);
-
+      console.error('[storage:file] File storage failed', e);
       throw e;
     }
   }
@@ -34,17 +32,19 @@ class File implements IStorage {
         return false;
       }
 
-      log.info(`[storage:file] File fetched from ${this.#path(key)}`);
+      console.log(`[storage:file] File fetched from ${this.#path(key)}`);
 
       return readFileSync(this.#path(key));
     } catch (e) {
-      log.error('[storage:file] Fetch file failed', e);
+      console.error('[storage:file] Fetch file failed', e);
       return false;
     }
   }
 
   #path(key?: string) {
-    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
+    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key]
+      .filter(p => p)
+      .join('/');
   }
 }
 

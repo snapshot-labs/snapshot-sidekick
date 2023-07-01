@@ -1,15 +1,5 @@
-import type { Readable } from 'stream';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import log from '../../helpers/log';
 import type { IStorage } from './types';
-
-const streamToBuffer = (stream: Readable) =>
-  new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on('data', chunk => chunks.push(chunk));
-    stream.once('end', () => resolve(Buffer.concat(chunks)));
-    stream.once('error', reject);
-  });
 
 const CACHE_PATH = 'public';
 
@@ -26,24 +16,25 @@ class Aws implements IStorage {
       throw new Error('[storage:aws] AWS credentials missing');
     }
 
-    this.client = new S3Client({});
+    this.client = new S3Client({ endpoint: process.env.AWS_ENDPOINT });
     this.subDir = subDir;
   }
 
-  async set(key: string, value: string | Buffer) {
+  async set(key: string, value: string) {
     try {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: this.#path(key),
-        Body: value
+        Body: value,
+        ContentType: 'text/csv; charset=utf-8'
       });
 
       await this.client.send(command);
-      log.error(`[storage:aws] File saved to public/${this.subDir}/${key}`);
+      console.error(`[storage:aws] File saved to ${this.#path(key)}`);
 
       return true;
     } catch (e) {
-      log.error('[storage:aws] Store file failed', e);
+      console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
   }
@@ -56,11 +47,11 @@ class Aws implements IStorage {
       });
       const response = await this.client.send(command);
 
-      log.info(`[storage:aws] File fetched from public/${this.#path(key)}`);
-
-      return streamToBuffer(response.Body as Readable);
-    } catch (e) {
-      log.error('[storage:aws] Fetch file failed', e);
+      return response.Body?.transformToString() || false;
+    } catch (e: any) {
+      if (e['$metadata']?.httpStatusCode !== 404) {
+        console.error('[storage:aws] File fetch failed', e);
+      }
 
       return false;
     }
