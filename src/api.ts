@@ -1,4 +1,5 @@
 import express from 'express';
+import * as Sentry from '@sentry/node';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
@@ -25,11 +26,11 @@ router.post('/votes/:id', async (req, res) => {
       queue(id);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
-      console.error(e);
+      Sentry.captureException(e);
       rpcError(res, e, id);
     }
   } catch (e) {
-    console.error(e);
+    Sentry.captureException(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -40,7 +41,7 @@ router.get('/moderation', async (req, res) => {
   try {
     res.json(await getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
-    console.error(e);
+    Sentry.captureException(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -57,7 +58,7 @@ router.post('/nft-claimer/:type(deploy|mint)/sign', async (req, res) => {
         throw new Error('Invalid Request');
     }
   } catch (e: any) {
-    console.error(e);
+    Sentry.captureException(e);
     return rpcError(res, e, '');
   }
 });

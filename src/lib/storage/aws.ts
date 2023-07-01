@@ -30,7 +30,7 @@ class Aws implements IStorage {
       });
 
       await this.client.send(command);
-      console.error(`[storage:aws] File saved to ${this.#path(key)}`);
+      console.log(`[storage:aws] File saved to ${this.#path(key)}`);
 
       return true;
     } catch (e) {
