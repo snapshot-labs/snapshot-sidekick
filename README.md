@@ -144,6 +144,24 @@ Data are sourced from the json files with the same name, located in this repo `/
 
 Validate offchain data, and return a payload
 
+#### Get global data
+
+Retrieve global data from the smart contract (results are cached in the StorageEngine, with a 60min TTL).
+
+Send a `GET` request to `/api/nft-claimer`
+
+```bash
+curl -X POST localhost:3005/api/nft-claimer
+```
+
+##### Example payload
+
+```json
+{
+  "snapshotFee": 5
+}
+```
+
 #### Sign deploy
 
 Sign and return the payload for the SpaceCollectionFactory contract, in order to deploy a new SpaceCollection contract
