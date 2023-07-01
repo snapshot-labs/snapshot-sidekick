@@ -1,4 +1,10 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectCommand
+} from '@aws-sdk/client-s3';
 import type { IStorage } from './types';
 
 const CACHE_PATH = 'public';
@@ -55,6 +61,46 @@ class Aws implements IStorage {
 
       return false;
     }
+  }
+
+  async list() {
+    try {
+      const command = new ListObjectsV2Command({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: this.#path()
+      });
+      const list = await this.client.send(command);
+
+      return list.Contents || [];
+    } catch (e) {
+      console.error('[storage:aws] List failed', e);
+      return [];
+    }
+  }
+
+  async delete(key: string): Promise<any> {
+    try {
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key
+      });
+      return await this.client.send(command);
+    } catch (e) {
+      console.error('[storage:aws] File delete failed', e);
+      return false;
+    }
+  }
+
+  async clear() {
+    const items = await this.list();
+
+    items.map(item => {
+      if (item.Key) {
+        this.delete(item.Key);
+      }
+    });
+
+    return true;
   }
 
   #path(key?: string) {
