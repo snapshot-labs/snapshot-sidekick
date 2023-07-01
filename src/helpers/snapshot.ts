@@ -4,6 +4,7 @@ import fetch from 'cross-fetch';
 
 export type Proposal = {
   id: string;
+  title: string;
   state: string;
   choices: string[];
   space: Space;
@@ -31,7 +32,10 @@ export type NftClaimer = {
 
 export type Space = {
   id: string;
+  name: string;
+  about?: string;
   network: string;
+  followersCount?: number;
   nftClaimer?: NftClaimer;
 };
 
@@ -72,6 +76,7 @@ const PROPOSAL_QUERY = gql`
   query Proposal($id: String) {
     proposal(id: $id) {
       id
+      title
       state
       choices
       votes
@@ -80,6 +85,18 @@ const PROPOSAL_QUERY = gql`
         id
         network
       }
+    }
+  }
+`;
+
+const SPACE_QUERY = gql`
+  query Space($id: String) {
+    space(id: $id) {
+      id
+      name
+      about
+      network
+      followersCount
     }
   }
 `;
@@ -110,15 +127,6 @@ const VOTES_QUERY = gql`
   }
 `;
 
-const SPACE_QUERY = gql`
-  query Space($id: String) {
-    space(id: $id) {
-      id
-      network
-    }
-  }
-`;
-
 export async function fetchProposal(id: string) {
   const {
     data: { proposal }
@@ -136,13 +144,6 @@ export async function fetchVotes(
   id: string,
   { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
 ) {
-  console.log(id, {
-    first,
-    skip,
-    orderBy,
-    orderDirection,
-    created_gte
-  });
   const {
     data: { votes }
   }: { data: { votes: Vote[] } } = await client.query({
