@@ -3,14 +3,12 @@ import VotesReport from '../../../src/lib/votesReport';
 import FileStorage from '../../../src/lib/storage/file';
 
 describe('VotesReport', () => {
-  const id =
-    '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
-  const weightedId =
-    '0x79ae5f9eb3c710179cfbf706fa451459ddd18d4b0bce37c22aae601128efe927';
+  const id = '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
+  const weightedId = '0x79ae5f9eb3c710179cfbf706fa451459ddd18d4b0bce37c22aae601128efe927';
   let cacheFolder: string;
   let cachePath: string;
   let storageEngine: FileStorage;
-  const space = { id: '', network: '', settings: '' };
+  const space = { id: '', name: '', network: '', settings: '' };
 
   function cachedFilePath(id: string) {
     return `${cachePath}/snapshot-votes-report-${id}.csv`;
@@ -38,47 +36,33 @@ describe('VotesReport', () => {
 
   it.each([
     ['single', id],
-    ['weighted', weightedId],
+    ['weighted', weightedId]
   ])('caches a %s choices votes report', async (type: string, pid: string) => {
     const report = new VotesReport(pid, storageEngine);
     const fetchProposalSpy = jest
       .spyOn(report, 'fetchProposal')
       .mockResolvedValueOnce(
-        JSON.parse(
-          readFileSync(
-            `${__dirname}/../../fixtures/hub-proposal-${pid}.json`,
-            'utf8'
-          )
-        )
+        JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-proposal-${pid}.json`, 'utf8'))
       );
     const fetchAllVotesSpy = jest
       .spyOn(report, 'fetchAllVotes')
       .mockResolvedValueOnce(
-        JSON.parse(
-          readFileSync(
-            `${__dirname}/../../fixtures/hub-votes-${pid}.json`,
-            'utf8'
-          )
-        )
+        JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-votes-${pid}.json`, 'utf8'))
       );
 
     await report.generateCacheFile();
 
-    expect(readFileSync(cachedFilePath(pid))).toEqual(
-      readFileSync(fixtureFilePath(pid))
-    );
+    expect(readFileSync(cachedFilePath(pid))).toEqual(readFileSync(fixtureFilePath(pid)));
     expect(fetchProposalSpy).toHaveBeenCalled();
     expect(fetchAllVotesSpy).toHaveBeenCalled();
   });
 
   describe('canBeCached()', () => {
-    const baseMockedProposal = { id: '', title: '', votes: 0, choices: [] };
+    // const baseMockedProposal = { id: '', title: '', votes: 0, choices: [] };
 
     it('raises an error when the proposal does not exist', () => {
       const report = new VotesReport('test', storageEngine);
-      const votesReportSpy = jest
-        .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce(null);
+      const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce(null);
 
       expect(report.canBeCached()).rejects.toBe('ENTRY_NOT_FOUND');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -86,16 +70,15 @@ describe('VotesReport', () => {
 
     it('raises an error when the proposal is not closed', async () => {
       const report = new VotesReport(id, storageEngine);
-      const votesReportSpy = jest
-        .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({
-          state: 'pending',
-          id: '',
-          votes: 0,
-          author: '',
-          choices: [],
-          space,
-        });
+      const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce({
+        state: 'pending',
+        id: '',
+        title: '',
+        votes: 0,
+        author: '',
+        choices: [],
+        space
+      });
 
       expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
       expect(votesReportSpy).toHaveBeenCalled();
@@ -103,16 +86,15 @@ describe('VotesReport', () => {
 
     it('returns true when the proposal can be cached', async () => {
       const report = new VotesReport(id, storageEngine);
-      const votesReportSpy = jest
-        .spyOn(report, 'fetchProposal')
-        .mockResolvedValueOnce({
-          state: 'closed',
-          id: '',
-          votes: 0,
-          author: '',
-          choices: [],
-          space,
-        });
+      const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce({
+        state: 'closed',
+        id: '',
+        title: '',
+        votes: 0,
+        author: '',
+        choices: [],
+        space
+      });
 
       expect(await report.canBeCached()).toBe(true);
       expect(votesReportSpy).toHaveBeenCalled();
@@ -125,9 +107,7 @@ describe('VotesReport', () => {
         copyFileSync(fixtureFilePath(id), cachedFilePath(id));
         const report = new VotesReport(id, storageEngine);
 
-        expect(await report.cachedFile()).toEqual(
-          readFileSync(fixtureFilePath(id))
-        );
+        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id)));
       });
     });
 

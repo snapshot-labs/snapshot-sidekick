@@ -1,9 +1,4 @@
-import {
-  gql,
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink,
-} from '@apollo/client/core';
+import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import fetch from 'cross-fetch';
 
@@ -46,7 +41,7 @@ export type Space = {
 
 const httpLink = createHttpLink({
   uri: `${process.env.HUB_URL || 'https://hub.snapshot.org'}/graphql`,
-  fetch,
+  fetch
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -60,21 +55,21 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      ...apiHeaders,
-    },
+      ...apiHeaders
+    }
   };
 });
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
-    addTypename: false,
+    addTypename: false
   }),
   defaultOptions: {
     query: {
-      fetchPolicy: 'no-cache',
-    },
-  },
+      fetchPolicy: 'no-cache'
+    }
+  }
 });
 
 const PROPOSAL_QUERY = gql`
@@ -134,12 +129,12 @@ const VOTES_QUERY = gql`
 
 export async function fetchProposal(id: string) {
   const {
-    data: { proposal },
+    data: { proposal }
   }: { data: { proposal: Proposal | null } } = await client.query({
     query: PROPOSAL_QUERY,
     variables: {
-      id,
-    },
+      id
+    }
   });
 
   return proposal;
@@ -147,16 +142,10 @@ export async function fetchProposal(id: string) {
 
 export async function fetchVotes(
   id: string,
-  {
-    first = 1000,
-    skip = 0,
-    orderBy = 'created_gte',
-    orderDirection = 'asc',
-    created_gte = 0,
-  } = {}
+  { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
 ) {
   const {
-    data: { votes },
+    data: { votes }
   }: { data: { votes: Vote[] } } = await client.query({
     query: VOTES_QUERY,
     variables: {
@@ -165,8 +154,8 @@ export async function fetchVotes(
       orderDirection,
       first,
       skip,
-      created_gte,
-    },
+      created_gte
+    }
   });
 
   return votes;
@@ -186,7 +175,7 @@ export async function fetchAllVotes(id: string) {
       skip: page * pageSize,
       created_gte: createdPivot,
       orderBy: 'created',
-      orderDirection: 'asc',
+      orderDirection: 'asc'
     });
     resultsSize = newVotes.length;
 
@@ -214,12 +203,12 @@ export async function fetchAllVotes(id: string) {
 
 export async function fetchSpace(id: string) {
   const {
-    data: { space },
+    data: { space }
   }: { data: { space: Space | null } } = await client.query({
     query: SPACE_QUERY,
     variables: {
-      id,
-    },
+      id
+    }
   });
 
   return space;

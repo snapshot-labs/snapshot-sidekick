@@ -42,9 +42,7 @@ class File implements IStorage {
   }
 
   #path(key?: string) {
-    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key]
-      .filter(p => p)
-      .join('/');
+    return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
   }
 }
 
