@@ -151,7 +151,7 @@ Retrieve global data from the smart contract (results are cached in the StorageE
 Send a `GET` request to `/api/nft-claimer`
 
 ```bash
-curl -X POST localhost:3005/api/nft-claimer
+curl -X GET localhost:3005/api/nft-claimer
 ```
 
 ##### Example payload
