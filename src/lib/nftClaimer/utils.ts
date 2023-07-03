@@ -156,7 +156,7 @@ export async function snapshotFee() {
     const providerOptions: Record<string, string> = {};
     ['etherscan'].forEach(key => {
       const envValue = process.env[`${key.toUpperCase()}_API_KEY`];
-      if (!!envValue) {
+      if (envValue) {
         providerOptions[key] = envValue;
       }
     });
