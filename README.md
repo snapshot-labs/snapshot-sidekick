@@ -1,4 +1,4 @@
-# Snapshot/Sidekick
+# Snapshot/Sidekick [![codecov](https://codecov.io/gh/snapshot-labs/snapshot-sidekick/branch/main/graph/badge.svg?token=Tb16ITll42)](https://codecov.io/gh/snapshot-labs/snapshot-sidekick)
 
 Sidekick is the service serving:
 
