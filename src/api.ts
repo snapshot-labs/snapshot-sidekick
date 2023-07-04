@@ -49,7 +49,7 @@ router.get('/moderation', async (req, res) => {
 
 router.get('/nft-claimer', async (req, res) => {
   try {
-    return res.json({ snapshotFee: await snapshotFee() });
+    return res.json({ snapshotFee: await snapshotFee(!!req.query.force) });
   } catch (e: any) {
     console.error(e);
     return rpcError(res, e, '');
