@@ -10,7 +10,7 @@ export function initLogger(app: Express) {
       ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
     ],
 
-    tracesSampleRate: 0.25
+    tracesSampleRate: parseFloat(process.env.SENTRY_TRACE_SAMPLE_RATE as string)
   });
 
   app.use(Sentry.Handlers.requestHandler());
