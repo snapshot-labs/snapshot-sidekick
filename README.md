@@ -182,6 +182,26 @@ Send a `POST` request with:
 curl -X POST localhost:3005/api/nft-claimer/deploy -H "Content-Type: application/json" -d '{"id": "fabien.eth", "address": "00000000000000000000000000000000000000000000000000000000000004d2", "salt": "123454678", "maxSupply": 100, "mintPrice": 10000, "spaceTreasury": "00000000000000000000000000000000000000000000000000000000000004d2", "proposerFee": 10}'
 ```
 
+#### Sign deploy
+
+Sign and return the payload for the SpaceCollectionFactory contract, in order to deploy a new SpaceCollection contract
+
+Send a `POST` request with:
+
+| `keyname`       | Type           | Description                                                                                       | Example                                                                         |
+| --------------- | -------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `address`       | Wallet address | The sender wallet address                                                                         | `0x00000000000000000000000000000000000000000000000000000000000004d2`            |
+| `id`            | `string`       | A space ID                                                                                        | `fabien.eth`                                                                    |
+| `salt`          | `string`       | A string representation of a BigInt number                                                        | `72536493147621360896130495100276306361343381736075662552878320684807833746288` |
+| `maxSupply`     | `number`       | The maximum number of mintable NFTs for each proposal                                             | `100`                                                                           |
+| `mintPrice`     | `string`       | A string representation a a BigInt number, for the price in wei                                   | `100000000000000000`                                                            |
+| `spaceTreasury` | Wallet address | The wallet address receiving the funds                                                            | `0x00000000000000000000000000000000000000000000000000000000000004d2`            |
+| `proposerFee`   | `number`       | A number between 0 and 100, for the percentage of the mint price reversed to the proposal creator | `5`                                                                             |
+
+```bash
+curl -X POST localhost:3005/api/nft-claimer/deploy -H "Content-Type: application/json" -d '{"id": "fabien.eth", "address": "00000000000000000000000000000000000000000000000000000000000004d2", "salt": "123454678", "maxSupply": 100, "mintPrice": 10000, "spaceTreasury": "00000000000000000000000000000000000000000000000000000000000004d2", "proposerFee": 10}'
+```
+
 If the given `address` is the space controller, and the space has not setup NFT Claimer yet, this endpoint will return a `payload` object, with all parameters required for sending the transaction to the SpaceCollectionFactory contract
 
 ##### Example payload
