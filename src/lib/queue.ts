@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/node';
 import { sleep, storageEngine } from '../helpers/utils';
+import { capture } from '../helpers/sentry';
 import VotesReport from './votesReport';
 
 const queues = new Set<string>();
@@ -12,7 +12,7 @@ async function processItem(id: string) {
     processingItems.set(id, voteReport);
     await voteReport.generateCacheFile();
   } catch (e) {
-    Sentry.captureException(e);
+    capture(e);
     console.error(`[queue] Error while processing item`, e);
   } finally {
     queues.delete(id);
@@ -48,7 +48,7 @@ async function run() {
       processItem(item);
     });
   } catch (e) {
-    Sentry.captureException(e);
+    capture(e);
   } finally {
     await sleep(15e3);
     await run();

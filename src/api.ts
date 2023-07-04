@@ -1,5 +1,5 @@
 import express from 'express';
-import * as Sentry from '@sentry/node';
+import { capture } from './helpers/sentry';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
@@ -27,11 +27,11 @@ router.post('/votes/:id', async (req, res) => {
       queue(id);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
-      Sentry.captureException(e);
+      capture(e);
       rpcError(res, e, id);
     }
   } catch (e) {
-    Sentry.captureException(e);
+    capture(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -42,7 +42,7 @@ router.get('/moderation', async (req, res) => {
   try {
     res.json(await getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
-    Sentry.captureException(e);
+    capture(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -54,7 +54,7 @@ router.post('/nft-claimer/deploy', async (req, res) => {
       await deployPayload(address, id, maxSupply, mintPrice, proposerFee, salt, spaceTreasury)
     );
   } catch (e: any) {
-    Sentry.captureException(e);
+    capture(e);
     return rpcError(res, e, salt);
   }
 });
@@ -64,7 +64,7 @@ router.post('/nft-claimer/mint', async (req, res) => {
   try {
     return res.json(await mintPayload(proposalAuthor, address, id, salt));
   } catch (e: any) {
-    Sentry.captureException(e);
+    capture(e);
     return rpcError(res, e, salt);
   }
 });

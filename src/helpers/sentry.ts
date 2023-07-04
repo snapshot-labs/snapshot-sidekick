@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 import type { Express } from 'express';
 
-export function initSentry(app: Express) {
+export function initLogger(app: Express) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     integrations: [
@@ -17,10 +17,14 @@ export function initSentry(app: Express) {
   app.use(Sentry.Handlers.tracingHandler());
 }
 
-export function sentryFallback(app: Express) {
+export function fallbackLogger(app: Express) {
   app.use(Sentry.Handlers.errorHandler());
   app.use(function onError(err: any, req: any, res: any) {
     res.statusCode = 500;
     res.end(`${res.sentry}\n`);
   });
+}
+
+export function capture(e: any) {
+  Sentry.captureException(e);
 }

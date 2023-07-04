@@ -10,12 +10,12 @@ import webhook from './webhook';
 import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
-import { initSentry, sentryFallback } from './helpers/sentry';
+import { initLogger, fallbackLogger } from './helpers/sentry';
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
-initSentry(app);
+initLogger(app);
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   });
 });
 
-sentryFallback(app);
+fallbackLogger(app);
 
 app.use((_, res) => {
   rpcError(res, 'RECORD_NOT_FOUND', '');
