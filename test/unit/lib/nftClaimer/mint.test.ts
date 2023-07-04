@@ -75,5 +75,27 @@ describe('nftClaimer', () => {
         expect(recoveredSigner).toEqual(signer);
       });
     });
+
+    describe('when spaceCollection is not found', () => {
+      it.todo('throws a SpaceCollection not found error');
+    });
+
+    describe('when proposalAuthor is invalid', () => {
+      it.todo('throws an error');
+    });
+
+    describe('when space has closed minting', () => {
+      it.todo('throws an error');
+    });
+
+    describe('when maxSupply has been reached', () => {
+      it.todo('throws an error');
+    });
+
+    describe('when passing invalid values', () => {
+      it.todo('throws an error when the proposalAuthor is invalid');
+      it.todo('throws an error when the address is invalid');
+      it.todo('throws an error when the salt it not a number');
+    });
   });
 });

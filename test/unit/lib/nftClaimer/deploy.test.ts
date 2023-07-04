@@ -89,5 +89,23 @@ describe('nftClaimer', () => {
         expect(recoveredSigner).toEqual(signer.address);
       });
     });
+
+    describe('when a contract has already been deployed', () => {
+      it.todo('throws an error');
+    });
+
+    describe('when the user is not the space owner', () => {
+      it.todo('throws an error');
+    });
+
+    describe('when passing invalid values', () => {
+      it.todo('throws an error when the spaceOwer address is not valid');
+      it.todo('throws an error when the spaceTreasury address is not valid');
+      it.todo('throws an error when the salt is not a number');
+      it.todo('throws an error when the maxSupply is not a number');
+      it.todo('throws an error when the mintPrice is not a number');
+      it.todo('throws an error when the proposerFee is not a number');
+      it.todo('throws an error when the proposerFee exceeding the max value');
+    });
   });
 });
