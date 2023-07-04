@@ -6,6 +6,12 @@
 export default {
   clearMocks: true,
   collectCoverage: true,
+  collectCoverageFrom: ['./src/**'],
+  coverageThreshold: {
+    global: {
+      lines: 50
+    }
+  },
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
 
