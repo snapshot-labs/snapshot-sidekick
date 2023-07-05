@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit",
     "test": "dotenv -e test/.env.test jest test/unit/",
     "test:e2e": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'dotenv -e test/.env.test jest --runInBand --collectCoverage=false test/e2e/'",
-    "test:e2e:update-snapshot": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'jest --runInBand --updateSnapshot test/e2e/'"
+    "test:e2e:update-snapshot": "PORT=3003 start-server-and-test 'yarn start:test' 3003 'dotenv -e test/.env.test jest --runInBand --collectCoverage=false --updateSnapshot test/e2e/'"
   },
   "eslintConfig": {
     "extends": "@snapshot-labs"
