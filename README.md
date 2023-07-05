@@ -60,7 +60,9 @@ yarn dev
 yarn lint
 yarn typecheck
 yarn test
-yarn test:e2e
+
+# yarn test:unit to run only unit tests
+# yarn test:e2e to run only E2E tests
 ```
 
 If you have added any E2E tests requiring snapshots update, run:
