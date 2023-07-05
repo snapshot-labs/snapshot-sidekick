@@ -7,7 +7,6 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import type { Proposal, Space } from '../../helpers/snapshot';
-import { storageEngine } from '../../helpers/utils';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
@@ -137,31 +136,15 @@ export function validateAddresses(addresses: Record<string, string>) {
   return true;
 }
 
-export async function snapshotFee(force = false) {
-  const storage = storageEngine('nft-claimer');
-  const keyname = 'snapshotFee';
-  const CACHE_TTL = 60 * 60 * 1000; // 1 hour
-
+export async function snapshotFee() {
   try {
-    const cache = await storage.get(keyname);
-    if (typeof cache === 'string') {
-      const result = JSON.parse(cache);
-
-      if (result.lastUpdate > +new Date() - CACHE_TTL && !force) {
-        return result.snapshotFee;
-      }
-    }
-
     const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
     const contract = new Contract(
       DEPLOY_CONTRACT,
       ['function snapshotFee() public view returns (uint8)'],
       provider
     );
-    const result = await contract.snapshotFee();
-    await storage.set(keyname, JSON.stringify({ lastUpdate: +new Date(), snapshotFee: result }));
-
-    return result;
+    return contract.snapshotFee();
   } catch (e: any) {
     console.error(e);
     throw 'Unable to retrieve the snapshotFee';
