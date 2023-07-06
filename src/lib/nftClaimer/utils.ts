@@ -3,6 +3,7 @@ import fetch from 'cross-fetch';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
+import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import type { Proposal, Space } from '../../helpers/snapshot';
@@ -17,6 +18,8 @@ const requiredEnvKeys = [
 ];
 
 const HUB_NETWORK = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
+const DEPLOY_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
+const NFT_CLAIMER_NETWORK = parseInt(process.env.NFT_CLAIMER_NETWORK as string);
 
 const missingEnvKeys: string[] = [];
 requiredEnvKeys.forEach(key => {
@@ -42,7 +45,7 @@ export async function validateSpace(address: string, space: Space | null) {
     throw new Error('RECORD_NOT_FOUND');
   }
 
-  if (process.env.NFT_CLAIMER_NETWORK !== '5' && !(await isSpaceOwner(space.id, address))) {
+  if (NFT_CLAIMER_NETWORK !== 5 && !(await isSpaceOwner(space.id, address))) {
     throw new Error('Address is not the space owner');
   }
 
@@ -131,4 +134,19 @@ export function validateAddresses(addresses: Record<string, string>) {
   });
 
   return true;
+}
+
+export async function snapshotFee() {
+  try {
+    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
+    const contract = new Contract(
+      DEPLOY_CONTRACT,
+      ['function snapshotFee() public view returns (uint8)'],
+      provider
+    );
+    return contract.snapshotFee();
+  } catch (e: any) {
+    console.error(e);
+    throw 'Unable to retrieve the snapshotFee';
+  }
 }
