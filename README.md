@@ -1,4 +1,4 @@
-# Snapshot/Sidekick
+# Snapshot/Sidekick [![codecov](https://codecov.io/gh/snapshot-labs/snapshot-sidekick/branch/main/graph/badge.svg?token=Tb16ITll42)](https://codecov.io/gh/snapshot-labs/snapshot-sidekick)
 
 Sidekick is the service serving:
 
@@ -143,6 +143,24 @@ Data are sourced from the json files with the same name, located in this repo `/
 ### NFT Claimer trusted backend
 
 Validate offchain data, and return a payload
+
+#### Get global data
+
+Retrieve global data from the smart contract.
+
+Send a `GET` request to `/api/nft-claimer`
+
+```bash
+curl -X GET localhost:3005/api/nft-claimer
+```
+
+##### Example payload
+
+```json
+{
+  "snapshotFee": 5
+}
+```
 
 #### Sign deploy
 
