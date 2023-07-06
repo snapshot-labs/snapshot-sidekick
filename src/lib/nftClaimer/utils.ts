@@ -144,6 +144,7 @@ export async function snapshotFee() {
       ['function snapshotFee() public view returns (uint8)'],
       provider
     );
+
     return contract.snapshotFee();
   } catch (e: any) {
     console.error(e);

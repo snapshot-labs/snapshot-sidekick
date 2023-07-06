@@ -146,7 +146,7 @@ Validate offchain data, and return a payload
 
 #### Get global data
 
-Retrieve global data from the smart contract (results are cached in the StorageEngine, with a 60min TTL).
+Retrieve global data from the smart contract.
 
 Send a `GET` request to `/api/nft-claimer`
 
@@ -182,26 +182,6 @@ Send a `POST` request with:
 curl -X POST localhost:3005/api/nft-claimer/deploy -H "Content-Type: application/json" -d '{"id": "fabien.eth", "address": "00000000000000000000000000000000000000000000000000000000000004d2", "salt": "123454678", "maxSupply": 100, "mintPrice": 10000, "spaceTreasury": "00000000000000000000000000000000000000000000000000000000000004d2", "proposerFee": 10}'
 ```
 
-#### Sign deploy
-
-Sign and return the payload for the SpaceCollectionFactory contract, in order to deploy a new SpaceCollection contract
-
-Send a `POST` request with:
-
-| `keyname`       | Type           | Description                                                                                       | Example                                                                         |
-| --------------- | -------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `address`       | Wallet address | The sender wallet address                                                                         | `0x00000000000000000000000000000000000000000000000000000000000004d2`            |
-| `id`            | `string`       | A space ID                                                                                        | `fabien.eth`                                                                    |
-| `salt`          | `string`       | A string representation of a BigInt number                                                        | `72536493147621360896130495100276306361343381736075662552878320684807833746288` |
-| `maxSupply`     | `number`       | The maximum number of mintable NFTs for each proposal                                             | `100`                                                                           |
-| `mintPrice`     | `string`       | A string representation a a BigInt number, for the price in wei                                   | `100000000000000000`                                                            |
-| `spaceTreasury` | Wallet address | The wallet address receiving the funds                                                            | `0x00000000000000000000000000000000000000000000000000000000000004d2`            |
-| `proposerFee`   | `number`       | A number between 0 and 100, for the percentage of the mint price reversed to the proposal creator | `5`                                                                             |
-
-```bash
-curl -X POST localhost:3005/api/nft-claimer/deploy -H "Content-Type: application/json" -d '{"id": "fabien.eth", "address": "00000000000000000000000000000000000000000000000000000000000004d2", "salt": "123454678", "maxSupply": 100, "mintPrice": 10000, "spaceTreasury": "00000000000000000000000000000000000000000000000000000000000004d2", "proposerFee": 10}'
-```
-
 If the given `address` is the space controller, and the space has not setup NFT Claimer yet, this endpoint will return a `payload` object, with all parameters required for sending the transaction to the SpaceCollectionFactory contract
 
 ##### Example payload
@@ -210,6 +190,7 @@ If the given `address` is the space controller, and the space has not setup NFT 
 {
   "initializer": "0x977b0efb00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000091fd2c8d24767db4ece7069aa27832ffaf8590f300000000000000000000000091fd2c8d24767db4ece7069aa27832ffaf8590f300000000000000000000000000000000000000000000000000000000000000075465737444414f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e3100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007656e732e65746800000000000000000000000000000000000000000000000000",
   "salt": "123454678",
+  "abi": "function deployProxy(address implementation, bytes initializer, uint256 salt, uint8 v, bytes32 r, bytes32 s)",
   "implementation": "0x33505720a7921d23E6b02EB69623Ed6A008Ca511",
   "signature": {
     "r": "0xac72b099abc370f7dadca09110907fd0856d1e343b64dcb13bc4a55fa00fc8de",
@@ -251,6 +232,7 @@ If given proposal's space has enabled NFT claimer, and there are still mintable 
   "proposer": "0x1abb90a506a352e51d587b0ee8c387c0b129ea018aa77345fe7b5c2defa7d150",
   "recipient": "0x1abb90a506a352e51d587b0ee8c387c0b129ea018aa77345fe7b5c2defa7d150",
   "spaceId": "fabien.eth",
+  "abi": "function mint(address proposer, uint256 proposalId, uint256 salt, uint8 v, bytes32 r, bytes32 s)",
   "proposalId": "72536493147621360896130495100276306361343381736075662552878320684807833746288",
   "signature": {
     "r": "0xac72b099abc370f7dadca09110907fd0856d1e343b64dcb13bc4a55fa00fc8de",
