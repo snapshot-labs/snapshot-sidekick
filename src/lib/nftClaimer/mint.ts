@@ -8,6 +8,8 @@ import {
   numberizeProposalId,
   validateAddresses
 } from './utils';
+import abi from './spaceCollectionImplementationAbi.json';
+import { FormatTypes, Interface } from '@ethersproject/abi';
 
 const MintType = {
   Mint: [
@@ -45,7 +47,8 @@ export default async function payload(
     contractAddress: verifyingContract,
     spaceId: proposal?.space.id,
     ...message,
-    salt
+    salt,
+    abi: new Interface(abi).getFunction('mint').format(FormatTypes.full)
   };
 }
 

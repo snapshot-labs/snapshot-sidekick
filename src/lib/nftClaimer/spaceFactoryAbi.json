@@ -1,0 +1,37 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "implementation", "type": "address" },
+      { "internalType": "bytes", "name": "initializer", "type": "bytes" },
+      { "internalType": "uint256", "name": "salt", "type": "uint256" },
+      { "internalType": "uint8", "name": "v", "type": "uint8" },
+      { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+      { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+    ],
+    "name": "deployProxy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+
+  {
+    "inputs": [],
+    "name": "snapshotFee",
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+
+  {
+    "inputs": [
+      { "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" },
+      { "internalType": "address", "name": "_snapshotOwner", "type": "address" },
+      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" },
+      { "internalType": "address", "name": "_verifiedSigner", "type": "address" }
+    ],
+    "name": "updateFactorySettings",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

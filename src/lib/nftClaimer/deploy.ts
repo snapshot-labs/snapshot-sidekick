@@ -1,9 +1,10 @@
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { Interface } from '@ethersproject/abi';
+import { FormatTypes, Interface } from '@ethersproject/abi';
 import { fetchSpace } from '../../helpers/snapshot';
 import { signer, validateDeployInput, validateSpace } from './utils';
-import abi from './deployImplementationAbi.json';
+import spaceCollectionAbi from './spaceCollectionImplementationAbi.json';
+import spaceFactoryAbi from './spaceFactoryAbi.json';
 
 const DeployType = {
   Deploy: [
@@ -45,6 +46,7 @@ export default async function payload(input: {
   const result = {
     initializer,
     salt: params.salt,
+    abi: new Interface(spaceFactoryAbi).getFunction('deployProxy').format(FormatTypes.full),
     verifyingContract: VERIFYING_CONTRACT,
     implementation: IMPLEMENTATION_ADDRESS,
     signature: await generateSignature(IMPLEMENTATION_ADDRESS, initializer, params.salt)
@@ -64,7 +66,6 @@ function getInitializer(args: {
   spaceTreasury: string;
   spaceOwner: string;
 }) {
-  const abiInterface = new Interface(abi);
   const params = [
     args.spaceId,
     '0.1',
@@ -79,7 +80,7 @@ function getInitializer(args: {
   // the smart contract version
   // NOTE Do not forget to remove the last 4 params in the ABI when copy/pasting
   // from the smart contract
-  const initializer = abiInterface.encodeFunctionData('initialize', params);
+  const initializer = new Interface(spaceCollectionAbi).encodeFunctionData('initialize', params);
   const result = `${INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 
   console.debug('Initializer params', params);
