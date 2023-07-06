@@ -136,7 +136,7 @@ export function validateAddresses(addresses: Record<string, string>) {
   return true;
 }
 
-export function validateNumbers(numbers: Record<string, string>) {
+function validateNumbers(numbers: Record<string, string>) {
   Object.entries(numbers).forEach(([key, value]) => {
     try {
       BigNumber.from(value).toString();
@@ -149,22 +149,27 @@ export function validateNumbers(numbers: Record<string, string>) {
   return true;
 }
 
-export function validateProposerFee(fee: number) {
+export async function validateProposerFee(fee: number) {
   if (fee < 0 || fee > 100) {
     throw new Error('proposerFee should be between 0 and 100');
+  }
+
+  const sFee = await snapshotFee();
+  if (sFee + fee > 100) {
+    throw new Error(`proposerFee should not be greater than ${100 - sFee}`);
   }
 
   return true;
 }
 
-export function validateDeployInput(params: any) {
+export async function validateDeployInput(params: any) {
   validateAddresses({ spaceOwner: params.spaceOwner, spaceTreasury: params.spaceTreasury });
   validateNumbers({
     maxSupply: params.maxSupply,
     proposerFee: params.proposerFee,
     mintPrice: params.mintPrice
   });
-  validateProposerFee(parseInt(params.proposerFee));
+  await validateProposerFee(parseInt(params.proposerFee));
 
   return {
     proposerFee: parseInt(params.proposerFee),
@@ -174,7 +179,7 @@ export function validateDeployInput(params: any) {
   };
 }
 
-export async function snapshotFee() {
+export async function snapshotFee(): Promise<number> {
   try {
     const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
     const contract = new Contract(

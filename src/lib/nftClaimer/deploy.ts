@@ -30,7 +30,7 @@ export default async function payload(input: {
   salt: string;
   spaceTreasury: string;
 }) {
-  const params = validateDeployInput(input);
+  const params = await validateDeployInput(input);
 
   const space = await fetchSpace(params.id);
   await validateSpace(params.spaceOwner, space);

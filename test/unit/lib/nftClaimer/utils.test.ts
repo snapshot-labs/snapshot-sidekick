@@ -1,4 +1,4 @@
-import { validateAddresses } from '../../../../src/lib/nftClaimer/utils';
+import { validateAddresses, validateProposerFee } from '../../../../src/lib/nftClaimer/utils';
 
 describe('NFTClaimer/utils', () => {
   describe('validateAddresses()', () => {
@@ -17,6 +17,14 @@ describe('NFTClaimer/utils', () => {
           contractB: 'hello-world'
         });
       }).toThrowError();
+    });
+  });
+
+  describe('validateProposerFee()', () => {
+    it('throws an error when proposerFee + snapshotFee > 100', () => {
+      return expect(async () => {
+        await validateProposerFee(100);
+      }).rejects.toThrow();
     });
   });
 });

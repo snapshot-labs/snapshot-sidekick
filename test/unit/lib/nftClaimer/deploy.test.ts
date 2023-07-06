@@ -143,8 +143,6 @@ describe('nftClaimer', () => {
           await payload({ ...input, proposerFee: '-5' });
         }).rejects.toThrow();
       });
-
-      it.todo('throwns an error when the proposerFee is exceeding the maximum allowed value');
     });
   });
 });
