@@ -5,6 +5,7 @@ import VotesReport from './lib/votesReport';
 import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
+import { snapshotFee } from './lib/nftClaimer/utils';
 
 const router = express.Router();
 
@@ -43,6 +44,15 @@ router.get('/moderation', async (req, res) => {
   } catch (e) {
     console.error(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
+  }
+});
+
+router.get('/nft-claimer', async (req, res) => {
+  try {
+    return res.json({ snapshotFee: await snapshotFee() });
+  } catch (e: any) {
+    console.error(e);
+    return rpcError(res, e, '');
   }
 });
 
