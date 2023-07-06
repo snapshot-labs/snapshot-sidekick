@@ -25,14 +25,16 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   };
 });
 
+const NAN = ['', false, null, 'test'];
+
 describe('nftClaimer', () => {
   describe('payload()', () => {
     const spaceOwner = '0x5EF29cf961cf3Fc02551B9BdaDAa4418c446c5dd';
     const spaceTreasury = '0x5EF29cf961cf3Fc02551B9BdaDAa4418c446c5dd';
     const spaceId = 'TestDAO';
-    const maxSupply = 10;
+    const maxSupply = '10';
     const mintPrice = '100000000000000000';
-    const proposerFee = 10;
+    const proposerFee = '10';
     const salt = '72536493147621360896130495100276306361343381736075662552878320684807833746288';
 
     // Signature expected by the smart contract
@@ -46,17 +48,19 @@ describe('nftClaimer', () => {
     const expectedInitializer =
       '0x977b0efb00000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000016345785d8a0000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000005ef29cf961cf3fc02551b9bdadaa4418c446c5dd0000000000000000000000005ef29cf961cf3fc02551b9bdadaa4418c446c5dd00000000000000000000000000000000000000000000000000000000000000075465737444414f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e310000000000000000000000000000000000000000000000000000000000';
 
+    const input = {
+      spaceOwner,
+      id: spaceId,
+      maxSupply,
+      mintPrice,
+      proposerFee,
+      salt,
+      spaceTreasury
+    };
+
     describe('when deployable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
-        const { signature } = await payload(
-          spaceOwner,
-          spaceId,
-          maxSupply,
-          mintPrice,
-          proposerFee,
-          salt,
-          spaceTreasury
-        );
+        const { signature } = await payload(input);
 
         expect(mockValidateSpace).toHaveBeenCalled();
         expect(signature.r).toEqual(expectedScSignature.r);
@@ -65,15 +69,7 @@ describe('nftClaimer', () => {
       });
 
       it('generates the same initializer as the smart contract from the data', async () => {
-        const { initializer } = await payload(
-          spaceOwner,
-          spaceId,
-          maxSupply,
-          mintPrice,
-          proposerFee,
-          salt,
-          spaceTreasury
-        );
+        const { initializer } = await payload(input);
 
         expect(mockValidateSpace).toHaveBeenCalled();
         expect(initializer).toEqual(expectedInitializer);
@@ -90,22 +86,65 @@ describe('nftClaimer', () => {
       });
     });
 
-    describe('when a contract has already been deployed', () => {
-      it.todo('throws an error');
-    });
+    describe('when the space validation failed', () => {
+      it('throws an error', () => {
+        mockValidateSpace.mockImplementation(() => {
+          throw new Error();
+        });
 
-    describe('when the user is not the space owner', () => {
-      it.todo('throws an error');
+        expect(async () => {
+          await payload(input);
+        }).rejects.toThrow();
+      });
     });
 
     describe('when passing invalid values', () => {
-      it.todo('throws an error when the spaceOwer address is not valid');
-      it.todo('throws an error when the spaceTreasury address is not valid');
-      it.todo('throws an error when the salt is not a number');
-      it.todo('throws an error when the maxSupply is not a number');
-      it.todo('throws an error when the mintPrice is not a number');
-      it.todo('throws an error when the proposerFee is not a number');
-      it.todo('throws an error when the proposerFee exceeding the max value');
+      it('throws an error when the spaceOwer address is not valid', () => {
+        expect(async () => {
+          await payload({ ...input, spaceOwner: 'test' });
+        }).rejects.toThrow();
+      });
+
+      it('throws an error when the spaceTreasury address is not valid', () => {
+        expect(async () => {
+          await payload({ ...input, spaceTreasury: 'test' });
+        }).rejects.toThrow();
+      });
+
+      it.each(NAN)('throws an error when the salt is not a number (%s)', val => {
+        expect(async () => {
+          await payload({ ...input, salt: val as any });
+        }).rejects.toThrow();
+      });
+
+      it.each(NAN)('throws an error when the maxSupply is not a number (%s', val => {
+        expect(async () => {
+          await payload({ ...input, maxSupply: val as any });
+        }).rejects.toThrow();
+      });
+
+      it.each(NAN)('throws an error when the mintPrice is not a number (%s)', val => {
+        expect(async () => {
+          await payload({ ...input, mintPrice: val as any });
+        }).rejects.toThrow();
+      });
+
+      it.each(NAN)('throws an error when the proposerFee is not a number (%s)', val => {
+        expect(async () => {
+          await payload({ ...input, proposerFee: val as any });
+        }).rejects.toThrow();
+      });
+
+      it('throws an error when the proposerFee is out or range', () => {
+        expect(async () => {
+          await payload({ ...input, proposerFee: '101' });
+        }).rejects.toThrow();
+        expect(async () => {
+          await payload({ ...input, proposerFee: '-5' });
+        }).rejects.toThrow();
+      });
+
+      it.todo('throwns an error when the proposerFee is exceeding the maximum allowed value');
     });
   });
 });

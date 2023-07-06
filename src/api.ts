@@ -50,7 +50,15 @@ router.post('/nft-claimer/deploy', async (req, res) => {
   const { address, id, salt, maxSupply, mintPrice, spaceTreasury, proposerFee } = req.body;
   try {
     return res.json(
-      await deployPayload(address, id, maxSupply, mintPrice, proposerFee, salt, spaceTreasury)
+      await deployPayload({
+        spaceOwner: address,
+        id,
+        maxSupply,
+        mintPrice,
+        proposerFee,
+        salt,
+        spaceTreasury
+      })
     );
   } catch (e: any) {
     console.error(e);

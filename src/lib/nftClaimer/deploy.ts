@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
 import { Interface } from '@ethersproject/abi';
 import { fetchSpace } from '../../helpers/snapshot';
-import { signer, validateAddresses, validateSpace } from './utils';
+import { signer, validateDeployInput, validateSpace } from './utils';
 import abi from './deployAbi.json';
 
 const DeployType = {
@@ -20,36 +20,34 @@ const IMPLEMENTATION_ADDRESS = getAddress(
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK;
 const INITIALIZE_SELECTOR = process.env.NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR;
 
-export default async function payload(
-  spaceOwner: string,
-  id: string,
-  maxSupply: number,
-  mintPrice: string,
-  proposerFee: number,
-  salt: string,
-  spaceTreasury: string
-) {
-  if (proposerFee < 0 || proposerFee > 100) {
-    throw new Error('proposerFee should be between 0 and 100');
-  }
-  validateAddresses({ spaceOwner, spaceTreasury });
-  const space = await fetchSpace(id);
-  await validateSpace(spaceOwner, space);
+export default async function payload(input: {
+  spaceOwner: string;
+  id: string;
+  maxSupply: string;
+  mintPrice: string;
+  proposerFee: string;
+  salt: string;
+  spaceTreasury: string;
+}) {
+  const params = validateDeployInput(input);
+
+  const space = await fetchSpace(params.id);
+  await validateSpace(params.spaceOwner, space);
 
   const initializer = getInitializer({
-    spaceOwner,
+    spaceOwner: params.spaceOwner,
     spaceId: space?.id as string,
-    maxSupply,
-    mintPrice,
-    proposerFee,
-    spaceTreasury
+    maxSupply: params.maxSupply,
+    mintPrice: params.mintPrice,
+    proposerFee: params.proposerFee,
+    spaceTreasury: params.spaceTreasury
   });
   const result = {
     initializer,
-    salt,
+    salt: params.salt,
     verifyingContract: VERIFYING_CONTRACT,
     implementation: IMPLEMENTATION_ADDRESS,
-    signature: await generateSignature(IMPLEMENTATION_ADDRESS, initializer, salt)
+    signature: await generateSignature(IMPLEMENTATION_ADDRESS, initializer, params.salt)
   };
 
   console.debug('Signer', signer.address);

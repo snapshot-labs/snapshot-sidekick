@@ -132,3 +132,41 @@ export function validateAddresses(addresses: Record<string, string>) {
 
   return true;
 }
+
+export function validateNumbers(numbers: Record<string, string>) {
+  Object.entries(numbers).forEach(([key, value]) => {
+    try {
+      BigNumber.from(value).toString();
+    } catch (e: any) {
+      console.error(e);
+      throw new Error(`Value for ${key} is not a valid number (${value})`);
+    }
+  });
+
+  return true;
+}
+
+export function validateProposerFee(fee: number) {
+  if (fee < 0 || fee > 100) {
+    throw new Error('proposerFee should be between 0 and 100');
+  }
+
+  return true;
+}
+
+export function validateDeployInput(params: any) {
+  validateAddresses({ spaceOwner: params.spaceOwner, spaceTreasury: params.spaceTreasury });
+  validateNumbers({
+    maxSupply: params.maxSupply,
+    proposerFee: params.proposerFee,
+    mintPrice: params.mintPrice
+  });
+  validateProposerFee(parseInt(params.proposerFee));
+
+  return {
+    proposerFee: parseInt(params.proposerFee),
+    maxSupply: parseInt(params.maxSupply),
+    mintPrice: parseInt(params.mintPrice),
+    ...params
+  };
+}
