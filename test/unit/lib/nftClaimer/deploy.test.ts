@@ -58,9 +58,13 @@ describe('nftClaimer', () => {
       spaceTreasury
     };
 
+    function getPayload(customParams = {}) {
+      return payload({ ...input, ...customParams });
+    }
+
     describe('when deployable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
-        const { signature } = await payload(input);
+        const { signature } = await getPayload();
 
         expect(mockValidateSpace).toHaveBeenCalled();
         expect(signature.r).toEqual(expectedScSignature.r);
@@ -69,7 +73,7 @@ describe('nftClaimer', () => {
       });
 
       it('generates the same initializer as the smart contract from the data', async () => {
-        const { initializer } = await payload(input);
+        const { initializer } = await getPayload();
 
         expect(mockValidateSpace).toHaveBeenCalled();
         expect(initializer).toEqual(expectedInitializer);
@@ -92,56 +96,38 @@ describe('nftClaimer', () => {
           throw new Error();
         });
 
-        expect(async () => {
-          await payload(input);
-        }).rejects.toThrow();
+        expect(async () => await getPayload()).rejects.toThrow();
       });
     });
 
     describe('when passing invalid values', () => {
       it('throws an error when the spaceOwer address is not valid', () => {
-        expect(async () => {
-          await payload({ ...input, spaceOwner: 'test' });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ spaceOwner: 'test' })).rejects.toThrow();
       });
 
       it('throws an error when the spaceTreasury address is not valid', () => {
-        expect(async () => {
-          await payload({ ...input, spaceTreasury: 'test' });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ spaceTreasury: 'test' })).rejects.toThrow();
       });
 
       it.each(NAN)('throws an error when the salt is not a number (%s)', val => {
-        expect(async () => {
-          await payload({ ...input, salt: val as any });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ salt: val as any })).rejects.toThrow();
       });
 
       it.each(NAN)('throws an error when the maxSupply is not a number (%s', val => {
-        expect(async () => {
-          await payload({ ...input, maxSupply: val as any });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ maxSupply: val as any })).rejects.toThrow();
       });
 
       it.each(NAN)('throws an error when the mintPrice is not a number (%s)', val => {
-        expect(async () => {
-          await payload({ ...input, mintPrice: val as any });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ mintPrice: val as any })).rejects.toThrow();
       });
 
       it.each(NAN)('throws an error when the proposerFee is not a number (%s)', val => {
-        expect(async () => {
-          await payload({ ...input, proposerFee: val as any });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ proposerFee: val as any })).rejects.toThrow();
       });
 
       it('throws an error when the proposerFee is out or range', () => {
-        expect(async () => {
-          await payload({ ...input, proposerFee: '101' });
-        }).rejects.toThrow();
-        expect(async () => {
-          await payload({ ...input, proposerFee: '-5' });
-        }).rejects.toThrow();
+        expect(async () => await getPayload({ proposerFee: '101' })).rejects.toThrow();
+        expect(async () => await getPayload({ proposerFee: '-5' })).rejects.toThrow();
       });
     });
   });
