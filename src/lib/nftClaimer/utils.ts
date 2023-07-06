@@ -167,14 +167,30 @@ export async function validateDeployInput(params: any) {
   validateNumbers({
     maxSupply: params.maxSupply,
     proposerFee: params.proposerFee,
-    mintPrice: params.mintPrice
+    mintPrice: params.mintPrice,
+    salt: params.salt
   });
   await validateProposerFee(parseInt(params.proposerFee));
 
   return {
+    spaceOwner: getAddress(params.spaceOwner),
+    spaceTreasury: getAddress(params.spaceTreasury),
     proposerFee: parseInt(params.proposerFee),
     maxSupply: parseInt(params.maxSupply),
     mintPrice: parseInt(params.mintPrice),
+    ...params
+  };
+}
+
+export async function validateMintInput(params: any) {
+  validateAddresses({ proposalAuthor: params.proposalAuthor, recipient: params.recipient });
+  validateNumbers({
+    salt: params.salt
+  });
+
+  return {
+    proposalAuthor: getAddress(params.proposalAuthor),
+    recipient: getAddress(params.recipient),
     ...params
   };
 }

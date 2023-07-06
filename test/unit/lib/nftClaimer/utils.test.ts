@@ -27,4 +27,8 @@ describe('NFTClaimer/utils', () => {
       }).rejects.toThrow();
     });
   });
+
+  describe('validateProposal()', () => {
+    it.todo('throwns an error when the proposalAuthor is not matching');
+  });
 });

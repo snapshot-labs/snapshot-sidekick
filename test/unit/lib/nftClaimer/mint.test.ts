@@ -6,6 +6,8 @@ import payload from '../../../../src/lib/nftClaimer/mint';
 const TEST_MINT_DOMAIN = 'TestDAO';
 const proposer = '0x0000000000000000000000000000004242424242';
 
+const NAN = ['', false, null, 'test'];
+
 const mockFetchProposal = jest.fn((id: string): any => {
   return {
     id: id,
@@ -26,6 +28,9 @@ const mockGetProposalContract = jest.fn((id: string): any => {
 const mockValidateProposal = jest.fn((proposal: any): void => {
   return;
 });
+const mockGetSpaceCollection = jest.fn((id: string): any => {
+  return { id, enabled: true };
+});
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
@@ -34,7 +39,8 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
     __esModule: true,
     ...originalModule,
     getProposalContract: (id: string) => mockGetProposalContract(id),
-    validateProposal: (id: any) => mockValidateProposal(id)
+    validateProposal: (id: any) => mockValidateProposal(id),
+    getSpaceCollection: (id: string) => mockGetSpaceCollection(id)
   };
 });
 
@@ -55,9 +61,20 @@ describe('nftClaimer', () => {
 
     const expectedDigest = '0x65b2c526e8c21a68583765e51f03990a67a0a0cb46794ab7ec666e88808eb93a';
 
+    const input = {
+      proposalAuthor: proposer,
+      recipient,
+      id: hexProposalId,
+      salt
+    };
+
+    async function getPayload(customParams = {}) {
+      return payload({ ...input, ...customParams });
+    }
+
     describe('when mintable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
-        const { signature } = await payload(proposer, recipient, hexProposalId, salt);
+        const { signature } = await getPayload();
 
         expect(mockFetchProposal).toHaveBeenCalledWith(hexProposalId);
         expect(signature.r).toEqual(expectedScSignature.r);
@@ -77,15 +94,19 @@ describe('nftClaimer', () => {
     });
 
     describe('when spaceCollection is not found', () => {
-      it.todo('throws a SpaceCollection not found error');
-    });
-
-    describe('when proposalAuthor is invalid', () => {
-      it.todo('throws an error');
+      it('throws a SpaceCollection not found error', async () => {
+        mockGetProposalContract.mockImplementationOnce(() => {
+          throw new Error();
+        });
+        return expect(async () => await getPayload()).rejects.toThrow();
+      });
     });
 
     describe('when space has closed minting', () => {
-      it.todo('throws an error');
+      it('throws an error', () => {
+        mockGetSpaceCollection.mockReturnValueOnce({ id: 1, enabled: false });
+        return expect(async () => await payload(input)).rejects.toThrow();
+      });
     });
 
     describe('when maxSupply has been reached', () => {
@@ -93,9 +114,32 @@ describe('nftClaimer', () => {
     });
 
     describe('when passing invalid values', () => {
-      it.todo('throws an error when the proposalAuthor is invalid');
-      it.todo('throws an error when the address is invalid');
-      it.todo('throws an error when the salt it not a number');
+      it('throws an error when the proposalAuthor address is not valid', () => {
+        expect(async () => getPayload({ proposalAuthor: 'test' })).rejects.toThrow();
+      });
+
+      it('throws an error when the recipient address is not valid', () => {
+        expect(
+          async () =>
+            await getPayload({
+              recipient: 'test'
+            })
+        ).rejects.toThrow();
+      });
+
+      it.each(NAN)('throws an error when the salt is not a number (%s)', val => {
+        return expect(
+          async () =>
+            await getPayload({
+              salt: val as any
+            })
+        ).rejects.toThrow();
+      });
+
+      it('throws an error when the proposal is not found', () => {
+        mockFetchProposal.mockReturnValueOnce(null);
+        return expect(getPayload()).rejects.toThrow();
+      });
     });
   });
 });
