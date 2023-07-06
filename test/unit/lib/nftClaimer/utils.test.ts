@@ -1,4 +1,8 @@
-import { validateAddresses, validateProposerFee } from '../../../../src/lib/nftClaimer/utils';
+import {
+  validateAddresses,
+  validateProposal,
+  validateProposerFee
+} from '../../../../src/lib/nftClaimer/utils';
 
 describe('NFTClaimer/utils', () => {
   describe('validateAddresses()', () => {
@@ -29,6 +33,20 @@ describe('NFTClaimer/utils', () => {
   });
 
   describe('validateProposal()', () => {
-    it.todo('throwns an error when the proposalAuthor is not matching');
+    it('throws an error when the proposalAuthor is not matching', () => {
+      const address = '0x054a600d8B766c786270E25872236507D8459D8F';
+
+      expect(async () => {
+        validateProposal({ author: address } as any, '');
+      }).rejects.toThrow();
+    });
+
+    it('throws an error when the proposal does not exist', () => {
+      expect(async () => {
+        validateProposal(null, '');
+      }).rejects.toThrowError('RECORD_NOT_FOUND');
+    });
+
+    it.todo('throws an error when the space has closed minting');
   });
 });

@@ -1,13 +1,12 @@
-import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { fetchProposal } from '../../helpers/snapshot';
+import { fetchProposal, Space } from '../../helpers/snapshot';
 import {
   validateProposal,
   getProposalContract,
   signer,
   numberizeProposalId,
   validateMintInput,
-  getSpaceCollection
+  mintingAllowed
 } from './utils';
 import abi from './spaceCollectionImplementationAbi.json';
 import { FormatTypes, Interface } from '@ethersproject/abi';
@@ -36,9 +35,7 @@ export default async function payload(input: {
   const spaceId = proposal?.space.id as string;
 
   const verifyingContract = await getProposalContract(spaceId);
-  const contractInfo = await getSpaceCollection(spaceId);
-
-  if (!contractInfo.enabled) {
+  if (!mintingAllowed(proposal?.space as Space)) {
     throw new Error('Space has closed minting');
   }
 

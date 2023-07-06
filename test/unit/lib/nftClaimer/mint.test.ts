@@ -28,8 +28,9 @@ const mockGetProposalContract = jest.fn((id: string): any => {
 const mockValidateProposal = jest.fn((proposal: any): void => {
   return;
 });
-const mockGetSpaceCollection = jest.fn((id: string): any => {
-  return { id, enabled: true };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockMintingAllowed = jest.fn((space: any): boolean => {
+  return true;
 });
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   // Require the original module to not be mocked...
@@ -40,7 +41,7 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
     ...originalModule,
     getProposalContract: (id: string) => mockGetProposalContract(id),
     validateProposal: (id: any) => mockValidateProposal(id),
-    getSpaceCollection: (id: string) => mockGetSpaceCollection(id)
+    mintingAllowed: (space: any) => mockMintingAllowed(space)
   };
 });
 
@@ -104,7 +105,7 @@ describe('nftClaimer', () => {
 
     describe('when space has closed minting', () => {
       it('throws an error', () => {
-        mockGetSpaceCollection.mockReturnValueOnce({ id: 1, enabled: false });
+        mockMintingAllowed.mockReturnValueOnce(false);
         return expect(async () => await payload(input)).rejects.toThrow();
       });
     });

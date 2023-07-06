@@ -36,7 +36,7 @@ if (missingEnvKeys.length > 0) {
 
 export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
-async function mintingAllowed(space: Space) {
+export async function mintingAllowed(space: Space) {
   return (await getSpaceCollection(space.id)).enabled;
 }
 
@@ -141,7 +141,6 @@ function validateNumbers(numbers: Record<string, string>) {
     try {
       BigNumber.from(value).toString();
     } catch (e: any) {
-      console.error(e);
       throw new Error(`Value for ${key} is not a valid number (${value})`);
     }
   });
