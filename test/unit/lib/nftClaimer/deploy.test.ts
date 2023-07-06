@@ -125,7 +125,7 @@ describe('nftClaimer', () => {
         expect(async () => await getPayload({ proposerFee: val as any })).rejects.toThrow();
       });
 
-      it('throws an error when the proposerFee is out or range', () => {
+      it('throws an error when the proposerFee is out of range', () => {
         expect(async () => await getPayload({ proposerFee: '101' })).rejects.toThrow();
         expect(async () => await getPayload({ proposerFee: '-5' })).rejects.toThrow();
       });
