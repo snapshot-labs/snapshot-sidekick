@@ -15,13 +15,18 @@ jest.mock('../../../../src/helpers/snapshot', () => ({
 const mockValidateSpace = jest.fn((address: string, space: Space | null): any => {
   return true;
 });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockValidateDeployInput = jest.fn((input: any): any => {
+  return {};
+});
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
 
   return {
     __esModule: true,
     ...originalModule,
-    validateSpace: (address: string, space: Space | null) => mockValidateSpace(address, space)
+    validateSpace: (address: string, space: Space | null) => mockValidateSpace(address, space),
+    validateDeployInput: (input: any) => mockValidateDeployInput(input)
   };
 });
 
@@ -64,22 +69,30 @@ describe('nftClaimer', () => {
 
     describe('when deployable', () => {
       it('generates the same signature as the smart contract from the data', async () => {
+        mockValidateDeployInput.mockReturnValueOnce(input);
+
         const { signature } = await getPayload();
 
         expect(mockValidateSpace).toHaveBeenCalled();
+        expect(mockValidateDeployInput).toHaveBeenCalled();
         expect(signature.r).toEqual(expectedScSignature.r);
         expect(signature.s).toEqual(expectedScSignature.s);
         expect(signature.v).toEqual(expectedScSignature.v);
       });
 
       it('generates the same initializer as the smart contract from the data', async () => {
+        mockValidateDeployInput.mockReturnValueOnce(input);
+
         const { initializer } = await getPayload();
 
         expect(mockValidateSpace).toHaveBeenCalled();
+        expect(mockValidateDeployInput).toHaveBeenCalled();
         expect(initializer).toEqual(expectedInitializer);
       });
 
       it('can recover the signer from the digest', async () => {
+        mockValidateDeployInput.mockReturnValueOnce(input);
+
         const recoveredSigner = recoverAddress(expectedDigest, {
           r: expectedScSignature.r,
           s: expectedScSignature.s,
