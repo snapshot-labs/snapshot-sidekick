@@ -19,7 +19,8 @@ export function initLogger(app: Express) {
 
 export function fallbackLogger(app: Express) {
   app.use(Sentry.Handlers.errorHandler());
-  app.use(function onError(err: any, req: any, res: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use(function onError(err: any, req: any, res: any, _: any) {
     res.statusCode = 500;
     res.end(`${res.sentry}\n`);
   });
