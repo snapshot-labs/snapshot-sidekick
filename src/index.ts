@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import favicon from 'serve-favicon';
 import api from './api';
 import webhook from './webhook';
+import sentryTunnel from './sentryTunnel';
 import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
@@ -30,6 +31,7 @@ app.use(
 app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
 app.use('/api', api);
 app.use('/', webhook);
+app.use('/', sentryTunnel);
 
 app.get('/', (req, res) => {
   const commit = process.env.COMMIT_HASH || '';

@@ -1,4 +1,4 @@
-# Snapshot/Sidekick
+# Snapshot/Sidekick [![codecov](https://codecov.io/gh/snapshot-labs/snapshot-sidekick/branch/main/graph/badge.svg?token=Tb16ITll42)](https://codecov.io/gh/snapshot-labs/snapshot-sidekick)
 
 Sidekick is the service serving:
 
@@ -144,6 +144,24 @@ Data are sourced from the json files with the same name, located in this repo `/
 
 Validate offchain data, and return a payload
 
+#### Get global data
+
+Retrieve global data from the smart contract.
+
+Send a `GET` request to `/api/nft-claimer`
+
+```bash
+curl -X GET localhost:3005/api/nft-claimer
+```
+
+##### Example payload
+
+```json
+{
+  "snapshotFee": 5
+}
+```
+
 #### Sign deploy
 
 Sign and return the payload for the SpaceCollectionFactory contract, in order to deploy a new SpaceCollection contract
@@ -172,6 +190,7 @@ If the given `address` is the space controller, and the space has not setup NFT 
 {
   "initializer": "0x977b0efb00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000091fd2c8d24767db4ece7069aa27832ffaf8590f300000000000000000000000091fd2c8d24767db4ece7069aa27832ffaf8590f300000000000000000000000000000000000000000000000000000000000000075465737444414f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003302e3100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007656e732e65746800000000000000000000000000000000000000000000000000",
   "salt": "123454678",
+  "abi": "function deployProxy(address implementation, bytes initializer, uint256 salt, uint8 v, bytes32 r, bytes32 s)",
   "implementation": "0x33505720a7921d23E6b02EB69623Ed6A008Ca511",
   "signature": {
     "r": "0xac72b099abc370f7dadca09110907fd0856d1e343b64dcb13bc4a55fa00fc8de",
@@ -213,6 +232,7 @@ If given proposal's space has enabled NFT claimer, and there are still mintable 
   "proposer": "0x1abb90a506a352e51d587b0ee8c387c0b129ea018aa77345fe7b5c2defa7d150",
   "recipient": "0x1abb90a506a352e51d587b0ee8c387c0b129ea018aa77345fe7b5c2defa7d150",
   "spaceId": "fabien.eth",
+  "abi": "function mint(address proposer, uint256 proposalId, uint256 salt, uint8 v, bytes32 r, bytes32 s)",
   "proposalId": "72536493147621360896130495100276306361343381736075662552878320684807833746288",
   "signature": {
     "r": "0xac72b099abc370f7dadca09110907fd0856d1e343b64dcb13bc4a55fa00fc8de",
@@ -227,6 +247,36 @@ If given proposal's space has enabled NFT claimer, and there are still mintable 
 ```
 
 > **NOTE**: The returned `proposalId` in the payload is a number representation
+
+### Sentry tunnel
+
+#### Problem
+
+Sentry javascript tracker may be blocked by some ad-blocker. See [reference](https://docs.sentry.io/platforms/javascript/troubleshooting/#dealing-with-ad-blockers).
+
+The recommended workaround is to tunnel all the sentry traffic through a customized backend.
+
+#### Configuration
+
+Set the `TUNNEL_SENTRY_DSN` env variable to the same as the one defined on your front end app.
+This will ensure that this tunnel only accept and filters request from this specific DSN.
+
+#### Solution
+
+This endpoint expose a `POST` route, to tunnel all sentry requests.
+
+It is designed to accept request directly from the sentry SDK, and not to be used alone.
+We can still test it manually by sending the following curl request (replace the `dsn` value by the one you set in `TUNNEL_SENTRY_DSN`)
+
+#### Test request
+
+```bash
+curl 'http://localhost:3005/sentry' \
+  --data-raw $'{"sent_at":"2023-07-09T08:33:20.789Z","sdk":{"name":"sentry.javascript.vue","version":"7.55.2"},"dsn":"https://d70c3273a4674febbfbd6e767b597290@o4505452248563712.ingest.sentry.io/4505453376372736"}\n{"type":"session"}\n{"sid":"581f36ab63e747de98eb05e0cf820818","init":true,"started":"2023-07-09T08:33:20.788Z","timestamp":"2023-07-09T08:33:20.788Z","status":"ok","errors":0,"attrs":{"release":"snapshot@0.1.4","environment":"production","user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"}}' \
+  --compressed
+```
+
+The request should return a `200` status code.
 
 ### Errors
 
