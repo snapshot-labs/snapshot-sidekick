@@ -1,5 +1,6 @@
 import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
+import { capture } from './helpers/sentry';
 import VotesReport from './lib/votesReport';
 import { queue } from './lib/queue';
 
@@ -27,7 +28,7 @@ router.post('/webhook', async (req, res) => {
     queue(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {
-    console.error(e);
+    capture(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });

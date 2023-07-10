@@ -136,13 +136,6 @@ export async function fetchVotes(
   id: string,
   { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
 ) {
-  console.log(id, {
-    first,
-    skip,
-    orderBy,
-    orderDirection,
-    created_gte
-  });
   const {
     data: { votes }
   }: { data: { votes: Vote[] } } = await client.query({
