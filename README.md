@@ -248,6 +248,36 @@ If given proposal's space has enabled NFT claimer, and there are still mintable 
 
 > **NOTE**: The returned `proposalId` in the payload is a number representation
 
+### Sentry tunnel
+
+#### Problem
+
+Sentry javascript tracker may be blocked by some ad-blocker. See [reference](https://docs.sentry.io/platforms/javascript/troubleshooting/#dealing-with-ad-blockers).
+
+The recommended workaround is to tunnel all the sentry traffic through a customized backend.
+
+#### Configuration
+
+Set the `TUNNEL_SENTRY_DSN` env variable to the same as the one defined on your front end app.
+This will ensure that this tunnel only accept and filters request from this specific DSN.
+
+#### Solution
+
+This endpoint expose a `POST` route, to tunnel all sentry requests.
+
+It is designed to accept request directly from the sentry SDK, and not to be used alone.
+We can still test it manually by sending the following curl request (replace the `dsn` value by the one you set in `TUNNEL_SENTRY_DSN`)
+
+#### Test request
+
+```bash
+curl 'http://localhost:3005/sentry' \
+  --data-raw $'{"sent_at":"2023-07-09T08:33:20.789Z","sdk":{"name":"sentry.javascript.vue","version":"7.55.2"},"dsn":"https://d70c3273a4674febbfbd6e767b597290@o4505452248563712.ingest.sentry.io/4505453376372736"}\n{"type":"session"}\n{"sid":"581f36ab63e747de98eb05e0cf820818","init":true,"started":"2023-07-09T08:33:20.788Z","timestamp":"2023-07-09T08:33:20.788Z","status":"ok","errors":0,"attrs":{"release":"snapshot@0.1.4","environment":"production","user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"}}' \
+  --compressed
+```
+
+The request should return a `200` status code.
+
 ### Errors
 
 All endpoints will respond with a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) error response on error:
