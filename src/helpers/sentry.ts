@@ -3,7 +3,7 @@ import type { Express } from 'express';
 
 export function initLogger(app: Express) {
   if (process.env.NODE_ENV !== 'production') {
-    return false;
+    return;
   }
 
   Sentry.init({
