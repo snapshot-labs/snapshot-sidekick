@@ -2,6 +2,10 @@ import * as Sentry from '@sentry/node';
 import type { Express } from 'express';
 
 export function initLogger(app: Express) {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  }
+
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     integrations: [
@@ -18,6 +22,10 @@ export function initLogger(app: Express) {
 }
 
 export function fallbackLogger(app: Express) {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  }
+
   app.use(Sentry.Handlers.errorHandler());
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use(function onError(err: any, req: any, res: any, _: any) {
@@ -27,5 +35,9 @@ export function fallbackLogger(app: Express) {
 }
 
 export function capture(e: any) {
+  if (process.env.NODE_ENV !== 'production') {
+    return console.error(e);
+  }
+
   Sentry.captureException(e);
 }
