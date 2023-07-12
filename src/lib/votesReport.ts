@@ -1,4 +1,4 @@
-import { fetchAllVotes, fetchProposal } from '../helpers/snapshot';
+import { fetchVotes, fetchProposal } from '../helpers/snapshot';
 import type { Proposal, Vote } from '../helpers/snapshot';
 import type { IStorage } from './storage/types';
 
@@ -38,7 +38,6 @@ class VotesReport {
     await this.canBeCached();
 
     const votes = await this.fetchAllVotes();
-    const totalResults = 0;
     let content = '';
 
     console.log(`[votes-report] Generating cache file for ${this.id}`);
@@ -57,7 +56,7 @@ class VotesReport {
     content += headers.join(',');
     content += `\n${votes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
 
-    console.log(`[votes-report] File cache ready to be saved with ${totalResults} items`);
+    console.log(`[votes-report] File cache ready to be saved with ${votes.length} items`);
 
     return this.storage.set(this.filename, content);
   };
@@ -67,7 +66,47 @@ class VotesReport {
   };
 
   fetchAllVotes = async () => {
-    return fetchAllVotes(this.id);
+    let votes: Vote[] = [];
+    let page = 0;
+    let createdPivot = 0;
+    const pageSize = 1000;
+    let resultsSize = 0;
+    const maxPage = 5;
+
+    do {
+      let newVotes = await fetchVotes(this.id, {
+        first: pageSize,
+        skip: page * pageSize,
+        created_gte: createdPivot,
+        orderBy: 'created',
+        orderDirection: 'asc'
+      });
+      resultsSize = newVotes.length;
+
+      if (page === 0 && createdPivot > 0) {
+        // Loosely assuming that there will never be more than 1000 duplicates
+        const existingIpfs = votes.slice(-pageSize).map(vote => vote.ipfs);
+
+        newVotes = newVotes.filter(vote => {
+          return !existingIpfs.includes(vote.ipfs);
+        });
+      }
+
+      if (page === maxPage) {
+        page = 0;
+        createdPivot = newVotes[newVotes.length - 1].created;
+      } else {
+        page++;
+      }
+
+      votes = votes.concat(newVotes);
+
+      this.generationProgress = Number(
+        ((votes.length / (this.proposal?.votes as number)) * 100).toFixed(2)
+      );
+    } while (resultsSize === pageSize);
+
+    return votes;
   };
 
   #formatCsvLine = (vote: Vote) => {
