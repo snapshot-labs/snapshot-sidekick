@@ -1,12 +1,12 @@
-import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { fetchProposal } from '../../helpers/snapshot';
+import { fetchProposal, Space } from '../../helpers/snapshot';
 import {
   validateProposal,
   getProposalContract,
   signer,
   numberizeProposalId,
-  validateAddresses
+  validateMintInput,
+  mintingAllowed
 } from './utils';
 import abi from './spaceCollectionImplementationAbi.json';
 import { FormatTypes, Interface } from '@ethersproject/abi';
@@ -22,24 +22,28 @@ const MintType = {
 
 const NFT_CLAIMER_NETWORK = process.env.NFT_CLAIMER_NETWORK;
 
-export default async function payload(
-  proposalAuthor: string,
-  recipient: string,
-  id: string,
-  salt: string
-) {
-  const proposal = await fetchProposal(id);
-  validateProposal(proposal, proposalAuthor);
-  validateAddresses({ proposalAuthor, recipient });
+export default async function payload(input: {
+  proposalAuthor: string;
+  recipient: string;
+  id: string;
+  salt: string;
+}) {
+  const params = await validateMintInput(input);
+
+  const proposal = await fetchProposal(params.id);
+  validateProposal(proposal, params.proposalAuthor);
   const spaceId = proposal?.space.id as string;
 
   const verifyingContract = await getProposalContract(spaceId);
+  if (!mintingAllowed(proposal?.space as Space)) {
+    throw new Error('Space has closed minting');
+  }
 
   const message = {
-    proposer: getAddress(proposalAuthor),
-    recipient: getAddress(recipient),
-    proposalId: numberizeProposalId(id),
-    salt: BigInt(salt)
+    proposer: params.proposalAuthor,
+    recipient: params.recipient,
+    proposalId: numberizeProposalId(params.id),
+    salt: BigInt(params.salt)
   };
 
   return {
@@ -47,7 +51,7 @@ export default async function payload(
     contractAddress: verifyingContract,
     spaceId: proposal?.space.id,
     ...message,
-    salt,
+    salt: params.salt,
     abi: new Interface(abi).getFunction('mint').format(FormatTypes.full)
   };
 }

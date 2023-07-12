@@ -36,7 +36,7 @@ if (missingEnvKeys.length > 0) {
 
 export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
-async function mintingAllowed(space: Space) {
+export async function mintingAllowed(space: Space) {
   return (await getSpaceCollection(space.id)).enabled;
 }
 
@@ -136,7 +136,65 @@ export function validateAddresses(addresses: Record<string, string>) {
   return true;
 }
 
-export async function snapshotFee() {
+function validateNumbers(numbers: Record<string, string>) {
+  Object.entries(numbers).forEach(([key, value]) => {
+    try {
+      BigNumber.from(value).toString();
+    } catch (e: any) {
+      throw new Error(`Value for ${key} is not a valid number (${value})`);
+    }
+  });
+
+  return true;
+}
+
+export async function validateProposerFee(fee: number) {
+  if (fee < 0 || fee > 100) {
+    throw new Error('proposerFee should be between 0 and 100');
+  }
+
+  const sFee = await snapshotFee();
+  if (sFee + fee > 100) {
+    throw new Error(`proposerFee should not be greater than ${100 - sFee}`);
+  }
+
+  return true;
+}
+
+export async function validateDeployInput(params: any) {
+  validateAddresses({ spaceOwner: params.spaceOwner, spaceTreasury: params.spaceTreasury });
+  validateNumbers({
+    maxSupply: params.maxSupply,
+    proposerFee: params.proposerFee,
+    mintPrice: params.mintPrice,
+    salt: params.salt
+  });
+  await validateProposerFee(parseInt(params.proposerFee));
+
+  return {
+    spaceOwner: getAddress(params.spaceOwner),
+    spaceTreasury: getAddress(params.spaceTreasury),
+    proposerFee: parseInt(params.proposerFee),
+    maxSupply: parseInt(params.maxSupply),
+    mintPrice: parseInt(params.mintPrice),
+    ...params
+  };
+}
+
+export async function validateMintInput(params: any) {
+  validateAddresses({ proposalAuthor: params.proposalAuthor, recipient: params.recipient });
+  validateNumbers({
+    salt: params.salt
+  });
+
+  return {
+    proposalAuthor: getAddress(params.proposalAuthor),
+    recipient: getAddress(params.recipient),
+    ...params
+  };
+}
+
+export async function snapshotFee(): Promise<number> {
   try {
     const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
     const contract = new Contract(

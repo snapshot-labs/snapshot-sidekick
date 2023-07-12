@@ -61,7 +61,15 @@ router.post('/nft-claimer/deploy', async (req, res) => {
   const { address, id, salt, maxSupply, mintPrice, spaceTreasury, proposerFee } = req.body;
   try {
     return res.json(
-      await deployPayload(address, id, maxSupply, mintPrice, proposerFee, salt, spaceTreasury)
+      await deployPayload({
+        spaceOwner: address,
+        id,
+        maxSupply,
+        mintPrice,
+        proposerFee,
+        salt,
+        spaceTreasury
+      })
     );
   } catch (e: any) {
     capture(e);
@@ -72,7 +80,7 @@ router.post('/nft-claimer/deploy', async (req, res) => {
 router.post('/nft-claimer/mint', async (req, res) => {
   const { proposalAuthor, address, id, salt } = req.body;
   try {
-    return res.json(await mintPayload(proposalAuthor, address, id, salt));
+    return res.json(await mintPayload({ proposalAuthor, recipient: address, id, salt }));
   } catch (e: any) {
     capture(e);
     return rpcError(res, e, salt);

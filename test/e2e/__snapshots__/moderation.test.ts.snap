@@ -25,8 +25,8 @@ exports[`GET /api/moderation returns multiple list: verifiedSpaces,flaggedPropos
 exports[`GET /api/moderation when list params is empty returns all the list 1`] = `
 {
   "flaggedLinks": [
-    "https://gogle.com",
     "https://facebook.com",
+    "https://gogle.com",
   ],
   "flaggedProposals": [
     "0x1",
@@ -40,15 +40,19 @@ exports[`GET /api/moderation when list params is empty returns all the list 1`] 
     "space1.eth",
     "space2.eth",
   ],
-  "verifiedTokens": {},
+  "verifiedTokens": {
+    "test": {
+      "value": "a",
+    },
+  },
 }
 `;
 
 exports[`GET /api/moderation when list params is set returns only the selected flaggedLinks list 1`] = `
 {
   "flaggedLinks": [
-    "https://gogle.com",
     "https://facebook.com",
+    "https://gogle.com",
   ],
 }
 `;
@@ -68,5 +72,15 @@ exports[`GET /api/moderation when list params is set returns only the selected v
     "space1.eth",
     "space2.eth",
   ],
+}
+`;
+
+exports[`GET /api/moderation when list params is set returns only the selected verifiedTokens list 1`] = `
+{
+  "verifiedTokens": {
+    "test": {
+      "value": "a",
+    },
+  },
 }
 `;
