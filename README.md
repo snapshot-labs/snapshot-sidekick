@@ -54,21 +54,43 @@ You can additionally specify a sub directory by setting `VOTE_REPORT_SUBDIR`
 yarn dev
 ```
 
-## Linting, typecheck and test
+## Tests
 
-```bash
-yarn lint
-yarn typecheck
+All tests are run with their own environment, using `/test/.env.test`
+
+### Setup
+
+```
+mysql -e 'CREATE DATABASE sidekick_test;' -uroot -proot
+mysql -uroot -proot sidekick_test < src/helpers/schema.sql
+mysql -uroot -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+mysql -uroot -proot -e "FLUSH PRIVILEGES;"
+```
+
+### Usage
+
+```
+yarn test:unit to run unit tests
+yarn test:e2e to run e2e tests
+```
+
+To run all tests, and generate test coverage:
+
+```
 yarn test
-
-# yarn test:unit to run only unit tests
-# yarn test:e2e to run only E2E tests
 ```
 
 If you have added any E2E tests requiring snapshots update, run:
 
 ```bash
 yarn test:e2e:update-snapshot
+```
+
+## Linting, typecheck
+
+```bash
+yarn lint
+yarn typecheck
 ```
 
 ## Usage
