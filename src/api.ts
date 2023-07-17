@@ -1,11 +1,13 @@
 import express from 'express';
+import { capture } from './helpers/sentry';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
-import ogImage from './lib/ogImage';
-import type { ImageType } from './lib/ogImage';
-import { signDeploy, signMint } from './lib/nftClaimer';
+import ogImage, { ImageType } from './lib/ogImage';
+import mintPayload from './lib/nftClaimer/mint';
+import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
+import { snapshotFee } from './lib/nftClaimer/utils';
 
 const router = express.Router();
 
@@ -27,11 +29,11 @@ router.post('/votes/:id', async (req, res) => {
       queue(id);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
-      console.error(e);
+      capture(e);
       rpcError(res, e, id);
     }
   } catch (e) {
-    console.error(e);
+    capture(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -85,25 +87,47 @@ router.get('/moderation', async (req, res) => {
   try {
     res.json(await getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
-    console.error(e);
+    capture(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
 
-router.post('/nft-claimer/:type(deploy|mint)/sign', async (req, res) => {
+router.get('/nft-claimer', async (req, res) => {
   try {
-    const { address, id, salt } = req.body;
-    switch (req.params.type) {
-      case 'deploy':
-        return res.json(await signDeploy(address, id, salt));
-      case 'mint':
-        return res.json(await signMint(address, id, salt));
-      default:
-        throw new Error('Invalid Request');
-    }
+    return res.json({ snapshotFee: await snapshotFee() });
   } catch (e: any) {
     console.error(e);
     return rpcError(res, e, '');
+  }
+});
+
+router.post('/nft-claimer/deploy', async (req, res) => {
+  const { address, id, salt, maxSupply, mintPrice, spaceTreasury, proposerFee } = req.body;
+  try {
+    return res.json(
+      await deployPayload({
+        spaceOwner: address,
+        id,
+        maxSupply,
+        mintPrice,
+        proposerFee,
+        salt,
+        spaceTreasury
+      })
+    );
+  } catch (e: any) {
+    capture(e);
+    return rpcError(res, e, salt);
+  }
+});
+
+router.post('/nft-claimer/mint', async (req, res) => {
+  const { proposalAuthor, address, id, salt } = req.body;
+  try {
+    return res.json(await mintPayload({ proposalAuthor, recipient: address, id, salt }));
+  } catch (e: any) {
+    capture(e);
+    return rpcError(res, e, salt);
   }
 });
 

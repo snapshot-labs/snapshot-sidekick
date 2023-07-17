@@ -7,12 +7,16 @@ import morgan from 'morgan';
 import favicon from 'serve-favicon';
 import api from './api';
 import webhook from './webhook';
+import sentryTunnel from './sentryTunnel';
 import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
+import { initLogger, fallbackLogger } from './helpers/sentry';
 
 const app = express();
 const PORT = process.env.PORT || 3005;
+
+initLogger(app);
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
@@ -27,6 +31,7 @@ app.use(
 app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
 app.use('/api', api);
 app.use('/', webhook);
+app.use('/', sentryTunnel);
 
 app.get('/', (req, res) => {
   const commit = process.env.COMMIT_HASH || '';
@@ -36,6 +41,8 @@ app.get('/', (req, res) => {
     version: v
   });
 });
+
+fallbackLogger(app);
 
 app.use((_, res) => {
   rpcError(res, 'RECORD_NOT_FOUND', '');
