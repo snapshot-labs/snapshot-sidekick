@@ -18,7 +18,7 @@ router.post('/votes/:id', async (req, res) => {
   try {
     const file = await votesReport.cachedFile();
 
-    if (file instanceof Buffer) {
+    if (file) {
       res.header('Content-Type', 'text/csv');
       res.attachment(votesReport.filename);
       return res.end(file);

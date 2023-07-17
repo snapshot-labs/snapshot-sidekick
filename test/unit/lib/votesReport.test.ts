@@ -108,7 +108,7 @@ describe('VotesReport', () => {
       it('returns a votes report', async () => {
         const report = new VotesReport(id, _storageEngine);
 
-        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id)));
+        expect(await report.cachedFile()).toEqual(readFileSync(fixtureFilePath(id), 'utf8'));
       });
     });
 
