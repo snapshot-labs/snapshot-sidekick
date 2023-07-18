@@ -10,7 +10,7 @@ async function main() {
   const [, , type, address] = process.argv;
 
   const og = new ogImage(type as ImageType, address, storageEngine(process.env.OG_IMAGE_SUBDIR));
-  await og.getImage(true);
+  await og.createCache();
 }
 
 (async () => {
