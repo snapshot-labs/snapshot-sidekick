@@ -7,6 +7,7 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import type { Proposal, Space } from '../../helpers/snapshot';
+import { capture } from '../../helpers/sentry';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
@@ -205,7 +206,7 @@ export async function snapshotFee(): Promise<number> {
 
     return contract.snapshotFee();
   } catch (e: any) {
-    console.error(e);
+    capture(e);
     throw 'Unable to retrieve the snapshotFee';
   }
 }

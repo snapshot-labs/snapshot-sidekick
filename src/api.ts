@@ -48,7 +48,7 @@ router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res
     res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
     return res.end(await (ext === 'svg' ? og.getSvg() : og.getCache()));
   } catch (e) {
-    console.error(e);
+    capture(e);
     res.setHeader('Content-Type', 'application/json');
     return rpcError(res, 'INTERNAL_ERROR', id || type);
   }
@@ -69,7 +69,7 @@ router.get('/nft-claimer', async (req, res) => {
   try {
     return res.json({ snapshotFee: await snapshotFee() });
   } catch (e: any) {
-    console.error(e);
+    capture(e);
     return rpcError(res, e, '');
   }
 });
