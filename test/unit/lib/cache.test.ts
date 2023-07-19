@@ -1,4 +1,4 @@
-import { rmSync, writeFileSync } from 'fs';
+import { rmSync, rmdirSync, writeFileSync } from 'fs';
 import { storageEngine } from '../../../src/helpers/utils';
 import Cache from '../../../src/lib/cache';
 
@@ -8,6 +8,10 @@ const TEST_CONTENT = 'test content';
 
 describe('Cache', () => {
   const cache = new Cache(TEST_ID, storageEngine(TEST_CACHE_DIR));
+
+  afterAll(() => {
+    rmdirSync(`${__dirname}/../../../tmp/${TEST_CACHE_DIR}`, { recursive: true });
+  });
 
   describe('getCache()', () => {
     describe('when the cache exists', () => {
