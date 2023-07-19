@@ -1,11 +1,13 @@
-import { readFileSync, rmdirSync } from 'fs';
 import request from 'supertest';
+import { readFileSync, rmdirSync } from 'fs';
+import { storageEngine } from '../../src/helpers/utils';
 
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
 
 describe('picSnap', () => {
   afterAll(() => {
-    rmdirSync(`${__dirname}/../../tmp/picsnap`, { recursive: true });
+    const storage = storageEngine(process.env.PICSNAP_SUBDIR);
+    rmdirSync(storage.path(), { recursive: true });
   });
 
   describe('GET /picsnap/og-home.svg', () => {

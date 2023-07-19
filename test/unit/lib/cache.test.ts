@@ -7,15 +7,16 @@ const TEST_ID = 'test';
 const TEST_CONTENT = 'test content';
 
 describe('Cache', () => {
-  const cache = new Cache(TEST_ID, storageEngine(TEST_CACHE_DIR));
+  const testStorageEngine = storageEngine(TEST_CACHE_DIR);
+  const cache = new Cache(TEST_ID, testStorageEngine);
 
   afterAll(() => {
-    rmdirSync(`${__dirname}/../../../tmp/${TEST_CACHE_DIR}`, { recursive: true });
+    rmdirSync(testStorageEngine.path(), { recursive: true });
   });
 
   describe('getCache()', () => {
     describe('when the cache exists', () => {
-      const file = `${__dirname}/../../../tmp/${TEST_CACHE_DIR}/${cache.filename}`;
+      const file = testStorageEngine.path(cache.filename);
 
       beforeEach(() => writeFileSync(file, TEST_CONTENT));
       afterEach(() => rmSync(file));

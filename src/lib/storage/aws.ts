@@ -25,13 +25,13 @@ class Aws implements IStorage {
     try {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: this.#path(key),
+        Key: this.path(key),
         Body: value,
         ContentType: 'text/csv; charset=utf-8'
       });
 
       await this.client.send(command);
-      console.log(`[storage:aws] File saved to ${this.#path(key)}`);
+      console.log(`[storage:aws] File saved to ${this.path(key)}`);
 
       return true;
     } catch (e) {
@@ -45,7 +45,7 @@ class Aws implements IStorage {
     try {
       const command = new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: this.#path(key)
+        Key: this.path(key)
       });
       const response = await this.client.send(command);
 
@@ -59,7 +59,7 @@ class Aws implements IStorage {
     }
   }
 
-  #path(key?: string) {
+  path(key?: string) {
     return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
   }
 }
