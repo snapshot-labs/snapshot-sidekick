@@ -5,7 +5,7 @@ export default async function svg(spaceId: string) {
   const space = await fetchSpace(spaceId);
 
   if (!space) {
-    throw new Error('ENTRY_NOT_FOUND');
+    throw new Error('RECORD_NOT_FOUND');
   }
 
   return template(space);

@@ -7,6 +7,8 @@
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
 
+import fetch from 'cross-fetch';
+
 const U200D = String.fromCharCode(8205);
 const UFE0Fg = /\uFE0F/g;
 

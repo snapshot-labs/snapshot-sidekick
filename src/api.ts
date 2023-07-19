@@ -49,10 +49,9 @@ router.get('/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?', a
     return res.end(
       ext === 'svg' ? await image.getSvg() : (await image.getCache()) || (await image.createCache())
     );
-  } catch (e) {
+  } catch (e: any) {
     capture(e);
-    res.setHeader('Content-Type', 'application/json');
-    return rpcError(res, 'INTERNAL_ERROR', id || type);
+    return rpcError(res, e, id || type);
   }
 });
 
