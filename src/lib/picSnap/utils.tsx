@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import fetch from 'cross-fetch';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { loadEmoji, getIconCode, apis } from './twemoji';
