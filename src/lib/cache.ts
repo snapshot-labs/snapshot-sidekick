@@ -13,7 +13,7 @@ export default class Cache {
     this.generationProgress = 0;
   }
 
-  async getContent() {
+  async getContent(): Promise<string | Buffer> {
     return '';
   }
 
@@ -32,5 +32,7 @@ export default class Cache {
     console.log(`[votes-report] File cache ready to be saved`);
 
     this.storage.set(this.filename, content);
+
+    return content;
   }
 }

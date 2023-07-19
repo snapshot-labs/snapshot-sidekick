@@ -32,6 +32,6 @@ export default class picSnap extends Cache {
     const resvg = new Resvg((await this.getSvg()) as string, opts);
     const imageData = resvg.render();
 
-    return imageData.asPng().toString();
+    return imageData.asPng();
   }
 }

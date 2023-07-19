@@ -38,15 +38,17 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/picsnap/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res) => {
+router.get('/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?', async (req, res) => {
   const { type, id = '', ext = 'png' } = req.params;
 
   try {
-    const og = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
+    const image = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
 
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
-    return res.end(await (ext === 'svg' ? og.getSvg() : og.getCache()));
+    return res.end(
+      ext === 'svg' ? await image.getSvg() : (await image.getCache()) || (await image.createCache())
+    );
   } catch (e) {
     capture(e);
     res.setHeader('Content-Type', 'application/json');
