@@ -13,12 +13,8 @@ class VotesReport extends Cache {
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
 
-    if (!this.proposal) {
-      return Promise.reject('ENTRY_NOT_FOUND');
-    }
-
-    if (this.proposal.state !== 'closed') {
-      return Promise.reject('PROPOSAL_NOT_CLOSED');
+    if (!this.proposal || this.proposal.state !== 'closed') {
+      return Promise.reject('RECORD_NOT_FOUND');
     }
 
     return true;

@@ -13,4 +13,25 @@ describe('nftClaimer', () => {
       expect(fee).toBeGreaterThanOrEqual(1);
     });
   });
+
+  describe('on deploy', () => {
+    describe('on valid input', () => {
+      it.todo('returns a payload');
+    });
+
+    describe('on invalid input', () => {
+      it.todo('returns a 401 error when the submitter is not the space controller');
+      it.todo('returns an error when the space does not exist');
+    });
+  });
+
+  describe('on mint', () => {
+    describe('on valid input', () => {
+      it.todo('returns a payload');
+    });
+
+    describe('on invalid input', () => {
+      it.todo('returns an error when proposal does not exist');
+    });
+  });
 });
