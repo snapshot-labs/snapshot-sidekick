@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { readFileSync, rmdirSync } from 'fs';
+import { readFileSync, rmSync } from 'fs';
 import { storageEngine } from '../../src/helpers/utils';
 
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
@@ -7,7 +7,7 @@ const HOST = `http://localhost:${process.env.PORT || 3003}`;
 describe('picSnap', () => {
   afterAll(() => {
     const storage = storageEngine(process.env.PICSNAP_SUBDIR);
-    rmdirSync(storage.path(), { recursive: true });
+    rmSync(storage.path(), { recursive: true });
   });
 
   describe('on OpenGraph home image', () => {

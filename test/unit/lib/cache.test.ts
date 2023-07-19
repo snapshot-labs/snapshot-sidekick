@@ -1,4 +1,4 @@
-import { rmSync, rmdirSync, writeFileSync } from 'fs';
+import { rmSync, writeFileSync } from 'fs';
 import { storageEngine } from '../../../src/helpers/utils';
 import Cache from '../../../src/lib/cache';
 
@@ -11,7 +11,7 @@ describe('Cache', () => {
   const cache = new Cache(TEST_ID, testStorageEngine);
 
   afterAll(() => {
-    rmdirSync(testStorageEngine.path(), { recursive: true });
+    rmSync(testStorageEngine.path(), { recursive: true });
   });
 
   describe('getCache()', () => {

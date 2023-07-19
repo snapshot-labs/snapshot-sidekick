@@ -1,7 +1,7 @@
 import request from 'supertest';
 import VotesReport from '../../src/lib/votesReport';
 import { storageEngine } from '../../src/helpers/utils';
-import { rmdirSync } from 'fs';
+import { rmSync } from 'fs';
 
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
 
@@ -10,7 +10,7 @@ describe('GET /api/votes/:id', () => {
   const storage = storageEngine(process.env.VOTE_REPORT_SUBDIR);
 
   afterEach(() => {
-    rmdirSync(storage.path(), { recursive: true });
+    rmSync(storage.path(), { recursive: true });
   });
 
   describe('when the cache exists', () => {

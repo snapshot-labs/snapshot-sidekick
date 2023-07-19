@@ -1,4 +1,4 @@
-import { readFileSync, rmdirSync } from 'fs';
+import { readFileSync, rmSync } from 'fs';
 import VotesReport from '../../../src/lib/votesReport';
 import { storageEngine } from '../../../src/helpers/utils';
 
@@ -34,7 +34,7 @@ describe('VotesReport', () => {
   }
 
   afterAll(() => {
-    rmdirSync(testStorageEngine.path(), { recursive: true });
+    rmSync(testStorageEngine.path(), { recursive: true });
   });
 
   it.each([
