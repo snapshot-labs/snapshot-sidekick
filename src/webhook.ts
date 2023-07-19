@@ -24,7 +24,7 @@ router.post('/webhook', async (req, res) => {
   }
 
   try {
-    await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).canBeCached();
+    await new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR)).isCacheable();
     queue(id);
     return rpcSuccess(res, 'Cache file generation queued', id);
   } catch (e) {

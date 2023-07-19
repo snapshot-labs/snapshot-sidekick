@@ -10,7 +10,7 @@ async function processItem(id: string) {
   try {
     const voteReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
     processingItems.set(id, voteReport);
-    await voteReport.generateCacheFile();
+    await voteReport.createCache();
   } catch (e) {
     capture(e);
     console.error(`[queue] Error while processing item`, e);
