@@ -1,13 +1,10 @@
-import { fetchProposal } from '../../../helpers/snapshot';
-import { logo, votesIcon, proposalStatus, image, spaceAvatarUrl } from '../utils';
+import { image, spaceAvatarUrl } from '../../utils';
+import logo from '../../components/logo';
+import votesIcon from '../../components/votesIcon';
+import statusBadge from '../../components/statusBadge';
+import type { Proposal } from '../../../../helpers/snapshot';
 
-export default async function svg(proposalId: string) {
-  const proposal = await fetchProposal(proposalId);
-
-  if (!proposal) {
-    throw new Error('ENTRY_NOT_FOUND');
-  }
-
+export default async function (proposal: Proposal) {
   return (
     <div
       style={{
@@ -42,7 +39,7 @@ export default async function svg(proposalId: string) {
             {proposal.title}
           </div>
           <div style={{ display: 'flex' }}>
-            {votesIcon}
+            {votesIcon()}
             {proposal.votes.toLocaleString('en-US')} votes
           </div>
         </div>
@@ -55,7 +52,7 @@ export default async function svg(proposalId: string) {
           }))}
       </div>
       <div style={{ display: 'flex', height: '40px' }}>
-        <div style={{ display: 'flex', flexGrow: 1 }}>{proposalStatus(proposal.state)}</div>
+        <div style={{ display: 'flex', flexGrow: 1 }}>{statusBadge(proposal.state)}</div>
         {logo({ textColor: '#57606a', height: 42 })}
       </div>
     </div>

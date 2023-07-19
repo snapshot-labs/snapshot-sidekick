@@ -1,4 +1,4 @@
-export default async function svg() {
+export default function () {
   return (
     <div
       style={{

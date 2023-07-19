@@ -1,35 +1,36 @@
 import satori, { SatoriOptions } from 'satori';
-import getProposalSvg from './og-proposal';
-import getSpaceSvg from './og-space';
-import getHomeSvg from './og-home';
-import { fontsData } from '../utils';
-import { loadEmoji, getIconCode, apis } from '../twemoji';
+import getProposalSvg from './ogProposal';
+import getSpaceSvg from './ogSpace';
+import getHomeSvg from './ogHome';
+import { fontsData, loadDynamicAsset } from '../utils';
 import type { ImageType } from '../index';
 
-async function loadDynamicAsset(emojiType: keyof typeof apis, _code: string, text: string) {
-  if (_code === 'emoji') {
-    return `data:image/svg+xml;base64,${btoa(await loadEmoji(emojiType, getIconCode(text)))}`;
-  }
+const OG_DIMENSIONS = {
+  width: 1200,
+  height: 600
+};
 
-  return fontsData as any[];
-}
+const templates: Record<
+  ImageType,
+  { prepare: (id: string) => Promise<JSX.Element>; width: number; height: number }
+> = {
+  'og-home': {
+    ...OG_DIMENSIONS,
+    prepare: () => getHomeSvg()
+  },
+  'og-space': {
+    ...OG_DIMENSIONS,
+    prepare: (id: string) => getSpaceSvg(id)
+  },
+  'og-proposal': {
+    ...OG_DIMENSIONS,
+    prepare: (id: string) => getProposalSvg(id)
+  }
+};
 
 export default async function render(type: ImageType, id: string) {
-  let content: JSX.Element;
-
-  switch (type) {
-    case 'og-proposal':
-      content = await getProposalSvg(id);
-      break;
-    case 'og-space':
-      content = await getSpaceSvg(id);
-      break;
-    case 'og-home':
-      content = await getHomeSvg();
-      break;
-    default:
-      throw new Error('Invalid image type');
-  }
+  const { width, height, prepare } = templates[type];
+  const content = await prepare(id);
 
   return await satori(
     <div
@@ -46,8 +47,8 @@ export default async function render(type: ImageType, id: string) {
       {content}
     </div>,
     {
-      width: 1200,
-      height: 600,
+      width,
+      height,
       fonts: fontsData as SatoriOptions['fonts'],
       loadAdditionalAsset: async (code, text) => {
         return loadDynamicAsset('twemoji', code, text);

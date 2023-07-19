@@ -1,13 +1,8 @@
-import { fetchSpace } from '../../../helpers/snapshot';
-import { logo, image, spaceAvatarUrl } from '../utils';
+import { image, spaceAvatarUrl } from '../../utils';
+import logo from '../../components/logo';
+import type { Space } from '../../../../helpers/snapshot';
 
-export default async function svg(spaceId: string) {
-  const space = await fetchSpace(spaceId);
-
-  if (!space) {
-    throw new Error('ENTRY_NOT_FOUND');
-  }
-
+export default async function svg(space: Space) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div

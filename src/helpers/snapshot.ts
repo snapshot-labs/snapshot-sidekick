@@ -2,10 +2,12 @@ import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import fetch from 'cross-fetch';
 
+export type State = 'pending' | 'active' | 'closed';
+
 export type Proposal = {
   id: string;
   title: string;
-  state: string;
+  state: State;
   choices: string[];
   space: Space;
   votes: number;
