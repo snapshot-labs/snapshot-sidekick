@@ -77,8 +77,27 @@ describe('picSnap', () => {
 
   describe('on OpenGraph proposal image', () => {
     describe('on existing proposal', () => {
-      it.todo('returns the svg file');
-      it.todo('returns the png image');
+      const id = '0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98';
+
+      it('returns the svg file', async () => {
+        const response = await request(HOST).get(`/api/picsnap/og-proposal/${id}.svg`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.toString()).toEqual(
+          readFileSync(
+            `${__dirname}/../fixtures/picsnap/og-proposal-0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98.svg`,
+            'utf8'
+          ).trim()
+        );
+      });
+
+      it('returns the png image', async () => {
+        const response = await request(HOST).get(`/api/picsnap/og-proposal/${id}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.headers['content-type']).toEqual('image/png');
+        expect(response.body).toMatchImageSnapshot();
+      });
     });
 
     describe('on invalid proposal', () => {
