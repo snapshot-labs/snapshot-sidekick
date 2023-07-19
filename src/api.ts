@@ -3,7 +3,7 @@ import { capture } from './helpers/sentry';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
-import ogImage, { ImageType } from './lib/ogImage';
+import picSnap, { ImageType } from './lib/picSnap';
 import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
@@ -38,11 +38,11 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/og/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res) => {
+router.get('/picsnap/:type(space|proposal|home)/:id?.:ext(png|svg)?', async (req, res) => {
   const { type, id = '', ext = 'png' } = req.params;
 
   try {
-    const og = new ogImage(type as ImageType, id, storageEngine(process.env.OG_IMAGES_SUBDIR));
+    const og = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
 
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);

@@ -3,9 +3,9 @@ import render from './templates/index';
 import { IStorage } from '../storage/types';
 import Cache from '../cache';
 
-export type ImageType = 'space' | 'proposal' | 'home';
+export type ImageType = 'og-space' | 'og-proposal' | 'og-home';
 
-class ogImage extends Cache {
+export default class picSnap extends Cache {
   type: ImageType;
 
   constructor(type: ImageType, id: string, storage: IStorage) {
@@ -19,7 +19,7 @@ class ogImage extends Cache {
   }
 
   toString() {
-    return `OgImage#${this.id}`;
+    return `PicSnap#${this.id}`;
   }
 
   async getContent() {
@@ -35,5 +35,3 @@ class ogImage extends Cache {
     return imageData.asPng().toString();
   }
 }
-
-export default ogImage;

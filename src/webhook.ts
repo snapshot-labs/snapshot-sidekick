@@ -2,7 +2,7 @@ import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import { capture } from './helpers/sentry';
 import VotesReport from './lib/votesReport';
-import ogImage from './lib/ogImage';
+import picSnap from './lib/picSnap';
 import { queue } from './lib/queue';
 
 const router = express.Router();
@@ -13,9 +13,9 @@ function processVotesReport(id: string, event: string) {
   }
 }
 
-function processOgImageRefresh(id: string, type: string) {
+function processPicSnapRefresh(id: string, type: string) {
   if (type === 'proposal') {
-    queue(new ogImage(type, id, storageEngine(process.env.OG_IMAGES_SUBDIR)));
+    queue(new picSnap('og-proposal', id, storageEngine(process.env.PICSNAP_SUBDIR)));
   }
 }
 
@@ -34,7 +34,7 @@ router.post('/webhook', (req, res) => {
 
   try {
     processVotesReport(id, event);
-    processOgImageRefresh(id, type);
+    processPicSnapRefresh(id, type);
     return rpcSuccess(res, 'Webhook received', id);
   } catch (e) {
     capture(e);

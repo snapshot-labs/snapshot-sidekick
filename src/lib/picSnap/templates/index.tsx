@@ -1,7 +1,7 @@
 import satori, { SatoriOptions } from 'satori';
-import getProposalSvg from './proposal';
-import getSpaceSvg from './space';
-import getHomeSvg from './home';
+import getProposalSvg from './og-proposal';
+import getSpaceSvg from './og-space';
+import getHomeSvg from './og-home';
 import { fontsData } from '../utils';
 import { loadEmoji, getIconCode, apis } from '../twemoji';
 import type { ImageType } from '../index';
@@ -18,13 +18,13 @@ export default async function render(type: ImageType, id: string) {
   let content: JSX.Element;
 
   switch (type) {
-    case 'proposal':
+    case 'og-proposal':
       content = await getProposalSvg(id);
       break;
-    case 'space':
+    case 'og-space':
       content = await getSpaceSvg(id);
       break;
-    case 'home':
+    case 'og-home':
       content = await getHomeSvg();
       break;
     default:
