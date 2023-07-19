@@ -61,7 +61,7 @@ describe('VotesReport', () => {
       const report = new VotesReport('test', testStorageEngine);
       mockFetchProposal.mockResolvedValueOnce(null);
 
-      expect(report.isCacheable()).rejects.toBe('ENTRY_NOT_FOUND');
+      expect(report.isCacheable()).rejects.toBe('RECORD_NOT_FOUND');
       expect(mockFetchProposal).toHaveBeenCalled();
     });
 
@@ -77,7 +77,7 @@ describe('VotesReport', () => {
         space
       });
 
-      expect(report.isCacheable()).rejects.toBe('PROPOSAL_NOT_CLOSED');
+      expect(report.isCacheable()).rejects.toBe('RECORD_NOT_FOUND');
       expect(mockFetchProposal).toHaveBeenCalled();
     });
 
