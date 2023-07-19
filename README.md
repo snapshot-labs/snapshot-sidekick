@@ -2,9 +2,12 @@
 
 Sidekick is the service serving:
 
-- All proposal's votes CSV report
-- Moderation list
-- NFT Claimer trusted backend server
+| Module name   | Description                                                      | Type                 |
+| ------------- | ---------------------------------------------------------------- | -------------------- |
+| `VotesReport` | all proposal's votes CSV report                                  | generation and cache |
+| `moderation`  | moderation list                                                  | API only             |
+| `NFTClaimer`  | NFT Claimer trusted backend server                               | generation           |
+| `picSnap`     | an image generator for pictures snapshot of proposals and spaces | Generation and cache |
 
 ---
 
@@ -22,8 +25,6 @@ Install the dependencies
 yarn
 ```
 
-_This project does not require a database, but requires a [storage engine](#storage-engine)_
-
 ### Configuration
 
 Copy `.env.example`, rename it to `.env` and edit the hub API url in the `.env` file if needed
@@ -36,7 +37,7 @@ If you are using AWS as storage engine, set all the required `AWS_` config keys,
 
 ### Storage engine
 
-This script is shipped with 2 storage engine.
+This script is shipped with 2 storage engines.
 
 You can set the cache engine by toggling the `STORAGE_ENGINE` environment variable.
 
@@ -44,9 +45,6 @@ You can set the cache engine by toggling the `STORAGE_ENGINE` environment variab
 | ---------------- | ----------- | --------------------------------- |
 | `aws`            | Amazon S3   | `public/`                         |
 | `file` (default) | Local file  | `tmp/` (relative to project root) |
-
-You can additionally specify a sub directory by setting `VOTE_REPORT_SUBDIR`
-(By default, all votes report will be nested in the `votes` directory).
 
 ### Compiles and hot-reloads for development
 
@@ -97,7 +95,11 @@ yarn typecheck
 
 ### Votes CSV report
 
-Generate and serve votes CSV report for closed proposals.
+Generate and serve cached votes CSV report for closed proposals.
+
+#### Configuration
+
+Use the env variable `VOTE_REPORT_SUBDIR` to specify the subdir where to store the cached files (relative to the storage engine root)
 
 > NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
 
@@ -113,36 +115,23 @@ When cached, this request will respond with a stream to a CSV file.
 
 When votes report can be cached, but does not exist yet, a cache generation task will be queued.
 This enable cache to be generated on-demand.
-A JSON-RPC success with status code `202` will then be returned, with the progress percentage as `result` message.
+A JSON-RPC success with status code `202` will then be returned, where the progress percentage can be retreive from the `result` message.
 
-```
+Example response for the proposal `0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98` votes report, which is still pending generation, done at 15.45%.
+
+```json
 {
-  "jsonrpc":"2.0",
-  "result":"15.45",
-  "id":"0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98"
+  "jsonrpc": "2.0",
+  "result": "15.45",
+  "id": "0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98"
 }
 ```
 
-#### Generate a cache file
-
-Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
-
-```bash
-curl -X POST localhost:3005/webhook \
--H "Authenticate: WEBHOOK_AUTH_TOKEN" \
--H "Content-Type: application/json" \
--d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
-```
-
-On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
-
-> This endpoint has been designed to receive events from snapshot webhook service.
-
-Do not forget to set `WEBHOOK_AUTH_TOKEN` in the `.env` file
+Cache is pre-warmed, by listening to [webhook](#webhook).
 
 ### Static moderation list
 
-Return a curated list of moderated data.
+Return a curated list of moderation data (flagged/verified proposal/spaces/etc...)
 
 #### Retrieve the list
 
@@ -160,7 +149,7 @@ Valid values are:
 - `verifiedSpaces`
 - `flaggedSpaces`
 
-You can pass multiple list, separated by a comma.
+You can pass multiple lists, separated by a comma.
 
 Data are sourced from the json files with the same name, located in this repo `/data` directory, and a remote read-only SQL database.
 
@@ -271,6 +260,55 @@ If given proposal's space has enabled NFT claimer, and there are still mintable 
 ```
 
 > **NOTE**: The returned `proposalId` in the payload is a number representation
+
+### PicSnap
+
+PicSnap is an image generator for snapshot spaces/proposals info.
+
+#### Configuration
+
+Use the env variable `OG_IMAGES_SUBDIR` to specify the subdir where to store the cached files (relative to the storage engine root)
+
+#### Usage
+
+Send a `GET` request to `/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?`
+
+It will create the cached file if it does not exist yet, then serve it.
+
+By default, all images are in png format. You can additionally explicitely set the format by appending the extension to the url to `.svg` to retrieve the raw svg file (slower as only png files are cached)
+
+Available image types are:
+
+| `TYPE`        | Description                  | Example query                                                                                           | Size     |
+| ------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------- | -------- |
+| `og-home`     | Default image for OpenGraph  | `localhost:3005/picsnap/og-home`                                                                        | 1200x600 |
+| `og-space`    | OpenGraph image for space    | `localhost:3005/picsnap/og-space/fabien.eth`                                                            | 1200x600 |
+| `og-proposal` | OpenGraph image for proposal | `localhost:3005/picsnap/og-proposal/0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98` | 1200x600 |
+
+Images are created and auto-refreshed, by listening to [webhook](#webhook).
+
+### Webhook
+
+This endpoint will parse the incoming events, create a task, then queue it, to be processed by `queue`.
+
+> This endpoint has been designed to receive events from snapshot webhook service.
+
+#### Configuration
+
+Set `WEBHOOK_AUTH_TOKEN` in the `.env` file
+
+#### Usage
+
+Send a `POST` request with a body following the [Webhook event object](https://docs.snapshot.org/tools/webhooks).
+
+```bash
+curl -X POST localhost:3005/webhook \
+-H "Authenticate: WEBHOOK_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"id": "proposal/[PROPOSAL-ID]", "event": "proposal/end"}'
+```
+
+On success, will respond with a success [JSON-RPC 2.0](https://www.jsonrpc.org/specification) message
 
 ### Sentry tunnel
 
