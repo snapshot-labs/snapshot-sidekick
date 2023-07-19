@@ -25,7 +25,7 @@ router.post('/votes/:id', async (req, res) => {
 
     try {
       await votesReport.isCacheable();
-      queue(id);
+      queue(votesReport);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
       capture(e);
