@@ -52,4 +52,29 @@ describe('picSnap', () => {
       expect(response.body).toMatchImageSnapshot();
     });
   });
+
+  describe('on OpenGraph space with non-latin character image', () => {
+    it.todo('returns the svg file');
+    it.todo('returns the png image');
+  });
+
+  describe('on OpenGraph space with emoji character image', () => {
+    it.todo('returns the svg file');
+    it.todo('returns the png image');
+  });
+
+  describe('on OpenGraph pending proposal image', () => {
+    it.todo('returns the svg file');
+    it.todo('returns the png image');
+  });
+
+  describe('on OpenGraph active proposal image', () => {
+    it.todo('returns the svg file');
+    it.todo('returns the png image');
+  });
+
+  describe('on OpenGraph closed proposal image', () => {
+    it.todo('returns the svg file');
+    it.todo('returns the png image');
+  });
 });
