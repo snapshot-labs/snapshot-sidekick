@@ -13,7 +13,7 @@ export default class Cache {
     this.generationProgress = 0;
   }
 
-  async getContent(): Promise<string> {
+  async getContent(): Promise<string | Buffer> {
     return '';
   }
 

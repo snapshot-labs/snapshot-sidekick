@@ -15,7 +15,7 @@ class File implements IStorage {
     }
   }
 
-  async set(key: string, value: string) {
+  async set(key: string, value: string | Buffer) {
     try {
       writeFileSync(this.path(key), value);
       console.log(`[storage:file] File saved to ${this.path(key)}`);
@@ -34,7 +34,7 @@ class File implements IStorage {
         return false;
       }
 
-      return readFileSync(this.path(key), 'utf8');
+      return readFileSync(this.path(key));
     } catch (e) {
       capture(e);
       console.error('[storage:file] Fetch file failed', e);
