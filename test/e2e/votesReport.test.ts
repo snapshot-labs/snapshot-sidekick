@@ -24,7 +24,7 @@ describe('GET /api/votes/:id', () => {
       const response = await request(HOST).post(`/api/votes/${id}`);
 
       expect(response.statusCode).toBe(200);
-      expect(response.text).toEqual(await votesReport.getCache());
+      expect(response.text).toEqual((await votesReport.getCache()).toString());
     });
   });
 
