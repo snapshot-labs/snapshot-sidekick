@@ -1,5 +1,6 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import type { IStorage } from './types';
+import type { Readable } from 'stream';
 
 const CACHE_PATH = 'public';
 
@@ -20,7 +21,7 @@ class Aws implements IStorage {
     this.subDir = subDir;
   }
 
-  async set(key: string, value: string) {
+  async set(key: string, value: string | Buffer) {
     try {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -47,7 +48,18 @@ class Aws implements IStorage {
       });
       const response = await this.client.send(command);
 
-      return response.Body?.transformToString() || false;
+      if (!response.Body) {
+        return false;
+      }
+
+      const stream = response.Body as Readable;
+
+      return new Promise<Buffer>((resolve, reject) => {
+        const chunks: Buffer[] = [];
+        stream.on('data', chunk => chunks.push(chunk));
+        stream.once('end', () => resolve(Buffer.concat(chunks)));
+        stream.once('error', reject);
+      });
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
         console.error('[storage:aws] File fetch failed', e);
