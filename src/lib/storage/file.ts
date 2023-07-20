@@ -1,7 +1,6 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
-import { capture } from '../../helpers/sentry';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;
 

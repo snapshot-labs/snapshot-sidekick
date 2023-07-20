@@ -1,7 +1,6 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
-import { capture } from '../../helpers/sentry';
 
 const CACHE_PATH = 'public';
 

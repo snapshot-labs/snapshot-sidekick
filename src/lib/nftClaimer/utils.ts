@@ -8,7 +8,6 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { capture } from '../../helpers/sentry';
 import type { Proposal, Space } from '../../helpers/snapshot';
-import { capture } from '../../helpers/sentry';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
