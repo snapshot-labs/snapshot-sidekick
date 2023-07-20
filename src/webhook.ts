@@ -22,6 +22,8 @@ function processPicSnapRefresh(id: string, type: string) {
 router.post('/webhook', (req, res) => {
   const body = req.body || {};
   const event = body.event?.toString() ?? '';
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type, id } = body.id?.toString().split('/');
 
   if (req.headers['authentication'] !== `${process.env.WEBHOOK_AUTH_TOKEN ?? ''}`) {
@@ -35,6 +37,7 @@ router.post('/webhook', (req, res) => {
   try {
     processVotesReport(id, event);
     processPicSnapRefresh(id, type);
+    
     return rpcSuccess(res, 'Webhook received', id);
   } catch (e) {
     capture(e);

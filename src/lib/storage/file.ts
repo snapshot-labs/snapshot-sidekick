@@ -1,4 +1,5 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
 import { capture } from '../../helpers/sentry';
 
@@ -35,7 +36,6 @@ class File implements IStorage {
       }
 
       console.log(`[storage:file] File fetched from ${this.path(key)}`);
-
       return readFileSync(this.path(key), 'utf8');
     } catch (e) {
       capture(e);
