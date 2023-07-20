@@ -67,6 +67,7 @@ class Aws implements IStorage {
         capture(e);
         console.error('[storage:aws] File fetch failed', e);
       }
+
       return false;
     }
   }
