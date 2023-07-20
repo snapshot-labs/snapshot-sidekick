@@ -32,6 +32,7 @@ class File implements IStorage {
         return false;
       }
 
+      console.log(`[storage:file] File fetched from ${this.path(key)}`);
       return readFileSync(this.path(key));
     } catch (e) {
       console.error('[storage:file] Fetch file failed', e);
