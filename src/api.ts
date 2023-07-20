@@ -52,7 +52,7 @@ router.get('/nft-claimer', async (req, res) => {
   try {
     return res.json({ snapshotFee: await snapshotFee() });
   } catch (e: any) {
-    console.error(e);
+    capture(e);
     return rpcError(res, e, '');
   }
 });
