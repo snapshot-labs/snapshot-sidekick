@@ -37,7 +37,7 @@ router.post('/webhook', (req, res) => {
   try {
     processVotesReport(id, event);
     processPicSnapRefresh(id, type);
-    
+
     return rpcSuccess(res, 'Webhook received', id);
   } catch (e) {
     capture(e);
