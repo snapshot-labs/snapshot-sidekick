@@ -15,17 +15,17 @@ router.post('/votes/:id', async (req, res) => {
   const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
 
   try {
-    const file = await votesReport.cachedFile();
+    const file = await votesReport.getCache();
 
-    if (typeof file === 'string') {
+    if (file) {
       res.header('Content-Type', 'text/csv');
       res.attachment(votesReport.filename);
-      return res.send(Buffer.from(file));
+      return res.end(file);
     }
 
     try {
-      await votesReport.canBeCached();
-      queue(id);
+      await votesReport.isCacheable();
+      queue(votesReport);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
       capture(e);

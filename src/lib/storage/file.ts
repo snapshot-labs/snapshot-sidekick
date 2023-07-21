@@ -10,15 +10,15 @@ class File implements IStorage {
   constructor(subDir?: string) {
     this.subDir = subDir;
 
-    if (!existsSync(this.#path())) {
-      mkdirSync(this.#path(), { recursive: true });
+    if (!existsSync(this.path())) {
+      mkdirSync(this.path(), { recursive: true });
     }
   }
 
-  async set(key: string, value: string) {
+  async set(key: string, value: string | Buffer) {
     try {
-      writeFileSync(this.#path(key), value);
-      console.log(`[storage:file] File saved to ${this.#path(key)}`);
+      writeFileSync(this.path(key), value);
+      console.log(`[storage:file] File saved to ${this.path(key)}`);
 
       return true;
     } catch (e) {
@@ -30,11 +30,12 @@ class File implements IStorage {
 
   async get(key: string) {
     try {
-      if (!existsSync(this.#path(key))) {
+      if (!existsSync(this.path(key))) {
         return false;
       }
 
-      return readFileSync(this.#path(key), 'utf8');
+      console.log(`[storage:file] File fetched from ${this.path(key)}`);
+      return readFileSync(this.path(key));
     } catch (e) {
       capture(e);
       console.error('[storage:file] Fetch file failed', e);
@@ -42,7 +43,7 @@ class File implements IStorage {
     }
   }
 
-  #path(key?: string) {
+  path(key?: string) {
     return [CACHE_PATH, this.subDir?.replace(/^\/+|\/+$/, ''), key].filter(p => p).join('/');
   }
 }
