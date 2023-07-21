@@ -20,19 +20,9 @@ export type Vote = {
   created: number;
 };
 
-export type NftClaimer = {
-  maxSupply: number;
-  mintPrice: number;
-  proposerCut: number;
-  address: string;
-  network: string;
-  enabled: boolean;
-};
-
 export type Space = {
   id: string;
   network: string;
-  nftClaimer?: NftClaimer;
 };
 
 const httpLink = createHttpLink({

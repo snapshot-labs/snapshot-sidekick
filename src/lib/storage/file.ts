@@ -1,4 +1,5 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;
@@ -21,6 +22,7 @@ class File implements IStorage {
 
       return true;
     } catch (e) {
+      capture(e);
       console.error('[storage:file] File storage failed', e);
       throw e;
     }
@@ -35,6 +37,7 @@ class File implements IStorage {
       console.log(`[storage:file] File fetched from ${this.path(key)}`);
       return readFileSync(this.path(key));
     } catch (e) {
+      capture(e);
       console.error('[storage:file] Fetch file failed', e);
       return false;
     }

@@ -4,8 +4,6 @@ import type { Response } from 'express';
 
 const ERROR_CODES: Record<string, number> = {
   'Invalid Request': -32600,
-  PROPOSAL_NOT_FOUND: 404,
-  PROPOSAL_NOT_CLOSED: -40004,
   RECORD_NOT_FOUND: 404,
   UNAUTHORIZED: 401
 };

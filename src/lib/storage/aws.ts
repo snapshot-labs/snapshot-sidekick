@@ -1,4 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
 
@@ -35,6 +36,7 @@ class Aws implements IStorage {
 
       return true;
     } catch (e) {
+      capture(e);
       console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
@@ -62,6 +64,7 @@ class Aws implements IStorage {
       });
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
+        capture(e);
         console.error('[storage:aws] File fetch failed', e);
       }
 
