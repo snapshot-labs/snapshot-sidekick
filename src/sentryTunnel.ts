@@ -3,6 +3,7 @@ import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
 import { URL } from 'url';
 import { rpcError } from './helpers/utils';
+import { capture } from './helpers/sentry';
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.post('/sentry', bodyParser.raw({ type: () => true, limit: '4mb' }), async
     }
     return res.sendStatus(status);
   } catch (e: any) {
-    console.error(e);
+    capture(e);
     rpcError(res, e, '');
   }
 });
