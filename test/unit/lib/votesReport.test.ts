@@ -59,7 +59,7 @@ describe('VotesReport', () => {
       const report = new VotesReport('test', _storageEngine);
       const votesReportSpy = jest.spyOn(report, 'fetchProposal').mockResolvedValueOnce(null);
 
-      expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_FOUND');
+      expect(report.canBeCached()).rejects.toBe('RECORD_NOT_FOUND');
       expect(votesReportSpy).toHaveBeenCalled();
     });
 
@@ -74,7 +74,7 @@ describe('VotesReport', () => {
         space
       });
 
-      expect(report.canBeCached()).rejects.toBe('PROPOSAL_NOT_CLOSED');
+      expect(report.canBeCached()).rejects.toBe('RECORD_NOT_FOUND');
       expect(votesReportSpy).toHaveBeenCalled();
     });
 
