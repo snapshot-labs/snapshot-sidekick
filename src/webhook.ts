@@ -22,7 +22,6 @@ function processPicSnapRefresh(id: string, type: string) {
 router.post('/webhook', (req, res) => {
   const body = req.body || {};
   const event = body.event?.toString() ?? '';
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type, id } = body.id?.toString().split('/');
 
