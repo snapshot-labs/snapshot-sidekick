@@ -4,7 +4,7 @@ import type { Space } from '../../../../src/helpers/snapshot';
 import { signer } from '../../../../src/lib/nftClaimer/utils';
 
 const mockFetchSpace = jest.fn((id: string): any => {
-  return { id: id, nftClaimer: { enabled: true } };
+  return { id: id };
 });
 jest.mock('../../../../src/helpers/snapshot', () => ({
   __esModule: true,
