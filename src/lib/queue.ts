@@ -38,9 +38,8 @@ async function run() {
     queues.forEach(async item => {
       if (processingItems.has(item)) {
         console.log(
-          `[queue] Skip: ${item} is currently being processed, progress: ${
-            processingItems.get(item)?.generationProgress
-          }%`
+          `[queue] Skip: ${item} is currently being processed, progress: ${processingItems.get(item)
+            ?.generationProgress}%`
         );
         return;
       }
