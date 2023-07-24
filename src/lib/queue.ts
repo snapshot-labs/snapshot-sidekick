@@ -39,9 +39,9 @@ async function run() {
     queues.forEach(async cacheable => {
       if (processingItems.has(cacheable.id)) {
         console.log(
-          `[queue] Skip: ${cacheable} is currently being processed, progress: ${
-            processingItems.get(cacheable.id)?.generationProgress
-          }%`
+          `[queue] Skip: ${cacheable} is currently being processed, progress: ${processingItems.get(
+            cacheable.id
+          )?.generationProgress}%`
         );
         return;
       }
