@@ -1,4 +1,9 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  DeleteObjectCommand
+} from '@aws-sdk/client-s3';
 import { capture } from '../../helpers/sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
@@ -62,6 +67,25 @@ class Aws implements IStorage {
         stream.once('end', () => resolve(Buffer.concat(chunks)));
         stream.once('error', reject);
       });
+    } catch (e: any) {
+      if (e['$metadata']?.httpStatusCode !== 404) {
+        capture(e);
+        console.error('[storage:aws] File fetch failed', e);
+      }
+
+      return false;
+    }
+  }
+
+  async delete(key: string) {
+    try {
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: this.path(key)
+      });
+      await this.client.send(command);
+
+      return true;
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
         capture(e);
