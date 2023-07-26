@@ -12,11 +12,17 @@ import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
 import { initLogger, fallbackLogger } from './helpers/sentry';
+import initMetrics from './helpers/metrics';
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
 initLogger(app);
+
+// Exclude favicon from metrics by defining it before
+app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
+
+initMetrics(app);
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({ maxAge: 86400 }));
@@ -28,7 +34,6 @@ app.use(
       '":referrer" ":user-agent" - :response-time ms'
   )
 );
-app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
 app.use('/api', api);
 app.use('/', webhook);
 app.use('/', sentryTunnel);

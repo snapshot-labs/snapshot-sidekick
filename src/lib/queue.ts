@@ -25,6 +25,10 @@ export function queue(cacheable: Cache) {
   return queues.size;
 }
 
+export function size() {
+  return queues.size;
+}
+
 export function getProgress(id: string) {
   if (processingItems.has(id)) {
     return processingItems.get(id)?.generationProgress as number;
