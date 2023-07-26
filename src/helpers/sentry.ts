@@ -34,10 +34,10 @@ export function fallbackLogger(app: Express) {
   });
 }
 
-export function capture(e: any) {
+export function capture(e: any, captureContext?: any) {
   if (process.env.NODE_ENV !== 'production') {
     return console.error(e);
   }
 
-  Sentry.captureException(e);
+  Sentry.captureException(e, captureContext);
 }
