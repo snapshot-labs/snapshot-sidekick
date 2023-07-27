@@ -1,10 +1,8 @@
 import 'dotenv/config';
-import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
-import favicon from 'serve-favicon';
 import api from './api';
 import webhook from './webhook';
 import sentryTunnel from './sentryTunnel';
@@ -19,9 +17,8 @@ const PORT = process.env.PORT || 3005;
 
 initLogger(app);
 
-// Exclude favicon from metrics by defining it before
-app.use(favicon(path.join(__dirname, '../public', 'favicon.png')));
-
+// Exclude favicon request from metrics by defining it before
+app.get('/favicon.*', (req, res) => res.status(204));
 initMetrics(app);
 
 app.use(express.json({ limit: '4mb' }));
