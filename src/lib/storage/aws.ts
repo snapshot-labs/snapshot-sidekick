@@ -1,5 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { capture } from '../../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
 
@@ -36,7 +36,7 @@ class Aws implements IStorage {
 
       return true;
     } catch (e) {
-      capture(e);
+      capture(e, { context: { path: this.path(key) } });
       console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }

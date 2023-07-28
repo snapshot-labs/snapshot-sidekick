@@ -6,7 +6,7 @@ import { Wallet } from '@ethersproject/wallet';
 import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
-import { capture } from '../../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { Proposal, Space } from '../../helpers/snapshot';
 
 const requiredEnvKeys = [

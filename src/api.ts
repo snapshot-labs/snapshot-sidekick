@@ -1,5 +1,5 @@
 import express from 'express';
-import { capture } from './helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
@@ -72,7 +72,7 @@ router.post('/nft-claimer/deploy', async (req, res) => {
       })
     );
   } catch (e: any) {
-    capture(e);
+    capture(e, { context: { body: req.body } });
     return rpcError(res, e, salt);
   }
 });
@@ -82,7 +82,7 @@ router.post('/nft-claimer/mint', async (req, res) => {
   try {
     return res.json(await mintPayload({ proposalAuthor, recipient: address, id, salt }));
   } catch (e: any) {
-    capture(e);
+    capture(e, { context: { body: req.body } });
     return rpcError(res, e, salt);
   }
 });
