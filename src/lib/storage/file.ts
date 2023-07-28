@@ -1,5 +1,5 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
-import { capture } from '../../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 
 const CACHE_PATH = `${__dirname}/../../../tmp`;

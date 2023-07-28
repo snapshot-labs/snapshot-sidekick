@@ -9,7 +9,7 @@ import sentryTunnel from './sentryTunnel';
 import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
-import { initLogger, fallbackLogger } from './helpers/sentry';
+import { initLogger, fallbackLogger } from '@snapshot-labs/snapshot-sentry';
 import initMetrics from './helpers/metrics';
 
 const app = express();

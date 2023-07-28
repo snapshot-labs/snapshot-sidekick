@@ -1,5 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { capture } from '../../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
 
