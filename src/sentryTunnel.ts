@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
 import { URL } from 'url';
 import { rpcError } from './helpers/utils';
-import { capture } from './helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 
 const router = express.Router();
 
