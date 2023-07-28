@@ -11,7 +11,7 @@ async function processItem(cacheable: Cache) {
     processingItems.set(cacheable.id, cacheable);
     await cacheable.createCache();
   } catch (e) {
-    capture(e);
+    capture(e, { context: { id: cacheable.id } });
     console.error(`[queue] Error while processing item`, e);
   } finally {
     queues.delete(cacheable);
@@ -22,6 +22,10 @@ async function processItem(cacheable: Cache) {
 export function queue(cacheable: Cache) {
   queues.add(cacheable);
 
+  return queues.size;
+}
+
+export function size() {
   return queues.size;
 }
 

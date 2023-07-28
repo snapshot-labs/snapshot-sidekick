@@ -36,7 +36,7 @@ class Aws implements IStorage {
 
       return true;
     } catch (e) {
-      capture(e);
+      capture(e, { context: { path: this.path(key) } });
       console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
