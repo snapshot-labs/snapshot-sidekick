@@ -5,3 +5,4 @@ jobs:
     uses: snapshot-labs/actions/.github/workflows/test.yml@main
     with:
       mysql_database_name: sidekick_test
+    secrets: inherit
