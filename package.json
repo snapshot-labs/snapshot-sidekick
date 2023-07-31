@@ -5,7 +5,7 @@
   "repository": "snapshot-labs/snapshot-sidekick",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src/ test/ --ext .ts,.json",
+    "lint": "eslint src/ test/ data/ --ext .ts,.json",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.json && copyfiles data/*.json data/*.txt public/* dist/",
