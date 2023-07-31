@@ -2172,9 +2172,9 @@
   integrity sha512-k/FUf4VWhwLFUmKuWs2mNvmPe691hqhvCJuujD4TfbIivWysmL1TqthwfdQUrQEAQUqVQ2ZKEiGkbufp5J27eQ==
 
 "@snapshot-labs/snapshot-sentry@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot-sentry/-/snapshot-sentry-1.0.0.tgz#4446128b80cf7634c58d19fde05a4b08b56bab8e"
-  integrity sha512-NEI1yemZvWdOxdlMCAA3wWtk2mQgCffNkCUnRzXEewtvXIzxrBeXPh4tp1dv5Xlsdg5p3QoIcvyfaZ5EpiWRlQ==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot-sentry/-/snapshot-sentry-1.1.0.tgz#b357d4789ffd287f90fb70e7f0b207b47627cf24"
+  integrity sha512-Z31Y/5RJkTudrUwPasRxfABEQG2eQ2Ka5+vpi5zEwspt5gwTEfVM8M1NlYMFikWYqXHvVk51EU3UmJTqgL6pIg==
   dependencies:
     "@sentry/node" "^7.60.1"
 
