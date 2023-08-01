@@ -11,6 +11,10 @@ exports[`moderationList ignores invalid fields, and only returns verifiedSpaces 
 
 exports[`moderationList returns all fields by default 1`] = `
 {
+  "flaggedAddresses": [
+    "0x0001",
+    "0x0002",
+  ],
   "flaggedIps": [
     "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
     "19e36255972107d42b8cecb77ef5622e842e8a50778a6ed8dd1ce94732daca9e",
@@ -18,6 +22,14 @@ exports[`moderationList returns all fields by default 1`] = `
   "flaggedLinks": [
     "https://gogle.com",
     "https://facebook.com",
+  ],
+  "flaggedProposalBodyKeywords": [
+    "claim drop",
+    "token",
+  ],
+  "flaggedProposalTitleKeywords": [
+    "hello",
+    "test string",
   ],
   "flaggedProposals": [
     "0x1",

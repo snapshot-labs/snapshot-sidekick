@@ -12,6 +12,18 @@ export const SqlFixtures: Record<string, any[]> = {
     { action: 'flag', type: 'space', value: 'space3.eth', created: 100 },
     { action: 'flag', type: 'space', value: 'space4.eth', created: 100 }
   ],
+  flaggedAddresses: [
+    { action: 'flag', type: 'address', value: '0x0001', created: 100 },
+    { action: 'flag', type: 'address', value: '0x0002', created: 100 }
+  ],
+  flaggedProposalTitleKeyword: [
+    { action: 'flag', type: 'proposalTitleKeyword', value: 'hello', created: 100 },
+    { action: 'flag', type: 'proposalTitleKeyword', value: 'test string', created: 100 }
+  ],
+  flaggedProposalBodyKeyword: [
+    { action: 'flag', type: 'proposalBodyKeyword', value: 'claim drop', created: 100 },
+    { action: 'flag', type: 'proposalBodyKeyword', value: 'token', created: 100 }
+  ],
   flaggedIps: [
     {
       action: 'flag',
