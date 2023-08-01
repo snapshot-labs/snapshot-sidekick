@@ -23,11 +23,11 @@ exports[`moderationList returns all fields by default 1`] = `
     "https://gogle.com",
     "https://facebook.com",
   ],
-  "flaggedProposalBodyKeyword": [
+  "flaggedProposalBodyKeywords": [
     "claim drop",
     "token",
   ],
-  "flaggedProposalTitleKeyword": [
+  "flaggedProposalTitleKeywords": [
     "hello",
     "test string",
   ],

@@ -11,8 +11,8 @@ const FIELDS = new Map<keyof MODERATION_LIST, Record<string, string>>([
   ['flaggedSpaces', { action: 'flag', type: 'space' }],
   ['flaggedIps', { action: 'flag', type: 'ip' }],
   ['flaggedAddresses', { action: 'flag', type: 'address' }],
-  ['flaggedProposalTitleKeyword', { action: 'flag', type: 'proposalTitleKeyword' }],
-  ['flaggedProposalBodyKeyword', { action: 'flag', type: 'proposalBodyKeyword' }],
+  ['flaggedProposalTitleKeywords', { action: 'flag', type: 'proposalTitleKeyword' }],
+  ['flaggedProposalBodyKeywords', { action: 'flag', type: 'proposalBodyKeyword' }],
   ['verifiedSpaces', { action: 'verify', type: 'space' }],
   ['verifiedTokens', { file: 'verifiedTokens.json' }]
 ]);
