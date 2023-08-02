@@ -10,7 +10,7 @@ import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
 import { initLogger, fallbackLogger } from '@snapshot-labs/snapshot-sentry';
-import initMetrics from './helpers/metrics';
+import initMetrics from './lib/metrics';
 
 const app = express();
 const PORT = process.env.PORT || 3005;

@@ -1,11 +1,11 @@
 import client from 'prom-client';
 import promBundle from 'express-prom-bundle';
 import type { Express, Request, Response } from 'express';
-import { size as queueSize } from '../lib/queue';
-import getModerationList from '../lib/moderationList';
-import DigitalOcean from '../lib/metrics/digitalOcean';
+import { size as queueSize } from '../queue';
+import getModerationList from '../moderationList';
+import DigitalOcean from './digitalOcean';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import { rpcError } from './utils';
+import { rpcError } from '../../helpers/utils';
 
 const METRICS_AUTHORIZATION = process.env.METRICS_AUTHORIZATION || '';
 
@@ -28,6 +28,10 @@ export default function initMetrics(app: Express) {
       includePath: true,
       promClient: {
         collectDefaultMetrics: {}
+      },
+      urlValueParser: {
+        minHexLength: 5,
+        extraMasks: ['0x[0-9a-f]{40}', '0x[0-9a-f]{64}']
       }
     })
   );
