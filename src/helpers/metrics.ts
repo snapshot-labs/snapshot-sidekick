@@ -1,14 +1,27 @@
 import client from 'prom-client';
 import promBundle from 'express-prom-bundle';
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { size as queueSize } from '../lib/queue';
 import getModerationList from '../lib/moderationList';
 import DigitalOcean from '../lib/metrics/digitalOcean';
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import { rpcError } from './utils';
+
+const METRICS_AUTHORIZATION = process.env.METRICS_AUTHORIZATION || '';
+
+export const authChecker = async (req: Request, res: Response, next: any) => {
+  const { authorization = 'Bearer ' } = req.headers;
+
+  if (METRICS_AUTHORIZATION && authorization.split(' ')[1] !== METRICS_AUTHORIZATION) {
+    return rpcError(res, 'UNAUTHORIZED', '');
+  }
+  next();
+};
 
 export default function initMetrics(app: Express) {
   initCustomMetrics();
 
+  app.get('/metrics', authChecker);
   app.use(
     promBundle({
       includeMethod: true,
