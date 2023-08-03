@@ -13,7 +13,7 @@ export default class DigitalOcean {
     this.key = process.env.DIGITAL_OCEAN_TOKEN;
 
     if (!this.key) {
-      throw new Error('[metrics:digital-ocean] Digital Ocean token is missing');
+      throw new Error('MISSING_KEY');
     }
   }
 
