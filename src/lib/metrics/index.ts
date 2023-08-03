@@ -157,6 +157,8 @@ async function initCustomMetrics() {
       }
     });
   } catch (e: any) {
-    capture(e);
+    if (e.message !== 'MISSING_KEY') {
+      capture(e);
+    }
   }
 }
