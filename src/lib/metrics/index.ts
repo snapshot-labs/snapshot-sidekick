@@ -1,43 +1,15 @@
-import client from 'prom-client';
-import promBundle from 'express-prom-bundle';
-import type { Express, Request, Response } from 'express';
+import init from '@snapshot-labs/snapshot-metrics';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import { rpcError } from '../../helpers/utils';
-
-const METRICS_AUTHORIZATION = process.env.METRICS_AUTHORIZATION || '';
-
-export const authChecker = async (req: Request, res: Response, next: any) => {
-  const { authorization = 'Bearer ' } = req.headers;
-
-  if (METRICS_AUTHORIZATION && authorization.split(' ')[1] !== METRICS_AUTHORIZATION) {
-    return rpcError(res, 'UNAUTHORIZED', '');
-  }
-  next();
-};
+import type { Express } from 'express';
 
 export default function initMetrics(app: Express) {
-  initCustomMetrics();
-
-  app.get('/metrics', authChecker);
-  app.use(
-    promBundle({
-      includeMethod: true,
-      includePath: true,
-      promClient: {
-        collectDefaultMetrics: {}
-      },
-      urlValueParser: {
-        minHexLength: 5,
-        extraMasks: ['0x[0-9a-f]{40}', '0x[0-9a-f]{64}']
-      }
-    })
-  );
+  init(app, { customMetrics });
 }
 
-async function initCustomMetrics() {
+async function customMetrics(client: any) {
   new client.Gauge({
     name: 'queue_size',
     help: 'Number of items in the cache queue',
