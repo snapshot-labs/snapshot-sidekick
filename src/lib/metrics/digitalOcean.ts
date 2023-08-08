@@ -83,8 +83,8 @@ export default class DigitalOcean {
 
     const result = await response.json();
 
-    if (result.error) {
-      throw new Error(result.message);
+    if (response.status !== 200 || result.error) {
+      throw new Error(result.error || result.message);
     }
 
     this.cache[cacheKey] = result;
