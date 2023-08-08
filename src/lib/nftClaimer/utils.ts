@@ -31,7 +31,8 @@ if (missingEnvKeys.length > 0) {
   );
 }
 
-const HUB_NETWORK = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
+const hardcodedHubNetwork = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
+const HUB_NETWORK = process.env.HUB_NETWORK || hardcodedHubNetwork;
 const DEPLOY_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
 const NFT_CLAIMER_NETWORK = parseInt(process.env.NFT_CLAIMER_NETWORK as string);
 
