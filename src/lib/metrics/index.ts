@@ -39,6 +39,13 @@ new client.Gauge({
   }
 });
 
+export const timeQueueProcess = new client.Histogram({
+  name: 'queue_process_duration_seconds',
+  help: 'Duration in seconds of each queue process',
+  labelNames: ['name'],
+  buckets: [3, 7, 10, 15, 30, 60, 120]
+});
+
 try {
   const digitalOcean = new DigitalOcean();
 

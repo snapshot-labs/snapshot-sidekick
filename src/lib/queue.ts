@@ -1,6 +1,7 @@
 import { sleep } from '../helpers/utils';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import Cache from './cache';
+import { timeQueueProcess } from './metrics';
 
 const queues = new Set<Cache>();
 const processingItems = new Map<string, Cache>();
@@ -8,8 +9,10 @@ const processingItems = new Map<string, Cache>();
 async function processItem(cacheable: Cache) {
   console.log(`[queue] Processing queue item: ${cacheable}`);
   try {
+    const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
     processingItems.set(cacheable.id, cacheable);
     await cacheable.createCache();
+    end();
   } catch (e) {
     capture(e, { context: { id: cacheable.id } });
     console.error(`[queue] Error while processing item`, e);
