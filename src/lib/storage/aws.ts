@@ -89,7 +89,7 @@ class Aws implements IStorage {
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
         capture(e);
-        console.error('[storage:aws] File fetch failed', e);
+        console.error('[storage:aws] File delete failed', e);
       }
 
       return false;
