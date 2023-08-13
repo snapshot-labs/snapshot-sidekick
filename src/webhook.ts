@@ -1,6 +1,6 @@
 import express from 'express';
-import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import VotesReport from './lib/votesReport';
 import { queue } from './lib/queue';
 

@@ -1,5 +1,5 @@
-import { sleep } from '../helpers/utils';
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import { sleep } from '../helpers/utils';
 import Cache from './cache';
 
 const queues = new Set<Cache>();

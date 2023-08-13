@@ -1,15 +1,15 @@
 import 'dotenv/config';
 import express from 'express';
-import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
+import compression from 'compression';
+import { initLogger, fallbackLogger } from '@snapshot-labs/snapshot-sentry';
+import { name, version } from '../package.json';
 import api from './api';
 import webhook from './webhook';
 import sentryTunnel from './sentryTunnel';
 import './lib/queue';
-import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
-import { initLogger, fallbackLogger } from '@snapshot-labs/snapshot-sentry';
 import initMetrics from './lib/metrics';
 
 const app = express();
