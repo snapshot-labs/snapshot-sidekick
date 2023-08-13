@@ -1,4 +1,5 @@
 import { splitSignature } from '@ethersproject/bytes';
+import { FormatTypes, Interface } from '@ethersproject/abi';
 import { fetchProposal, Space } from '../../helpers/snapshot';
 import {
   validateProposal,
@@ -9,7 +10,6 @@ import {
   mintingAllowed
 } from './utils';
 import abi from './spaceCollectionImplementationAbi.json';
-import { FormatTypes, Interface } from '@ethersproject/abi';
 
 const MintType = {
   Mint: [

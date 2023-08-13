@@ -1,9 +1,9 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
+import { capture } from '@snapshot-labs/snapshot-sentry';
+import type { Express } from 'express';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
-import { capture } from '@snapshot-labs/snapshot-sentry';
-import type { Express } from 'express';
 
 export default function initMetrics(app: Express) {
   init(app);
