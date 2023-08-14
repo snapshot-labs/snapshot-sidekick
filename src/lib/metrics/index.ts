@@ -1,12 +1,21 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
-import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { Express } from 'express';
 
 export default function initMetrics(app: Express) {
-  init(app);
+  init(app, {
+    normalizedPath: [['^/api/votes/.*', '/api/votes/#id']],
+    whitelistedPath: [
+      /^\/$/,
+      /^\/api\/votes\/.*$/,
+      /^\/api\/(nft-claimer)(\/(deploy|mint))?$/,
+      /^\/api\/moderation$/,
+      /^\/(webhook|sentry)$/
+    ]
+  });
 }
 
 new client.Gauge({
@@ -28,6 +37,13 @@ new client.Gauge({
       this.set({ type }, Array.isArray(data) ? data.length : data.tokens.length);
     }
   }
+});
+
+export const timeQueueProcess = new client.Histogram({
+  name: 'queue_process_duration_seconds',
+  help: 'Duration in seconds of each queue process',
+  labelNames: ['name'],
+  buckets: [3, 7, 10, 15, 30, 60, 120]
 });
 
 try {
