@@ -1,4 +1,4 @@
-import { readFileSync, rmSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { storageEngine } from '../../../src/helpers/utils';
 import Cache from '../../../src/lib/cache';
 
@@ -10,49 +10,44 @@ describe('Cache', () => {
   const testStorageEngine = storageEngine(TEST_CACHE_DIR);
   const cache = new Cache(TEST_ID, testStorageEngine);
 
-  afterAll(() => {
-    rmSync(testStorageEngine.path(), { recursive: true });
-  });
-
   describe('getCache()', () => {
     describe('when the cache exists', () => {
-      const file = testStorageEngine.path(cache.filename);
+      it('returns the cached content as a Buffer', async () => {
+        const mockCacheGet = jest
+          .spyOn(testStorageEngine, 'get')
+          .mockResolvedValueOnce(Buffer.from(TEST_STRING_CONTENT));
+        const result = await cache.getCache();
 
-      beforeEach(() => writeFileSync(file, TEST_STRING_CONTENT));
-      afterEach(() => rmSync(file));
-
-      it('returns the cached content', async () => {
-        expect((await cache.getCache()).toString()).toEqual(TEST_STRING_CONTENT);
-      });
-
-      it('returns a Buffer', async () => {
-        expect(await cache.getCache()).toBeInstanceOf(Buffer);
+        expect(result.toString()).toEqual(TEST_STRING_CONTENT);
+        expect(result).toBeInstanceOf(Buffer);
+        expect(mockCacheGet).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('when the cache does not exists', () => {
       it('returns false', async () => {
+        const mockCacheGet = jest.spyOn(testStorageEngine, 'get').mockResolvedValueOnce(false);
+
         expect(await cache.getCache()).toBe(false);
+        expect(mockCacheGet).toHaveBeenCalledTimes(1);
       });
     });
   });
 
   describe('createCache()', () => {
-    it('creates the cache file from a string', async () => {
-      const spy = jest.spyOn(cache, 'getContent').mockResolvedValueOnce(TEST_STRING_CONTENT);
+    const inputs = [
+      ['string', TEST_STRING_CONTENT],
+      ['buffer', readFileSync(`${__dirname}/../../fixtures/icon.png`)]
+    ];
+
+    it.each(inputs)('creates the cache file from a %s', async (type, content) => {
+      const spy = jest.spyOn(cache, 'getContent').mockResolvedValueOnce(content);
+      const mockCacheGet = jest.spyOn(testStorageEngine, 'set').mockResolvedValueOnce(true);
+
       await cache.createCache();
 
-      expect((await cache.getCache()).toString()).toEqual(TEST_STRING_CONTENT);
       expect(spy).toHaveBeenCalledTimes(1);
-    });
-
-    it('creates the cache file from a Buffer', async () => {
-      const fixture = readFileSync(`${__dirname}/../../fixtures/icon.png`);
-      const spy = jest.spyOn(cache, 'getContent').mockResolvedValueOnce(fixture);
-      await cache.createCache();
-
-      expect(await cache.getCache()).toEqual(fixture);
-      expect(spy).toHaveBeenCalledTimes(1);
+      expect(mockCacheGet).toHaveBeenCalledWith(cache.filename, content);
     });
   });
 });

@@ -2,7 +2,31 @@ name: Test
 on: [push]
 jobs:
   test:
-    uses: snapshot-labs/actions/.github/workflows/test.yml@main
-    with:
-      mysql_database_name: sidekick_test
-    secrets: inherit
+    runs-on: ubuntu-20.04
+    env:
+      DATABASE_URL: 'mysql://root:root@127.0.0.1:3306/sidekick_test'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE sidekick_test;' -uroot -proot
+          mysql -uroot -proot sidekick_test < src/helpers/schema.sql
+          mysql -uroot -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+          mysql -uroot -proot -e "FLUSH PRIVILEGES;"
+      - run: yarn install
+      - name: Run all tests
+        run: yarn test
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

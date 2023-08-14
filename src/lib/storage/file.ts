@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, readFileSync, rmSync } from 'fs';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 
@@ -39,6 +39,23 @@ class File implements IStorage {
     } catch (e) {
       capture(e, { context: { path: this.path(key) } });
       console.error('[storage:file] Fetch file failed', e);
+      return false;
+    }
+  }
+
+  async delete(key: string) {
+    try {
+      if (!existsSync(this.path(key))) {
+        return true;
+      }
+
+      rmSync(this.path(key));
+
+      console.log(`[storage:file] File ${this.path(key)} deleted`);
+      return true;
+    } catch (e) {
+      capture(e);
+      console.error('[storage:file] Fetch deletion failed', e);
       return false;
     }
   }
