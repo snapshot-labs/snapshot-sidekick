@@ -41,7 +41,7 @@ class Aws implements IStorage {
 
       return true;
     } catch (e) {
-      capture(e, { context: { path: this.path(key) } });
+      capture(e, { contexts: { input: { key, path: this.path(key) } } });
       console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
@@ -69,7 +69,7 @@ class Aws implements IStorage {
       });
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
-        capture(e);
+        capture(e, { contexts: { input: { key, path: this.path(key) } } });
         console.error('[storage:aws] File fetch failed', e);
       }
 
@@ -88,7 +88,7 @@ class Aws implements IStorage {
       return true;
     } catch (e: any) {
       if (e['$metadata']?.httpStatusCode !== 404) {
-        capture(e);
+        capture(e, { contexts: { input: { key, path: this.path(key) } } });
         console.error('[storage:aws] File delete failed', e);
       }
 
