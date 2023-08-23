@@ -6,7 +6,7 @@ import { Wallet } from '@ethersproject/wallet';
 import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
-import { capture } from '../../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { Proposal, Space } from '../../helpers/snapshot';
 
 const requiredEnvKeys = [
@@ -17,10 +17,6 @@ const requiredEnvKeys = [
   'NFT_CLAIMER_DEPLOY_INITIALIZE_SELECTOR',
   'NFT_CLAIMER_SUBGRAPH_URL'
 ];
-
-const HUB_NETWORK = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
-const DEPLOY_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
-const NFT_CLAIMER_NETWORK = parseInt(process.env.NFT_CLAIMER_NETWORK as string);
 
 const missingEnvKeys: string[] = [];
 requiredEnvKeys.forEach(key => {
@@ -34,6 +30,11 @@ if (missingEnvKeys.length > 0) {
     `NFT Claimer not configured properly, missing env keys: ${missingEnvKeys.join(', ')}`
   );
 }
+
+const hardcodedHubNetwork = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
+const HUB_NETWORK = process.env.HUB_NETWORK || hardcodedHubNetwork;
+const DEPLOY_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
+const NFT_CLAIMER_NETWORK = parseInt(process.env.NFT_CLAIMER_NETWORK as string);
 
 export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 

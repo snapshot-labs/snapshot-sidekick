@@ -1,6 +1,6 @@
 import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
-import { capture } from './helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import VotesReport from './lib/votesReport';
 import picSnap from './lib/picSnap';
 import { queue } from './lib/queue';
@@ -39,7 +39,7 @@ router.post('/webhook', (req, res) => {
 
     return rpcSuccess(res, 'Webhook received', id);
   } catch (e) {
-    capture(e);
+    capture(e, { context: { body } });
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });

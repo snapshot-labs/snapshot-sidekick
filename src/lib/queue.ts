@@ -1,6 +1,7 @@
 import { sleep } from '../helpers/utils';
-import { capture } from '../helpers/sentry';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import Cache from './cache';
+import { timeQueueProcess } from './metrics';
 
 const queues = new Set<Cache>();
 const processingItems = new Map<string, Cache>();
@@ -8,10 +9,12 @@ const processingItems = new Map<string, Cache>();
 async function processItem(cacheable: Cache) {
   console.log(`[queue] Processing queue item: ${cacheable}`);
   try {
+    const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
     processingItems.set(cacheable.id, cacheable);
     await cacheable.createCache();
+    end();
   } catch (e) {
-    capture(e);
+    capture(e, { context: { id: cacheable.id } });
     console.error(`[queue] Error while processing item`, e);
   } finally {
     queues.delete(cacheable);
@@ -22,6 +25,10 @@ async function processItem(cacheable: Cache) {
 export function queue(cacheable: Cache) {
   queues.add(cacheable);
 
+  return queues.size;
+}
+
+export function size() {
   return queues.size;
 }
 
@@ -39,9 +46,9 @@ async function run() {
     queues.forEach(async cacheable => {
       if (processingItems.has(cacheable.id)) {
         console.log(
-          `[queue] Skip: ${cacheable} is currently being processed, progress: ${
-            processingItems.get(cacheable.id)?.generationProgress
-          }%`
+          `[queue] Skip: ${cacheable} is currently being processed, progress: ${processingItems.get(
+            cacheable.id
+          )?.generationProgress}%`
         );
         return;
       }

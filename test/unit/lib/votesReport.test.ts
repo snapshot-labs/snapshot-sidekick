@@ -9,7 +9,7 @@ const mockFetchProposal = jest.fn((id: string): any => {
   return [];
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockFetchAllVotes = jest.fn((id: string): any => {
+const mockFetchVotes = jest.fn((id: string): any => {
   return [];
 });
 jest.mock('../../../src/helpers/snapshot', () => {
@@ -19,7 +19,7 @@ jest.mock('../../../src/helpers/snapshot', () => {
     __esModule: true,
     ...originalModule,
     fetchProposal: (id: string) => mockFetchProposal(id),
-    fetchAllVotes: (id: string) => mockFetchAllVotes(id)
+    fetchVotes: (id: string) => mockFetchVotes(id)
   };
 });
 
@@ -45,7 +45,7 @@ describe('VotesReport', () => {
     mockFetchProposal.mockResolvedValueOnce(
       JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-proposal-${pid}.json`, 'utf8'))
     );
-    mockFetchAllVotes.mockResolvedValueOnce(
+    mockFetchVotes.mockResolvedValueOnce(
       JSON.parse(readFileSync(`${__dirname}/../../fixtures/hub-votes-${pid}.json`, 'utf8'))
     );
 
@@ -53,7 +53,7 @@ describe('VotesReport', () => {
 
     expect(content).toEqual(readFileSync(fixtureFilePath(pid), 'utf8'));
     expect(mockFetchProposal).toHaveBeenCalled();
-    expect(mockFetchAllVotes).toHaveBeenCalled();
+    expect(mockFetchVotes).toHaveBeenCalled();
   });
 
   describe('isCacheable()', () => {

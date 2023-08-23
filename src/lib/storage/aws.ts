@@ -1,5 +1,10 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { capture } from '../../helpers/sentry';
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  DeleteObjectCommand
+} from '@aws-sdk/client-s3';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
 
@@ -36,7 +41,7 @@ class Aws implements IStorage {
 
       return true;
     } catch (e) {
-      capture(e);
+      capture(e, { context: { path: this.path(key) } });
       console.error('[storage:aws] File storage failed', e);
       throw new Error('Unable to access storage');
     }
@@ -66,6 +71,25 @@ class Aws implements IStorage {
       if (e['$metadata']?.httpStatusCode !== 404) {
         capture(e);
         console.error('[storage:aws] File fetch failed', e);
+      }
+
+      return false;
+    }
+  }
+
+  async delete(key: string) {
+    try {
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: this.path(key)
+      });
+      await this.client.send(command);
+
+      return true;
+    } catch (e: any) {
+      if (e['$metadata']?.httpStatusCode !== 404) {
+        capture(e);
+        console.error('[storage:aws] File delete failed', e);
       }
 
       return false;
