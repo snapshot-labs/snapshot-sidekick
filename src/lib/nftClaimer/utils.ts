@@ -59,7 +59,9 @@ export async function validateSpace(address: string, space: Space | null) {
 }
 
 async function isSpaceOwner(spaceId: string, address: string) {
-  const spaceController = await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK, { broviderUrl })
+  const spaceController = await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK, {
+    broviderUrl
+  });
   return spaceController === getAddress(address);
 }
 
