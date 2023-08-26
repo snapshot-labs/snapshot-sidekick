@@ -4,7 +4,7 @@ export default function (status: State) {
   const statusesColor: Record<State, string> = {
     pending: 'rgb(107, 114, 128)',
     active: 'rgb(33, 182, 111)',
-    closed: 'rgb(124, 58, 237)'
+    closed: 'rgb(187, 107, 217)'
   };
 
   return (
