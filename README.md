@@ -283,7 +283,7 @@ Use the env variable `OG_IMAGES_SUBDIR` to specify the subdir where to store the
 
 #### Usage
 
-Send a `GET` request to `/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?`
+Send a `GET` request to `/api/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?`
 
 It will create the cached file if it does not exist yet, then serve it.
 
@@ -293,9 +293,9 @@ Available image types are:
 
 | `TYPE`        | Description                  | Example query                                                                                           | Size     |
 | ------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------- | -------- |
-| `og-home`     | Default image for OpenGraph  | `localhost:3005/picsnap/og-home`                                                                        | 1200x600 |
-| `og-space`    | OpenGraph image for space    | `localhost:3005/picsnap/og-space/fabien.eth`                                                            | 1200x600 |
-| `og-proposal` | OpenGraph image for proposal | `localhost:3005/picsnap/og-proposal/0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98` | 1200x600 |
+| `og-home`     | Default image for OpenGraph  | `localhost:3005/api/picsnap/og-home`                                                                        | 1200x600 |
+| `og-space`    | OpenGraph image for space    | `localhost:3005/api/picsnap/og-space/fabien.eth`                                                            | 1200x600 |
+| `og-proposal` | OpenGraph image for proposal | `localhost:3005/api/picsnap/og-proposal/0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98` | 1200x600 |
 
 ### Sentry tunnel
 
