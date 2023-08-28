@@ -24,6 +24,7 @@ requiredEnvKeys.forEach(key => {
     missingEnvKeys.push(key);
   }
 });
+const broviderUrl = process.env.BROVIDER_URL || 'https://rpc.snapshot.org';
 
 if (missingEnvKeys.length > 0) {
   throw new Error(
@@ -58,7 +59,10 @@ export async function validateSpace(address: string, space: Space | null) {
 }
 
 async function isSpaceOwner(spaceId: string, address: string) {
-  return (await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK)) === getAddress(address);
+  const spaceController = await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK, {
+    broviderUrl
+  });
+  return spaceController === getAddress(address);
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
@@ -198,7 +202,7 @@ export async function validateMintInput(params: any) {
 
 export async function snapshotFee(): Promise<number> {
   try {
-    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
+    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK, { broviderUrl });
     const contract = new Contract(
       DEPLOY_CONTRACT,
       ['function snapshotFee() public view returns (uint8)'],
