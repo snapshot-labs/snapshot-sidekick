@@ -24,7 +24,7 @@ requiredEnvKeys.forEach(key => {
     missingEnvKeys.push(key);
   }
 });
-const broviderUrl = process.env.BROVIDER_URL;
+const broviderUrl = process.env.BROVIDER_URL || 'https://rpc.snapshot.org'
 
 if (missingEnvKeys.length > 0) {
   throw new Error(
