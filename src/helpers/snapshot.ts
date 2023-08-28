@@ -2,9 +2,12 @@ import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import fetch from 'cross-fetch';
 
+export type State = 'pending' | 'active' | 'closed';
+
 export type Proposal = {
   id: string;
-  state: string;
+  title: string;
+  state: State;
   choices: string[];
   space: Space;
   votes: number;
@@ -22,7 +25,10 @@ export type Vote = {
 
 export type Space = {
   id: string;
+  name: string;
+  about?: string;
   network: string;
+  followersCount?: number;
 };
 
 const httpLink = createHttpLink({
@@ -62,6 +68,7 @@ const PROPOSAL_QUERY = gql`
   query Proposal($id: String) {
     proposal(id: $id) {
       id
+      title
       state
       choices
       votes
@@ -70,6 +77,18 @@ const PROPOSAL_QUERY = gql`
         id
         network
       }
+    }
+  }
+`;
+
+const SPACE_QUERY = gql`
+  query Space($id: String) {
+    space(id: $id) {
+      id
+      name
+      about
+      network
+      followersCount
     }
   }
 `;
@@ -96,15 +115,6 @@ const VOTES_QUERY = gql`
       vp
       reason
       created
-    }
-  }
-`;
-
-const SPACE_QUERY = gql`
-  query Space($id: String) {
-    space(id: $id) {
-      id
-      network
     }
   }
 `;
