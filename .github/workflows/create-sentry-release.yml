@@ -1,11 +1,17 @@
 name: Create a Sentry release
+
 on:
   push:
     branches:
       - 'main'
+
 jobs:
   create-sentry-release:
+    strategy:
+      matrix:
+        target: ['18']
     uses: snapshot-labs/actions/.github/workflows/create-sentry-release.yml@main
     with:
       project: snapshot-sidekick
+      target: ${{ matrix.target }}
     secrets: inherit
