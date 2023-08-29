@@ -14,7 +14,7 @@ async function processItem(cacheable: Cache) {
     await cacheable.createCache();
     end();
   } catch (e) {
-    capture(e, { contexts: { input: { id: cacheable.id } } });
+    capture(e, { id: cacheable.id });
     console.error(`[queue] Error while processing item`, e);
   } finally {
     queues.delete(cacheable);
