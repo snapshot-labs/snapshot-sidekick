@@ -1,4 +1,4 @@
-import fetch from 'cross-fetch';
+import fetch from 'node-fetch';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 
 const BASE_URL = 'https://api.digitalocean.com/v2';

@@ -1,9 +1,9 @@
 import express from 'express';
-import fetch from 'cross-fetch';
+import fetch from 'node-fetch';
 import bodyParser from 'body-parser';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import { URL } from 'url';
 import { rpcError } from './helpers/utils';
-import { capture } from '@snapshot-labs/snapshot-sentry';
 
 const router = express.Router();
 
