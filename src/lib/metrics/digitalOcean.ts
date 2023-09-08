@@ -1,5 +1,5 @@
-import fetch from 'node-fetch';
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const BASE_URL = 'https://api.digitalocean.com/v2';
 const TTL = 60 * 1000; // 1 minute
@@ -77,7 +77,8 @@ export default class DigitalOcean {
       this.expirationTime = now + TTL;
     }
 
-    const response = await fetch(`${BASE_URL}/${path}`, {
+    const url = `${BASE_URL}/${path}`;
+    const response = await fetchWithKeepAlive(url, {
       headers: { Authorization: `Bearer ${this.key}` }
     });
 

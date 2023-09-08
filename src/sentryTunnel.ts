@@ -1,9 +1,8 @@
 import express from 'express';
-import fetch from 'node-fetch';
 import bodyParser from 'body-parser';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import { URL } from 'url';
-import { rpcError } from './helpers/utils';
+import { rpcError, fetchWithKeepAlive } from './helpers/utils';
 
 const router = express.Router();
 
@@ -17,8 +16,8 @@ router.post('/sentry', bodyParser.raw({ type: () => true, limit: '4mb' }), async
 
     const dnsUri = new URL(dsn);
     const sentryApiUrl = `https://${dnsUri.hostname}/api${dnsUri.pathname}/envelope/`;
-    const response = await fetch(sentryApiUrl, {
-      method: 'post',
+    const response = await fetchWithKeepAlive(sentryApiUrl, {
+      method: 'POST',
       body: req.body
     });
 
