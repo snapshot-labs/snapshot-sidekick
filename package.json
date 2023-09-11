@@ -56,7 +56,6 @@
     "@types/jest": "^29.5.3",
     "@types/mysql": "^2.15.21",
     "@types/node": "^20.4.8",
-    "@types/serve-favicon": "^2.5.4",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "copyfiles": "^2.4.1",
