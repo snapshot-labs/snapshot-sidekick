@@ -2342,13 +2342,6 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.13.tgz#da4bfd73f49bd541d28920ab0e2bf0ee80f71c91"
   integrity sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==
 
-"@types/serve-favicon@^2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@types/serve-favicon/-/serve-favicon-2.5.4.tgz#8df8a13633df56e2579f8597f5741a370ed5c1df"
-  integrity sha512-ly+yd6J/1myO40DKhZGx835/e+DXuLzA2J6dsRyBOzNnQoCsnGcuqkUkMmJD6Q8K9CSZOf+CyxL707WHa1PZGA==
-  dependencies:
-    "@types/express" "*"
-
 "@types/serve-static@*":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.15.1.tgz#86b1753f0be4f9a1bee68d459fcda5be4ea52b5d"
