@@ -1,5 +1,4 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
-import fetch from 'cross-fetch';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
@@ -8,6 +7,7 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { Proposal, Space } from '../../helpers/snapshot';
+import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
@@ -90,7 +90,7 @@ export async function getProposalContract(spaceId: string) {
 }
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch }),
+  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch: fetchWithKeepAlive }),
   cache: new InMemoryCache({
     addTypename: false
   }),

@@ -1,6 +1,6 @@
 import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import fetch from 'cross-fetch';
+import { fetchWithKeepAlive } from './utils';
 
 export type Proposal = {
   id: string;
@@ -27,7 +27,7 @@ export type Space = {
 
 const httpLink = createHttpLink({
   uri: `${process.env.HUB_URL || 'https://hub.snapshot.org'}/graphql`,
-  fetch
+  fetch: fetchWithKeepAlive
 });
 
 const authLink = setContext((_, { headers }) => {
