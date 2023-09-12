@@ -15,7 +15,7 @@ export default function initMetrics(app: Express) {
       /^\/api\/moderation$/,
       /^\/(webhook|sentry)$/
     ],
-    errorHandler: (e: any) => capture(e)
+    errorHandler: capture
   });
 }
 
