@@ -14,7 +14,8 @@ export default function initMetrics(app: Express) {
       /^\/api\/(nft-claimer)(\/(deploy|mint))?$/,
       /^\/api\/moderation$/,
       /^\/(webhook|sentry)$/
-    ]
+    ],
+    errorHandler: capture
   });
 }
 
