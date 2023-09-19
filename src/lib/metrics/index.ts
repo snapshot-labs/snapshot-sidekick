@@ -4,6 +4,7 @@ import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
 import type { Express } from 'express';
+import db from '../../helpers/mysql';
 
 export default function initMetrics(app: Express) {
   init(app, {
@@ -15,7 +16,8 @@ export default function initMetrics(app: Express) {
       /^\/api\/moderation$/,
       /^\/(webhook|sentry)$/
     ],
-    errorHandler: capture
+    errorHandler: capture,
+    db
   });
 }
 
