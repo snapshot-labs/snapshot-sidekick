@@ -7,7 +7,8 @@ import {
   numberizeProposalId,
   validateMintInput,
   mintingAllowed,
-  hasVoted
+  hasVoted,
+  hasMinted
 } from './utils';
 import abi from './spaceCollectionImplementationAbi.json';
 import { FormatTypes, Interface } from '@ethersproject/abi';
@@ -40,8 +41,12 @@ export default async function payload(input: {
     throw new Error('Space has closed minting');
   }
 
-  if (!hasVoted(params.recipient, proposal as Proposal)) {
+  if (!(await hasVoted(params.recipient, proposal as Proposal))) {
     throw new Error('Minting is open only for voters');
+  }
+
+  if (await hasMinted(params.recipient, proposal as Proposal)) {
+    throw new Error('You can only mint once per vote');
   }
 
   const message = {

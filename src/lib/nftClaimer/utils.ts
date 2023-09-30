@@ -48,6 +48,11 @@ export async function hasVoted(address: string, proposal: Proposal) {
   return vote !== undefined;
 }
 
+export async function hasMinted(address: string, proposal: Proposal) {
+  const mint = await getMint(address, proposal.id);
+  return mint !== undefined;
+}
+
 export async function validateSpace(address: string, space: Space | null) {
   if (!space) {
     throw new Error('RECORD_NOT_FOUND');
@@ -131,6 +136,32 @@ export async function getSpaceCollection(spaceId: string) {
   });
 
   return spaceCollections[0];
+}
+
+const MINT_COLLECTION_QUERY = gql`
+  query Mints($voter: String, $proposalId: String) {
+    mints(where: { minterAddress: $voter, proposal: $proposalId }, first: 1) {
+      id
+    }
+  }
+`;
+
+type Mint = {
+  id: string;
+};
+
+export async function getMint(voter: string, proposalId: string) {
+  const {
+    data: { mints }
+  }: { data: { mints: Mint[] } } = await client.query({
+    query: MINT_COLLECTION_QUERY,
+    variables: {
+      voter,
+      proposalId
+    }
+  });
+
+  return mints[0];
 }
 
 export function numberizeProposalId(id: string) {
