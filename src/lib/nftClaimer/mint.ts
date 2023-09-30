@@ -1,12 +1,13 @@
 import { splitSignature } from '@ethersproject/bytes';
-import { fetchProposal, Space } from '../../helpers/snapshot';
+import { fetchProposal, Space, Proposal } from '../../helpers/snapshot';
 import {
   validateProposal,
   getProposalContract,
   signer,
   numberizeProposalId,
   validateMintInput,
-  mintingAllowed
+  mintingAllowed,
+  hasVoted
 } from './utils';
 import abi from './spaceCollectionImplementationAbi.json';
 import { FormatTypes, Interface } from '@ethersproject/abi';
@@ -37,6 +38,10 @@ export default async function payload(input: {
   const verifyingContract = await getProposalContract(spaceId);
   if (!mintingAllowed(proposal?.space as Space)) {
     throw new Error('Space has closed minting');
+  }
+
+  if (!hasVoted(params.recipient, proposal as Proposal)) {
+    throw new Error('Minting is open only for voters');
   }
 
   const message = {
