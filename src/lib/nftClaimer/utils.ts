@@ -6,7 +6,7 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import type { Proposal, Space } from '../../helpers/snapshot';
+import { fetchVote, type Proposal, type Space } from '../../helpers/snapshot';
 import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const requiredEnvKeys = [
@@ -41,6 +41,11 @@ export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
 export async function mintingAllowed(space: Space) {
   return (await getSpaceCollection(space.id)).enabled;
+}
+
+export async function hasVoted(address: string, proposal: Proposal) {
+  const vote = await fetchVote(address, proposal.id);
+  return vote !== undefined;
 }
 
 export async function validateSpace(address: string, space: Space | null) {
