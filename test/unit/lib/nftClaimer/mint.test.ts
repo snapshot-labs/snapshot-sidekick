@@ -36,6 +36,10 @@ const mockMintingAllowed = jest.fn((space: any): boolean => {
 const mockHasVoted = jest.fn((address: string, proposal: string): boolean => {
   return true;
 });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockHasMinted = jest.fn((address: string, proposal: string): boolean => {
+  return false;
+});
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
@@ -46,7 +50,8 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
     getProposalContract: (id: string) => mockGetProposalContract(id),
     validateProposal: (id: any) => mockValidateProposal(id),
     mintingAllowed: (space: any) => mockMintingAllowed(space),
-    hasVoted: (address: string, proposal: string) => mockHasVoted(address, proposal)
+    hasVoted: (address: string, proposal: string) => mockHasVoted(address, proposal),
+    hasMinted: (address: string, proposal: string) => mockHasMinted(address, proposal)
   };
 });
 
@@ -118,6 +123,13 @@ describe('nftClaimer', () => {
     describe('when address has not voted on the proposal', () => {
       it('throws an error', () => {
         mockHasVoted.mockReturnValueOnce(false);
+        return expect(async () => await payload(input)).rejects.toThrow();
+      });
+    });
+
+    describe('when address has already minted', () => {
+      it('throws an error', () => {
+        mockHasMinted.mockReturnValueOnce(true);
         return expect(async () => await payload(input)).rejects.toThrow();
       });
     });
