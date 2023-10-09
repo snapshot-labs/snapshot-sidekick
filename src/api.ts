@@ -38,22 +38,27 @@ router.post('/votes/:id', async (req, res) => {
   }
 });
 
-router.get('/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?', async (req, res) => {
-  const { type, id = '', ext = 'png' } = req.params;
+router.get(
+  '/picsnap/:type(og-space|og-proposal|og-home|snap-it)/:id?.:ext(png|svg)?',
+  async (req, res) => {
+    const { type, id = '', ext = 'png' } = req.params;
 
-  try {
-    const image = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
+    try {
+      const image = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
 
-    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-    res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
-    return res.end(
-      ext === 'svg' ? await image.getSvg() : (await image.getCache()) || (await image.createCache())
-    );
-  } catch (e: any) {
-    capture(e);
-    return rpcError(res, e, id || type);
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
+      return res.end(
+        ext === 'svg'
+          ? await image.getSvg()
+          : (await image.getCache()) || (await image.createCache())
+      );
+    } catch (e: any) {
+      capture(e);
+      return rpcError(res, e, id || type);
+    }
   }
-});
+);
 
 router.get('/moderation', async (req, res) => {
   const { list } = req.query;

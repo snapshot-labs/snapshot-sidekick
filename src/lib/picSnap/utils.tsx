@@ -39,6 +39,10 @@ export function spaceAvatarUrl(spaceId: string, size = 160) {
   return `https://cdn.stamp.fyi/space/${spaceId}?s=${size}`;
 }
 
+export function spaceAuthorUrl(address: string, size = 160) {
+  return `https://cdn.stamp.fyi/avatar/eth:${address}?s=${size}`;
+}
+
 export async function loadDynamicAsset(emojiType: keyof typeof apis, _code: string, text: string) {
   if (_code === 'emoji') {
     return `data:image/svg+xml;base64,${btoa(await loadEmoji(emojiType, getIconCode(text)))}`;
