@@ -3,7 +3,7 @@ import render from './templates/index';
 import { IStorage } from '../storage/types';
 import Cache from '../cache';
 
-export type ImageType = 'og-space' | 'og-proposal' | 'og-home';
+export type ImageType = 'og-space' | 'og-proposal' | 'og-home' | 'snap-it';
 
 export default class picSnap extends Cache {
   type: ImageType;
