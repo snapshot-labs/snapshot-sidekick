@@ -7,13 +7,10 @@ type MODERATION_LIST = Record<string, string[] | JSON>;
 const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
 const FIELDS = new Map<keyof MODERATION_LIST, Record<string, string>>([
   ['flaggedLinks', { action: 'flag', type: 'link' }],
-  ['flaggedProposals', { action: 'flag', type: 'proposal' }],
-  ['flaggedSpaces', { action: 'flag', type: 'space' }],
   ['flaggedIps', { action: 'flag', type: 'ip' }],
   ['flaggedAddresses', { action: 'flag', type: 'address' }],
   ['flaggedProposalTitleKeywords', { action: 'flag', type: 'proposalTitleKeyword' }],
   ['flaggedProposalBodyKeywords', { action: 'flag', type: 'proposalBodyKeyword' }],
-  ['verifiedSpaces', { action: 'verify', type: 'space' }],
   ['verifiedTokens', { file: 'verifiedTokens.json' }]
 ]);
 
