@@ -4,11 +4,14 @@ import { fetchWithKeepAlive } from './utils';
 
 export type Proposal = {
   id: string;
+  title: string;
   state: string;
   choices: string[];
   space: Space;
   votes: number;
   author: string;
+  start: number;
+  end: number;
 };
 
 export type Vote = {
@@ -62,10 +65,13 @@ const PROPOSAL_QUERY = gql`
   query Proposal($id: String) {
     proposal(id: $id) {
       id
+      title
       state
       choices
       votes
       author
+      start
+      end
       space {
         id
         network
