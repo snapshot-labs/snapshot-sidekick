@@ -5,6 +5,7 @@ import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
+import metadata from './lib/nftClaimer/metadata';
 import { queue, getProgress } from './lib/queue';
 import { snapshotFee } from './lib/nftClaimer/utils';
 
@@ -84,6 +85,15 @@ router.post('/nft-claimer/mint', async (req, res) => {
   } catch (e: any) {
     capture(e, { body: req.body });
     return rpcError(res, e, salt);
+  }
+});
+
+router.get('/nft-claimer/metadata/:proposal_id', async (req, res) => {
+  try {
+    return res.json(await metadata(req.params.proposal_id));
+  } catch (e: any) {
+    capture(e);
+    return rpcError(res, e, '');
   }
 });
 
