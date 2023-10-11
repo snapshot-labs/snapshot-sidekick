@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET /api/moderation ignores invalid field, and returns only verifiedSpaces 1`] = `
+exports[`GET /api/moderation ignores invalid field, and returns only flaggedLinks 1`] = `
 {
-  "verifiedSpaces": [
-    "space1.eth",
-    "space2.eth",
+  "flaggedLinks": [
+    "https://facebook.com",
+    "https://gogle.com",
   ],
 }
 `;
 
-exports[`GET /api/moderation returns multiple list: verifiedSpaces,flaggedProposals 1`] = `
+exports[`GET /api/moderation returns multiple list: flaggedLinks,flaggedIps 1`] = `
 {
-  "flaggedProposals": [
-    "0x1",
-    "0x2",
+  "flaggedIps": [
+    "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
+    "19e36255972107d42b8cecb77ef5622e842e8a50778a6ed8dd1ce94732daca9e",
   ],
-  "verifiedSpaces": [
-    "space1.eth",
-    "space2.eth",
+  "flaggedLinks": [
+    "https://facebook.com",
+    "https://gogle.com",
   ],
 }
 `;
@@ -44,18 +44,6 @@ exports[`GET /api/moderation when list params is empty returns all the list 1`] 
     "hello",
     "test string",
   ],
-  "flaggedProposals": [
-    "0x1",
-    "0x2",
-  ],
-  "flaggedSpaces": [
-    "space3.eth",
-    "space4.eth",
-  ],
-  "verifiedSpaces": [
-    "space1.eth",
-    "space2.eth",
-  ],
   "verifiedTokens": {
     "test": {
       "value": "a",
@@ -69,24 +57,6 @@ exports[`GET /api/moderation when list params is set returns only the selected f
   "flaggedLinks": [
     "https://facebook.com",
     "https://gogle.com",
-  ],
-}
-`;
-
-exports[`GET /api/moderation when list params is set returns only the selected flaggedProposals list 1`] = `
-{
-  "flaggedProposals": [
-    "0x1",
-    "0x2",
-  ],
-}
-`;
-
-exports[`GET /api/moderation when list params is set returns only the selected verifiedSpaces list 1`] = `
-{
-  "verifiedSpaces": [
-    "space1.eth",
-    "space2.eth",
   ],
 }
 `;
