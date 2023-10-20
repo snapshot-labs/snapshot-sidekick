@@ -101,10 +101,8 @@ class VotesReport extends Cache {
     if (typeof vote.choice !== 'number' && this.proposal) {
       choices = Array.from({ length: this.proposal.choices.length });
       for (const [key, value] of Object.entries(vote.choice)) {
-        console.log(parseInt(key));
         choices[parseInt(key)] = value;
       }
-      console.log('end');
     } else {
       choices.push(vote.choice);
     }
