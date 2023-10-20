@@ -6,7 +6,7 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import type { Proposal, Space } from '../../helpers/snapshot';
+import { fetchVote, type Proposal, type Space } from '../../helpers/snapshot';
 import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const requiredEnvKeys = [
@@ -41,6 +41,16 @@ export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
 export async function mintingAllowed(space: Space) {
   return (await getSpaceCollection(space.id)).enabled;
+}
+
+export async function hasVoted(address: string, proposal: Proposal) {
+  const vote = await fetchVote(address, proposal.id);
+  return vote !== undefined;
+}
+
+export async function hasMinted(address: string, proposal: Proposal) {
+  const mint = await getMint(address, proposal.id);
+  return mint !== undefined;
 }
 
 export async function validateSpace(address: string, space: Space | null) {
@@ -126,6 +136,32 @@ export async function getSpaceCollection(spaceId: string) {
   });
 
   return spaceCollections[0];
+}
+
+const MINT_COLLECTION_QUERY = gql`
+  query Mints($voter: String, $proposalId: String) {
+    mints(where: { minterAddress: $voter, proposal: $proposalId }, first: 1) {
+      id
+    }
+  }
+`;
+
+type Mint = {
+  id: string;
+};
+
+export async function getMint(voter: string, proposalId: string) {
+  const {
+    data: { mints }
+  }: { data: { mints: Mint[] } } = await client.query({
+    query: MINT_COLLECTION_QUERY,
+    variables: {
+      voter,
+      proposalId
+    }
+  });
+
+  return mints[0];
 }
 
 export function numberizeProposalId(id: string) {

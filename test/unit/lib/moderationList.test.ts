@@ -11,34 +11,31 @@ jest.mock('../../../src/helpers/mysql', () => ({
 }));
 
 describe('moderationList', () => {
-  it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals'])(
-    'returns only the %s',
-    async field => {
-      mockDbQueryAsync.mockImplementationOnce(() => {
-        return SqlFixtures[field];
-      });
-
-      const list = await getModerationList([field]);
-
-      expect(list).toMatchSnapshot();
-    }
-  );
-
-  it('returns multiple list: flaggedLinks and verifiedSpaces', async () => {
+  it.each(['flaggedLinks', 'flaggedIps'])('returns only the %s', async field => {
     mockDbQueryAsync.mockImplementationOnce(() => {
-      return SqlFixtures.flaggedLinks.concat(SqlFixtures.verifiedSpaces);
+      return SqlFixtures[field];
     });
 
-    const list = await getModerationList(['flaggedLinks', 'verifiedSpaces']);
+    const list = await getModerationList([field]);
+
     expect(list).toMatchSnapshot();
   });
 
-  it('ignores invalid fields, and only returns verifiedSpaces', async () => {
+  it('returns multiple list: flaggedLinks and flaggedIps', async () => {
     mockDbQueryAsync.mockImplementationOnce(() => {
-      return SqlFixtures.verifiedSpaces;
+      return SqlFixtures.flaggedLinks.concat(SqlFixtures.flaggedIps);
     });
 
-    const list = await getModerationList(['a', 'b', 'verifiedSpaces']);
+    const list = await getModerationList(['flaggedLinks', 'flaggedIps']);
+    expect(list).toMatchSnapshot();
+  });
+
+  it('ignores invalid fields, and only returns flaggedIps', async () => {
+    mockDbQueryAsync.mockImplementationOnce(() => {
+      return SqlFixtures.flaggedIps;
+    });
+
+    const list = await getModerationList(['a', 'b', 'flaggedIps']);
     expect(list).toMatchSnapshot();
   });
 

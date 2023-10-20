@@ -100,6 +100,14 @@ const VOTES_QUERY = gql`
   }
 `;
 
+const VOTE_QUERY = gql`
+  query Votes($voter: String!, $proposalId: String!) {
+    votes(first: 1, where: { voter: $voter, proposal: $proposalId }) {
+      id
+    }
+  }
+`;
+
 const SPACE_QUERY = gql`
   query Space($id: String) {
     space(id: $id) {
@@ -141,6 +149,20 @@ export async function fetchVotes(
   });
 
   return votes;
+}
+
+export async function fetchVote(voter: string, proposalId: string) {
+  const {
+    data: { votes }
+  }: { data: { votes: Vote[] } } = await client.query({
+    query: VOTE_QUERY,
+    variables: {
+      voter,
+      proposalId
+    }
+  });
+
+  return votes[0];
 }
 
 export async function fetchSpace(id: string) {

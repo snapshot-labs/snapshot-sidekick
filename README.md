@@ -155,10 +155,12 @@ curl localhost:3005/api/moderation
 You can also choose to filter the list, with the `?list=` query params.
 Valid values are:
 
-- `flaggedProposals`
 - `flaggedLinks`
-- `verifiedSpaces`
-- `flaggedSpaces`
+- `flaggedIps`
+- `flaggedAddresses`
+- `flaggedProposalTitleKeywords`
+- `flaggedProposalBodyKeywords`
+- `verifiedTokens`
 
 You can pass multiple list, separated by a comma.
 
