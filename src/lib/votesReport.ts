@@ -1,3 +1,4 @@
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
 import type { IStorage } from './storage/types';
 import Cache from './cache';
@@ -43,6 +44,14 @@ class VotesReport extends Cache {
     content += `\n${votes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
 
     console.log(`[votes-report] Report for ${this.id} ready with ${votes.length} items`);
+
+    if (this.proposal && votes.length !== this.proposal.votes) {
+      capture(new Error('CSV votes report count mismatch'), {
+        proposalId: this.id,
+        proposalVotesCount: this.proposal.votes,
+        csvVotesCount: votes.length
+      });
+    }
 
     return content;
   };
