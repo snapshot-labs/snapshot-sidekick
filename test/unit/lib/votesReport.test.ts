@@ -27,6 +27,8 @@ describe('VotesReport', () => {
   const id = '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
   const weightedId = '0x79ae5f9eb3c710179cfbf706fa451459ddd18d4b0bce37c22aae601128efe927';
   const rankedChoiceId = '0xafe3a0426d4e6c645e869707f1b581765698d80c8d3e9cd37d7d3bf5e6f894e7';
+  const approvalChoiceId = '0xe5e335af87dc10206e9f0de469f64901407837d659db6703cb3ea1437056a577';
+  const quadraticChoiceId = '0x07387077920ce65b805bd0ba913a02ecfe63d22cac3dbaed3d97c23afd053fe2';
   const testStorageEngine = storageEngine(TEST_CACHE_DIR);
   const space = { id: '', name: '', network: '', settings: '' };
 
@@ -41,7 +43,9 @@ describe('VotesReport', () => {
   it.each([
     ['single', id],
     ['weighted', weightedId],
-    ['ranked-choice', rankedChoiceId]
+    ['ranked-choice', rankedChoiceId],
+    ['approval', approvalChoiceId],
+    ['quadratic', quadraticChoiceId]
   ])('generates a %s choices votes report', async (type: string, pid: string) => {
     const report = new VotesReport(pid, testStorageEngine);
     mockFetchProposal.mockResolvedValueOnce(
