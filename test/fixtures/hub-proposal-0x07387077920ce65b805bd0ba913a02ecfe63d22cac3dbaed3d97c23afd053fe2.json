@@ -3,10 +3,6 @@
   "id": "0x07387077920ce65b805bd0ba913a02ecfe63d22cac3dbaed3d97c23afd053fe2",
   "author": "",
   "votes": 549,
-  "choices": [
-    "YES",
-    "NO",
-    "ABSTAIN"
-  ],
+  "choices": ["YES", "NO", "ABSTAIN"],
   "space": { "id": "", "network": "", "settings": "" }
 }
