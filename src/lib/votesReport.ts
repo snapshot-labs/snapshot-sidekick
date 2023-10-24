@@ -100,8 +100,14 @@ class VotesReport extends Cache {
 
     if (typeof vote.choice !== 'number' && this.proposal) {
       choices = Array.from({ length: this.proposal.choices.length });
-      for (const [key, value] of Object.entries(vote.choice)) {
-        choices[parseInt(key) - 1] = value;
+      if (Array.isArray(vote.choice)) {
+        vote.choice.forEach((value, index) => {
+          choices[index] = value;
+        });
+      } else {
+        for (const [key, value] of Object.entries(vote.choice)) {
+          choices[parseInt(key) - 1] = value;
+        }
       }
     } else {
       choices.push(vote.choice);
