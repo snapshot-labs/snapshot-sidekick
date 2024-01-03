@@ -1,6 +1,9 @@
-import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
-import type { IStorage } from './storage/types';
 import Cache from './cache';
+import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
+import { getIndex, setIndex } from './cacheRefresher';
+import type { IStorage } from './storage/types';
+
+const CACHEABLE_PROPOSAL_STATE = ['closed', 'active'];
 
 class VotesReport extends Cache {
   proposal?: Proposal | null;
@@ -13,11 +16,21 @@ class VotesReport extends Cache {
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
 
-    if (!this.proposal || this.proposal.state !== 'closed') {
+    if (!this.proposal || !CACHEABLE_PROPOSAL_STATE.includes(this.proposal.state)) {
       return Promise.reject('RECORD_NOT_FOUND');
     }
 
     return true;
+  }
+
+  async afterCreateCache(): Promise<void> {
+    const list = await getIndex();
+
+    if (this.proposal?.state === 'active' && !list.includes(this.id)) {
+      setIndex([...list, this.id]);
+    } else if (this.proposal?.state === 'closed' && list.includes(this.id)) {
+      setIndex(list.filter(item => item !== this.id));
+    }
   }
 
   getContent = async () => {
