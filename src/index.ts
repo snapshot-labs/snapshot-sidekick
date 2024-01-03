@@ -10,12 +10,14 @@ import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
 import initMetrics from './lib/metrics';
+import initCacheRefresher from './lib/cacheRefresher';
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
 initLogger(app);
 initMetrics(app);
+initCacheRefresher();
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '4mb' }));

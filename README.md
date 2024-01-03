@@ -97,7 +97,7 @@ yarn typecheck
 
 ### Votes CSV report
 
-Generate and serve votes CSV report for closed proposals.
+Generate and serve votes CSV report for active and closed proposals.
 
 > NOTE: CSV files are generated only once, then cached, making this service a cache middleware between snapshot-hub and UI
 
@@ -122,6 +122,12 @@ A JSON-RPC success with status code `202` will then be returned, with the progre
   "id":"0x5280241b4ccc9b7c5088e657a714d28fa89bd5305a1ff0abf0736438c446ae98"
 }
 ```
+
+- CSV reports will automatically be generated for closed proposals, triggered by Snapshot's webhook.
+- CSV reports for active proposals will be generated only when requested manually via the API endpoint (`/votes/:id`), and will be refreshed every 15min thereafter.
+
+NOTES: cache file for active proposals may not always contains all the votes, as new incoming votes are
+appended to the cache file asynchronously in the background.
 
 #### Generate a cache file
 

@@ -25,6 +25,8 @@ export default class Cache {
     return true;
   }
 
+  afterCreateCache() {}
+
   async createCache() {
     await this.isCacheable();
     const content = await this.getContent();
@@ -32,6 +34,7 @@ export default class Cache {
     console.log(`[votes-report] File cache ready to be saved`);
 
     this.storage.set(this.filename, content);
+    this.afterCreateCache();
 
     return content;
   }
