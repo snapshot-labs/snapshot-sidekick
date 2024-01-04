@@ -10,7 +10,7 @@ import { snapshotFee } from './lib/nftClaimer/utils';
 
 const router = express.Router();
 
-router.post('/votes/:id', async (req, res) => {
+router.all('/votes/:id', async (req, res) => {
   const { id } = req.params;
   const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
 
