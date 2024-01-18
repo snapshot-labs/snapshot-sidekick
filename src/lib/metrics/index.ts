@@ -1,4 +1,7 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
+import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import snapshot from '@snapshot-labs/snapshot.js';
+import { Wallet } from '@ethersproject/wallet';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
@@ -19,6 +22,8 @@ export default function initMetrics(app: Express) {
     errorHandler: capture,
     db
   });
+
+  run();
 }
 
 new client.Gauge({
@@ -149,5 +154,57 @@ try {
 } catch (e: any) {
   if (e.message !== 'MISSING_KEY') {
     capture(e);
+  }
+}
+
+const providersResponseCode = new client.Gauge({
+  name: 'provider_response_code',
+  help: 'Response code of each provider request',
+  labelNames: ['network']
+});
+
+const providersTiming = new client.Gauge({
+  name: 'provider_duration_seconds',
+  help: 'Duration in seconds of each provider request',
+  labelNames: ['network', 'status']
+});
+
+function refreshProviderTiming() {
+  const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
+  const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+
+  Object.values(networks).forEach(async network => {
+    const end = providersTiming.startTimer({ network: network.key });
+    let status = 0;
+
+    try {
+      const provider = snapshot.utils.getProvider(network.key);
+      await snapshot.utils.multicall(
+        network.key,
+        provider,
+        abi,
+        [wallet.address].map(adr => [network.multicall, 'getEthBalance', [adr]]),
+        {
+          blockTag: 'latest'
+        }
+      );
+      status = 1;
+      providersResponseCode.set({ network: network.key }, 200);
+    } catch (e: any) {
+      providersResponseCode.set({ network: network.key }, parseInt(e?.error?.status || 0));
+    } finally {
+      end({ status });
+    }
+  });
+}
+
+async function run() {
+  try {
+    refreshProviderTiming();
+  } catch (e) {
+    capture(e);
+  } finally {
+    await snapshot.utils.sleep(30e3);
+    await run();
   }
 }
