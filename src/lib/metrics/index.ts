@@ -169,10 +169,16 @@ const providersTiming = new client.Gauge({
   labelNames: ['network', 'status']
 });
 
-function refreshProviderTiming() {
-  const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
-  const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+const providersFullArchiveNodeAvailability = new client.Gauge({
+  name: 'provider_full_archive_node_availability',
+  help: 'Availability of full archive node for each provider',
+  labelNames: ['network']
+});
 
+const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
+const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+
+function refreshProviderTiming() {
   Object.values(networks).forEach(async network => {
     const end = providersTiming.startTimer({ network: network.key });
     let status = 0;
@@ -198,9 +204,24 @@ function refreshProviderTiming() {
   });
 }
 
+function refreshFullArchiveNodeChecker() {
+  Object.values(networks).forEach(async network => {
+    const { key, start, multicall } = network;
+    try {
+      const provider = snapshot.utils.getProvider(key);
+
+      await provider.getBalance(multicall, start);
+      providersFullArchiveNodeAvailability.set({ network: key }, 1);
+    } catch (e: any) {
+      providersFullArchiveNodeAvailability.set({ network: key }, 0);
+    }
+  });
+}
+
 async function run() {
   try {
     refreshProviderTiming();
+    refreshFullArchiveNodeChecker();
   } catch (e) {
     capture(e);
   } finally {
