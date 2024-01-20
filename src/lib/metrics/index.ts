@@ -180,24 +180,25 @@ const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 
 function refreshProviderTiming() {
   Object.values(networks).forEach(async network => {
-    const end = providersTiming.startTimer({ network: network.key });
+    const { key, multicall } = network;
+    const end = providersTiming.startTimer({ network: key });
     let status = 0;
 
     try {
-      const provider = snapshot.utils.getProvider(network.key);
+      const provider = snapshot.utils.getProvider(key);
       await snapshot.utils.multicall(
-        network.key,
+        key,
         provider,
         abi,
-        [wallet.address].map(adr => [network.multicall, 'getEthBalance', [adr]]),
+        [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
         {
           blockTag: 'latest'
         }
       );
       status = 1;
-      providersResponseCode.set({ network: network.key }, 200);
+      providersResponseCode.set({ network: key }, 200);
     } catch (e: any) {
-      providersResponseCode.set({ network: network.key }, parseInt(e?.error?.status || 0));
+      providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
     } finally {
       end({ status });
     }
