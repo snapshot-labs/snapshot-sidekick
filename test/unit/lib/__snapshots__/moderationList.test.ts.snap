@@ -23,14 +23,6 @@ exports[`moderationList returns all fields by default 1`] = `
     "https://gogle.com",
     "https://facebook.com",
   ],
-  "flaggedProposalBodyKeywords": [
-    "claim drop",
-    "token",
-  ],
-  "flaggedProposalTitleKeywords": [
-    "hello",
-    "test string",
-  ],
   "verifiedTokens": {
     "test": {
       "value": "a",

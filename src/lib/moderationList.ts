@@ -9,8 +9,6 @@ const FIELDS = new Map<keyof MODERATION_LIST, Record<string, string>>([
   ['flaggedLinks', { action: 'flag', type: 'link' }],
   ['flaggedIps', { action: 'flag', type: 'ip' }],
   ['flaggedAddresses', { action: 'flag', type: 'address' }],
-  ['flaggedProposalTitleKeywords', { action: 'flag', type: 'proposalTitleKeyword' }],
-  ['flaggedProposalBodyKeywords', { action: 'flag', type: 'proposalBodyKeyword' }],
   ['verifiedTokens', { file: 'verifiedTokens.json' }]
 ]);
 
