@@ -164,8 +164,6 @@ Valid values are:
 - `flaggedLinks`
 - `flaggedIps`
 - `flaggedAddresses`
-- `flaggedProposalTitleKeywords`
-- `flaggedProposalBodyKeywords`
 - `verifiedTokens`
 
 You can pass multiple list, separated by a comma.
