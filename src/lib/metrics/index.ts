@@ -1,4 +1,7 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
+import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import snapshot from '@snapshot-labs/snapshot.js';
+import { Wallet } from '@ethersproject/wallet';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
@@ -19,6 +22,8 @@ export default function initMetrics(app: Express) {
     errorHandler: capture,
     db
   });
+
+  run();
 }
 
 new client.Gauge({
@@ -149,5 +154,79 @@ try {
 } catch (e: any) {
   if (e.message !== 'MISSING_KEY') {
     capture(e);
+  }
+}
+
+const providersResponseCode = new client.Gauge({
+  name: 'provider_response_code',
+  help: 'Response code of each provider request',
+  labelNames: ['network']
+});
+
+const providersTiming = new client.Gauge({
+  name: 'provider_duration_seconds',
+  help: 'Duration in seconds of each provider request',
+  labelNames: ['network', 'status']
+});
+
+const providersFullArchiveNodeAvailability = new client.Gauge({
+  name: 'provider_full_archive_node_availability',
+  help: 'Availability of full archive node for each provider',
+  labelNames: ['network']
+});
+
+const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
+const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+
+function refreshProviderTiming() {
+  Object.values(networks).forEach(async network => {
+    const { key, multicall } = network;
+    const end = providersTiming.startTimer({ network: key });
+    let status = 0;
+
+    try {
+      const provider = snapshot.utils.getProvider(key);
+      await snapshot.utils.multicall(
+        key,
+        provider,
+        abi,
+        [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
+        {
+          blockTag: 'latest'
+        }
+      );
+      status = 1;
+      providersResponseCode.set({ network: key }, 200);
+    } catch (e: any) {
+      providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
+    } finally {
+      end({ status });
+    }
+  });
+}
+
+function refreshFullArchiveNodeChecker() {
+  Object.values(networks).forEach(async network => {
+    const { key, start, multicall } = network;
+    try {
+      const provider = snapshot.utils.getProvider(key);
+
+      await provider.getBalance(multicall, start);
+      providersFullArchiveNodeAvailability.set({ network: key }, 1);
+    } catch (e: any) {
+      providersFullArchiveNodeAvailability.set({ network: key }, 0);
+    }
+  });
+}
+
+async function run() {
+  try {
+    refreshProviderTiming();
+    refreshFullArchiveNodeChecker();
+  } catch (e) {
+    capture(e);
+  } finally {
+    await snapshot.utils.sleep(5 + 60e3);
+    run();
   }
 }
