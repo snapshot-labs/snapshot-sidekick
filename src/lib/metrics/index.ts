@@ -226,7 +226,7 @@ async function run() {
   } catch (e) {
     capture(e);
   } finally {
-    await snapshot.utils.sleep(5 + 60e3);
+    await snapshot.utils.sleep(5 * 60e3);
     await run();
   }
 }
