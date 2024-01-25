@@ -177,56 +177,56 @@ const providersFullArchiveNodeAvailability = new client.Gauge({
 
 const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
 const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+const networksIds = Object.keys(networks);
+let networkPivot = 0;
 
-function refreshProviderTiming() {
-  Object.values(networks).forEach(async network => {
-    const { key, multicall } = network;
-    const end = providersTiming.startTimer({ network: key });
-    let status = 0;
+async function refreshProviderTiming(network: any) {
+  const { key, multicall } = network;
+  const end = providersTiming.startTimer({ network: key });
+  let status = 0;
 
-    try {
-      const provider = snapshot.utils.getProvider(key);
-      await snapshot.utils.multicall(
-        key,
-        provider,
-        abi,
-        [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
-        {
-          blockTag: 'latest'
-        }
-      );
-      status = 1;
-      providersResponseCode.set({ network: key }, 200);
-    } catch (e: any) {
-      providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
-    } finally {
-      end({ status });
-    }
-  });
+  try {
+    const provider = snapshot.utils.getProvider(key);
+    await snapshot.utils.multicall(
+      key,
+      provider,
+      abi,
+      [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
+      {
+        blockTag: 'latest'
+      }
+    );
+    status = 1;
+    providersResponseCode.set({ network: key }, 200);
+  } catch (e: any) {
+    providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
+  } finally {
+    end({ status });
+  }
 }
 
-function refreshFullArchiveNodeChecker() {
-  Object.values(networks).forEach(async network => {
-    const { key, start, multicall } = network;
-    try {
-      const provider = snapshot.utils.getProvider(key);
+async function refreshFullArchiveNodeChecker(network: any) {
+  const { key, start, multicall } = network;
+  try {
+    const provider = snapshot.utils.getProvider(key);
 
-      await provider.getBalance(multicall, start);
-      providersFullArchiveNodeAvailability.set({ network: key }, 1);
-    } catch (e: any) {
-      providersFullArchiveNodeAvailability.set({ network: key }, 0);
-    }
-  });
+    await provider.getBalance(multicall, start);
+    providersFullArchiveNodeAvailability.set({ network: key }, 1);
+  } catch (e: any) {
+    providersFullArchiveNodeAvailability.set({ network: key }, 0);
+  }
 }
 
 async function run() {
-  try {
-    refreshProviderTiming();
-    refreshFullArchiveNodeChecker();
-  } catch (e) {
-    capture(e);
-  } finally {
-    await snapshot.utils.sleep(5 * 60e3);
-    run();
-  }
+  const index = networksIds[networkPivot] as keyof typeof networks;
+  const network = networks[index];
+
+  refreshProviderTiming(network);
+  refreshFullArchiveNodeChecker(network);
+
+  networkPivot++;
+  if (networkPivot > networksIds.length - 1) networkPivot = 0;
+
+  await snapshot.utils.sleep(5e3);
+  run();
 }
