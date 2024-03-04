@@ -2134,10 +2134,10 @@
   dependencies:
     "@sentry/node" "^7.81.1"
 
-"@snapshot-labs/snapshot.js@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot.js/-/snapshot.js-0.10.1.tgz#d783ee394d6e3ad3d3a6e91fea67411752d15180"
-  integrity sha512-PacD8HdsYZhb1Yifp6n+11Og+nZUvGhTosu+ejnEwhP6zQOFMg6gaIEsWGjoAMnjos0sgA/oIbWdPIzqJRTECw==
+"@snapshot-labs/snapshot.js@^0.11.6":
+  version "0.11.6"
+  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot.js/-/snapshot.js-0.11.6.tgz#371b26f2b01337faa4f8403cb5b633854b625ed8"
+  integrity sha512-4cMg5Ur+0vjgliN+GB3GbZ1HOiZUQBIzxEFsUKUkw1ze1/5lOi9X1Jv0+zqXpCPmbs9WMAT/fNHcplMNjcZUPg==
   dependencies:
     "@ensdomains/eth-ens-namehash" "^2.0.15"
     "@ethersproject/abi" "^5.6.4"
@@ -2149,6 +2149,7 @@
     "@ethersproject/units" "^5.7.0"
     "@ethersproject/wallet" "^5.6.2"
     ajv "^8.11.0"
+    ajv-errors "^3.0.0"
     ajv-formats "^2.1.1"
     cross-fetch "^3.1.6"
     json-to-graphql-query "^2.2.4"
@@ -2627,6 +2628,11 @@ agent-base@6:
   integrity sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==
   dependencies:
     debug "4"
+
+ajv-errors@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-3.0.0.tgz#e54f299f3a3d30fe144161e5f0d8d51196c527bc"
+  integrity sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==
 
 ajv-formats@^2.1.1:
   version "2.1.1"
