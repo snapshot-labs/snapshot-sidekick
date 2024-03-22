@@ -43,7 +43,7 @@ router.post('/ai/summary/:id', async (req, res) => {
   const aiSummary = new AISummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
 
   try {
-    let cachedSummary = await aiSummary.getCache()
+    const cachedSummary = await aiSummary.getCache();
 
     let summary = '';
 
@@ -110,6 +110,5 @@ router.post('/nft-claimer/mint', async (req, res) => {
     return rpcError(res, e, salt);
   }
 });
-
 
 export default router;
