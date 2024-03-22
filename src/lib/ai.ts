@@ -17,7 +17,6 @@ class AISummary extends Cache {
 
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
-    console.log(this.proposal);
 
     if (!this.proposal) {
       return Promise.reject('RECORD_NOT_FOUND');
@@ -28,7 +27,6 @@ class AISummary extends Cache {
 
   getContent = async () => {
     this.isCacheable();
-    console.log(`--ID: ${this.id}`);
     try {
       const proposal = await fetchProposal(this.id);
       const body = proposal?.body;
