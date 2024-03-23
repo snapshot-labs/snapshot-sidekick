@@ -17,6 +17,7 @@ class File implements IStorage {
 
   async set(key: string, value: string | Buffer) {
     try {
+      console.log(this.path(), existsSync(this.path()));
       writeFileSync(this.path(key), value);
       console.log(`[storage:file] File saved to ${this.path(key)}`);
 
