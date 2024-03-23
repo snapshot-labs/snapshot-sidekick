@@ -6,7 +6,7 @@ import Cache from '../cache';
 
 const openai = new OpenAI({ apiKey: process.env.apiKey });
 
-class AISummary extends Cache {
+class Summary extends Cache {
   proposal?: Proposal | null;
 
   constructor(id: string, storage: IStorage) {
@@ -57,4 +57,4 @@ class AISummary extends Cache {
   };
 }
 
-export default AISummary;
+export default Summary;
