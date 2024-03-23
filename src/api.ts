@@ -7,6 +7,7 @@ import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
 import { snapshotFee } from './lib/nftClaimer/utils';
+import AISummary from './lib/ai/summary';
 
 const router = express.Router();
 
@@ -31,6 +32,28 @@ router.all('/votes/:id', async (req, res) => {
       capture(e);
       rpcError(res, e, id);
     }
+  } catch (e) {
+    capture(e);
+    return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
+router.post('/ai/summary/:id', async (req, res) => {
+  const { id } = req.params;
+  const aiSummary = new AISummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
+
+  try {
+    const cachedSummary = await aiSummary.getCache();
+
+    let summary = '';
+
+    if (!cachedSummary) {
+      summary = (await aiSummary.createCache()).toString();
+    } else {
+      summary = cachedSummary.toString();
+    }
+
+    return rpcSuccess(res.status(200), summary, id);
   } catch (e) {
     capture(e);
     return rpcError(res, 'INTERNAL_ERROR', id);

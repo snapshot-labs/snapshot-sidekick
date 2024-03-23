@@ -9,6 +9,9 @@ export type Proposal = {
   space: Space;
   votes: number;
   author: string;
+  title: string;
+  body: string;
+  discussion: string;
 };
 
 export type Vote = {
@@ -23,6 +26,7 @@ export type Vote = {
 export type Space = {
   id: string;
   network: string;
+  name: string;
 };
 
 const httpLink = createHttpLink({
@@ -65,10 +69,14 @@ const PROPOSAL_QUERY = gql`
       state
       choices
       votes
+      title
+      body
+      discussion
       author
       space {
         id
         network
+        name
       }
     }
   }
