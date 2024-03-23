@@ -7,7 +7,7 @@ import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
 import { snapshotFee } from './lib/nftClaimer/utils';
-import AISummary from './lib/ai';
+import AISummary from './lib/ai/summary';
 
 const router = express.Router();
 
@@ -47,10 +47,9 @@ router.post('/ai/summary/:id', async (req, res) => {
 
     let summary = '';
 
-    if (cachedSummary === false) {
+    if (!cachedSummary) {
       summary = (await aiSummary.createCache()).toString();
     } else {
-      console.log(cachedSummary.toString());
       summary = cachedSummary.toString();
     }
 
