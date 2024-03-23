@@ -1,8 +1,7 @@
-import { capture } from '@snapshot-labs/snapshot-sentry';
 import OpenAI from 'openai';
-import { fetchProposal } from '../helpers/snapshot';
+import { capture } from '@snapshot-labs/snapshot-sentry';
+import { fetchProposal, Proposal } from '../helpers/snapshot';
 import { IStorage } from './storage/types';
-import { Proposal } from '../helpers/snapshot';
 import Cache from './cache';
 
 const openai = new OpenAI({ apiKey: process.env.apiKey });
