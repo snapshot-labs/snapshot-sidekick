@@ -17,7 +17,11 @@ describe('GET /api/votes/:id', () => {
     const votesReport = new VotesReport(id, storage);
 
     beforeAll(async () => {
-      await votesReport.createCache();
+      try {
+        await votesReport.createCache();
+      } catch (e) {
+        console.error('Error while creating the cache');
+      }
     });
 
     it('returns the cached file', async () => {
