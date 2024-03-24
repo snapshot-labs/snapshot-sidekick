@@ -1,12 +1,15 @@
 import OpenAI from 'openai';
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import removeMd from 'remove-markdown';
+import Cache from '../cache';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
-import Cache from '../cache';
 
 const openai = new OpenAI({ apiKey: process.env.apiKey });
+const MIN_BODY_LENGTH = 500;
+const MAX_BODY_LENGTH = 4096;
 
-class TextToSpeech extends Cache {
+export default class TextToSpeech extends Cache {
   proposal?: Proposal | null;
 
   constructor(id: string, storage: IStorage) {
@@ -26,8 +29,9 @@ class TextToSpeech extends Cache {
 
   getContent = async () => {
     this.isCacheable();
+    const body = removeMd(this.proposal!.body);
 
-    if (this.proposal!.body.length > 4096 || this.proposal!.body.length < 500) {
+    if (body.length < MIN_BODY_LENGTH || body.length > MAX_BODY_LENGTH) {
       throw new Error('UNSUPPORTED_PROPOSAL');
     }
 
@@ -35,7 +39,7 @@ class TextToSpeech extends Cache {
       const mp3 = await openai.audio.speech.create({
         model: 'tts-1',
         voice: 'alloy',
-        input: this.proposal!.body
+        input: body
       });
 
       return Buffer.from(await mp3.arrayBuffer());
@@ -45,5 +49,3 @@ class TextToSpeech extends Cache {
     }
   };
 }
-
-export default TextToSpeech;
