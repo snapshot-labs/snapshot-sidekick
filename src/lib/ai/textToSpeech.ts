@@ -27,8 +27,8 @@ class TextToSpeech extends Cache {
   getContent = async () => {
     this.isCacheable();
 
-    if (this.proposal!.body.length > 4096) {
       throw new Error('Proposal body is too long');
+    if (this.proposal!.body.length > 4096 || this.proposal!.body.length < 500) {
     }
 
     try {
