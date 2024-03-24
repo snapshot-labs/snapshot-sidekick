@@ -71,7 +71,12 @@ router.post('/ai/tts/:id', async (req, res) => {
     let audio: Buffer;
 
     if (!cachedAudio) {
-      audio = (await aiTextTpSpeech.createCache()) as Buffer;
+      try {
+        audio = (await aiTextTpSpeech.createCache()) as Buffer;
+      } catch (e: any) {
+        capture(e);
+        return rpcError(res, e, id);
+      }
     } else {
       audio = cachedAudio as Buffer;
     }
