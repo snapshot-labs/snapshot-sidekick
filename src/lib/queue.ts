@@ -59,7 +59,7 @@ async function run() {
   } catch (e) {
     capture(e);
   } finally {
-    await sleep(parseInt(process.env.QUEUE_INTERVAL || '15e3'));
+    await sleep(parseInt(process.env.QUEUE_INTERVAL || '15000'));
     await run();
   }
 }
