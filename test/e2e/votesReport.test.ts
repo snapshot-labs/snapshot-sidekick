@@ -1,6 +1,6 @@
 import request from 'supertest';
 import VotesReport from '../../src/lib/votesReport';
-import { storageEngine } from '../../src/helpers/utils';
+import { storageEngine, sleep } from '../../src/helpers/utils';
 import { rmSync } from 'fs';
 
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
@@ -41,6 +41,7 @@ describe('GET /api/votes/:id', () => {
 
         const votesReport = new VotesReport(id, storage);
         expect(typeof (await votesReport.getCache())).not.toBe(false);
+        await sleep(parseInt(process.env.QUEUE_INTERVAL || '15e3'));
       });
     });
 
