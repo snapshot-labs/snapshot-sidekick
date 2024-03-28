@@ -157,6 +157,12 @@ try {
   }
 }
 
+export const cacheHitCount = new client.Counter({
+  name: 'cache_hit_count',
+  help: 'Number of hit/miss of the cache engine',
+  labelNames: ['status', 'type']
+});
+
 const providersResponseCode = new client.Gauge({
   name: 'provider_response_code',
   help: 'Response code of each provider request',
