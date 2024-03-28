@@ -5,16 +5,17 @@ import Cache from '../cache';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
 
-const openai = new OpenAI({ apiKey: process.env.apiKey });
 const MIN_BODY_LENGTH = 500;
 const MAX_BODY_LENGTH = 4096;
 
 export default class TextToSpeech extends Cache {
   proposal?: Proposal | null;
+  openAi: OpenAI;
 
   constructor(id: string, storage: IStorage) {
     super(id, storage);
     this.filename = `snapshot-proposal-ai-tts-${this.id}.mp3`;
+    this.openAi = new OpenAI({ apiKey: process.env.apiKey || 'Missing key' });
   }
 
   async isCacheable() {
@@ -36,7 +37,7 @@ export default class TextToSpeech extends Cache {
     }
 
     try {
-      const mp3 = await openai.audio.speech.create({
+      const mp3 = await this.openAi.audio.speech.create({
         model: 'tts-1',
         voice: 'alloy',
         input: body

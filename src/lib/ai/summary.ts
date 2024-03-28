@@ -4,14 +4,14 @@ import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
 import Cache from '../cache';
 
-const openai = new OpenAI({ apiKey: process.env.apiKey });
-
 class Summary extends Cache {
   proposal?: Proposal | null;
+  openAi: OpenAI;
 
   constructor(id: string, storage: IStorage) {
     super(id, storage);
     this.filename = `snapshot-proposal-ai-summary-${this.id}.txt`;
+    this.openAi = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'Missing key' });
   }
 
   async isCacheable() {
@@ -30,7 +30,7 @@ class Summary extends Cache {
     try {
       const { body, title, space } = this.proposal!;
 
-      const completion = await openai.chat.completions.create({
+      const completion = await this.openAi.chat.completions.create({
         messages: [
           {
             role: 'system',
