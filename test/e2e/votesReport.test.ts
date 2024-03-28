@@ -41,7 +41,7 @@ describe('GET /api/votes/:id', () => {
 
         const votesReport = new VotesReport(id, storage);
         expect(typeof (await votesReport.getCache())).not.toBe(false);
-        await sleep(parseInt(process.env.QUEUE_INTERVAL || '15e3'));
+        await sleep(parseInt(process.env.QUEUE_INTERVAL || '15000'));
       });
     });
 
