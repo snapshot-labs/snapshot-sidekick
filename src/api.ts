@@ -55,9 +55,9 @@ router.post('/ai/summary/:id', async (req, res) => {
     }
 
     return rpcSuccess(res.status(200), summary, id);
-  } catch (e) {
+  } catch (e: any) {
     capture(e);
-    return rpcError(res, 'INTERNAL_ERROR', id);
+    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
   }
 });
 
@@ -84,9 +84,9 @@ router.post('/ai/tts/:id', async (req, res) => {
     res.header('Content-Type', 'audio/mpeg');
     res.attachment(aiTextTpSpeech.filename);
     return res.end(audio);
-  } catch (e) {
+  } catch (e: any) {
     capture(e);
-    return rpcError(res, 'INTERNAL_ERROR', id);
+    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
   }
 });
 

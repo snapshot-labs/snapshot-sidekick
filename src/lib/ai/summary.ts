@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-import { capture } from '@snapshot-labs/snapshot-sentry';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
 import Cache from '../cache';
@@ -18,7 +17,7 @@ class Summary extends Cache {
     this.proposal = await fetchProposal(this.id);
 
     if (!this.proposal) {
-      return Promise.reject('RECORD_NOT_FOUND');
+      throw new Error('RECORD_NOT_FOUND');
     }
 
     return true;
@@ -41,18 +40,17 @@ class Summary extends Cache {
       });
 
       if (completion.choices.length === 0) {
-        throw new Error('No completion in response');
+        throw new Error('EMPTY_OPENAI_CHOICES');
       }
       const content = completion.choices[0].message.content;
 
       if (!content) {
-        throw new Error('No content in response');
+        throw new Error('EMPTY_OPENAI_RESPONSE');
       }
 
       return content;
     } catch (e: any) {
-      capture(e);
-      throw e;
+      throw e.error?.code ? new Error(e.error?.code.toUpperCase()) : e;
     }
   };
 }

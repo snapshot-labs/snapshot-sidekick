@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-import { capture } from '@snapshot-labs/snapshot-sentry';
 import removeMd from 'remove-markdown';
 import Cache from '../cache';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
@@ -22,7 +21,7 @@ export default class TextToSpeech extends Cache {
     this.proposal = await fetchProposal(this.id);
 
     if (!this.proposal) {
-      return Promise.reject('RECORD_NOT_FOUND');
+      throw new Error('RECORD_NOT_FOUND');
     }
 
     return true;
@@ -45,8 +44,7 @@ export default class TextToSpeech extends Cache {
 
       return Buffer.from(await mp3.arrayBuffer());
     } catch (e: any) {
-      capture(e);
-      throw e;
+      throw e.error?.code ? new Error(e.error?.code.toUpperCase()) : e;
     }
   };
 }
