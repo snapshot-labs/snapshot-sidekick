@@ -4,7 +4,7 @@ import Cache from '../cache';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
 
-const MIN_BODY_LENGTH = 500;
+const MIN_BODY_LENGTH = 1;
 const MAX_BODY_LENGTH = 4096;
 
 export default class TextToSpeech extends Cache {
