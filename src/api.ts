@@ -7,7 +7,8 @@ import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
 import { snapshotFee } from './lib/nftClaimer/utils';
-import AISummary from './lib/ai/summary';
+import AiSummary from './lib/ai/summary';
+import AiTextToSpeech from './lib/ai/textToSpeech';
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ router.all('/votes/:id', async (req, res) => {
 
 router.post('/ai/summary/:id', async (req, res) => {
   const { id } = req.params;
-  const aiSummary = new AISummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
+  const aiSummary = new AiSummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
 
   try {
     const cachedSummary = await aiSummary.getCache();
@@ -54,9 +55,38 @@ router.post('/ai/summary/:id', async (req, res) => {
     }
 
     return rpcSuccess(res.status(200), summary, id);
-  } catch (e) {
+  } catch (e: any) {
     capture(e);
-    return rpcError(res, 'INTERNAL_ERROR', id);
+    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
+  }
+});
+
+router.post('/ai/tts/:id', async (req, res) => {
+  const { id } = req.params;
+  const aiTextTpSpeech = new AiTextToSpeech(id, storageEngine(process.env.AI_TTS_SUBDIR));
+
+  try {
+    const cachedAudio = await aiTextTpSpeech.getCache();
+
+    let audio: Buffer;
+
+    if (!cachedAudio) {
+      try {
+        audio = (await aiTextTpSpeech.createCache()) as Buffer;
+      } catch (e: any) {
+        capture(e);
+        return rpcError(res, e, id);
+      }
+    } else {
+      audio = cachedAudio as Buffer;
+    }
+
+    res.header('Content-Type', 'audio/mpeg');
+    res.attachment(aiTextTpSpeech.filename);
+    return res.end(audio);
+  } catch (e: any) {
+    capture(e);
+    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
   }
 });
 
