@@ -33,7 +33,7 @@ class Summary extends Cache {
         messages: [
           {
             role: 'system',
-            content: `The following is a governance proposal of ${space.name}. Generate me a summary in 300 characters max. Here's the title of the proposal: '${title}' . Here's the content of the proposal: '${body}'`
+            content: `The following is a governance proposal of '${space.name}'. Generate me a summary in 350 characters max. Here's the title of the proposal: '${title}'. Here's the content of the proposal: '${body}'.`
           }
         ],
         model: 'gpt-4-turbo-preview'
