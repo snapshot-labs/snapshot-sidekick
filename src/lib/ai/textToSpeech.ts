@@ -6,7 +6,7 @@ import { IStorage } from '../storage/types';
 
 const MIN_BODY_LENGTH = 500;
 const MAX_BODY_LENGTH = 4096;
-const tempCacheIds: Map<string, number> = new Map();
+const tempCacheIds = new Map<string, number>();
 
 export default class TextToSpeech extends Cache {
   proposal?: Proposal | null;

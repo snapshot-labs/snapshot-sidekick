@@ -3,7 +3,7 @@ import { fetchProposal, Proposal } from '../../helpers/snapshot';
 import { IStorage } from '../storage/types';
 import Cache from '../cache';
 
-const tempCacheIds: Map<string, number> = new Map();
+const tempCacheIds = new Map<string, number>();
 
 class Summary extends Cache {
   proposal?: Proposal | null;

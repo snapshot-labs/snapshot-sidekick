@@ -1,7 +1,7 @@
 import { sleep } from '../helpers/utils';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import Cache from './cache';
 import { timeQueueProcess } from './metrics';
+import type Cache from './cache';
 
 const queues = new Map<string, Cache>();
 const processingItems = new Map<string, Cache>();
@@ -11,6 +11,14 @@ async function processItem(cacheable: Cache) {
   try {
     const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
     processingItems.set(cacheable.id, cacheable);
+
+    if (
+      ['Summary', 'TextToSpeech'].includes(cacheable.constructor.name) &&
+      !!(await cacheable.getCache())
+    ) {
+      return;
+    }
+
     await cacheable.createCache();
     end();
   } catch (e) {
