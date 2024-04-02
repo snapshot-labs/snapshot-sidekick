@@ -43,4 +43,8 @@ export default class Cache {
 
     return content;
   }
+
+  toString() {
+    return `${this.constructor.name}#${this.id}`;
+  }
 }

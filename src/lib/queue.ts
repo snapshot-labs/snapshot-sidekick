@@ -10,11 +10,11 @@ async function processItem(cacheable: Cache) {
   console.log(`[queue] Processing queue item: ${cacheable}`);
   try {
     const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
-    processingItems.set(cacheable.id, cacheable);
+    processingItems.set(cacheable.toString(), cacheable);
 
     if (
       ['Summary', 'TextToSpeech'].includes(cacheable.constructor.name) &&
-      !!(await cacheable.getCache())
+      !(await cacheable.getCache())
     ) {
       return;
     }
@@ -22,17 +22,17 @@ async function processItem(cacheable: Cache) {
     await cacheable.createCache();
     end();
   } catch (e) {
-    capture(e, { id: cacheable.id });
+    capture(e, { id: cacheable.toString() });
     console.error(`[queue] Error while processing item`, e);
   } finally {
-    queues.delete(cacheable.id);
-    processingItems.delete(cacheable.id);
+    queues.delete(cacheable.toString());
+    processingItems.delete(cacheable.toString());
   }
 }
 
 export function queue(cacheable: Cache) {
-  if (!queues.has(cacheable.id)) {
-    queues.set(cacheable.id, cacheable);
+  if (!queues.has(cacheable.toString())) {
+    queues.set(cacheable.toString(), cacheable);
   }
 
   return queues.size;
@@ -43,8 +43,8 @@ export function size() {
 }
 
 export function getProgress(id: string) {
-  if (processingItems.has(id)) {
-    return processingItems.get(id)?.generationProgress as number;
+  if (processingItems.has(id.toString())) {
+    return processingItems.get(id.toString())?.generationProgress as number;
   }
 
   return 0;
