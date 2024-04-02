@@ -44,7 +44,7 @@ router.post('/ai/summary/:id', async (req, res) => {
   const aiSummary = new AiSummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
 
   try {
-    const cachedSummary = await aiSummary.getCache();
+    const cachedSummary = (await aiSummary.isCacheable()) && (await aiSummary.getCache());
 
     let summary = '';
 
@@ -66,7 +66,7 @@ router.post('/ai/tts/:id', async (req, res) => {
   const aiTextTpSpeech = new AiTextToSpeech(id, storageEngine(process.env.AI_TTS_SUBDIR));
 
   try {
-    const cachedAudio = await aiTextTpSpeech.getCache();
+    const cachedAudio = (await aiTextTpSpeech.isCacheable()) && (await aiTextTpSpeech.getCache());
 
     let audio: Buffer;
 
