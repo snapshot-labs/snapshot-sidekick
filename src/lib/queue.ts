@@ -9,15 +9,15 @@ const processingItems = new Map<string, Cache>();
 async function processItem(cacheable: Cache) {
   console.log(`[queue] Processing queue item: ${cacheable}`);
   try {
-    const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
-    processingItems.set(cacheable.toString(), cacheable);
-
     if (
       ['Summary', 'TextToSpeech'].includes(cacheable.constructor.name) &&
       !(await cacheable.getCache())
     ) {
       return;
     }
+
+    const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
+    processingItems.set(cacheable.toString(), cacheable);
 
     await cacheable.createCache();
     end();
