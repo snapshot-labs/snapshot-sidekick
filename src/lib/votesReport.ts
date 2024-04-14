@@ -43,9 +43,9 @@ class VotesReport extends Cache {
 
     const headers = [
       'address',
-      votes.length === 0 || typeof votes[0].choice === 'number'
+      ['basic', 'single-choice'].includes(this.proposal!.type)
         ? 'choice'
-        : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+        : this.proposal!.choices.map((_choice, index) => `choice.${index + 1}`),
       'voting_power',
       'timestamp',
       'author_ipfs_hash',

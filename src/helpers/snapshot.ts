@@ -5,6 +5,7 @@ import { fetchWithKeepAlive } from './utils';
 export type Proposal = {
   id: string;
   state: string;
+  type: string;
   choices: string[];
   space: Space;
   votes: number;
@@ -67,6 +68,7 @@ const PROPOSAL_QUERY = gql`
     proposal(id: $id) {
       id
       state
+      type
       choices
       votes
       title
