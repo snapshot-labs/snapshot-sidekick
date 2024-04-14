@@ -107,11 +107,26 @@ class VotesReport extends Cache {
   }
 
   #formatCsvLine = (vote: Vote) => {
+    return [
+      vote.voter,
+      ...this.#getCsvChoices(vote),
+      vote.vp,
+      vote.created,
+      vote.ipfs,
+      `"${vote.reason.replace(/(\r\n|\n|\r)/gm, '')}"`
+    ]
+      .flat()
+      .join(',');
+  };
+
+  #getCsvChoices = (vote: Vote) => {
     const choices: Vote['choice'][] = Array.from({
       length: ['basic', 'single-choice'].includes(this.proposal!.type)
         ? 1
         : this.proposal!.choices.length
     });
+
+    if (this.proposal!.privacy && this.proposal!.state !== 'closed') return choices;
 
     switch (this.proposal!.type) {
       case 'single-choice':
@@ -131,16 +146,7 @@ class VotesReport extends Cache {
         }
     }
 
-    return [
-      vote.voter,
-      ...choices,
-      vote.vp,
-      vote.created,
-      vote.ipfs,
-      `"${vote.reason.replace(/(\r\n|\n|\r)/gm, '')}"`
-    ]
-      .flat()
-      .join(',');
+    return choices;
   };
 }
 

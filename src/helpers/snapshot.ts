@@ -13,6 +13,7 @@ export type Proposal = {
   title: string;
   body: string;
   discussion: string;
+  privacy: string;
 };
 
 export type Vote = {
@@ -75,6 +76,7 @@ const PROPOSAL_QUERY = gql`
       body
       discussion
       author
+      privacy
       space {
         id
         network
