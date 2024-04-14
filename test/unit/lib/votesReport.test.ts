@@ -31,6 +31,8 @@ describe('VotesReport', () => {
   const quadraticChoiceId = '0x07387077920ce65b805bd0ba913a02ecfe63d22cac3dbaed3d97c23afd053fe2';
   const activeShutterId = '0xbb1b4f1f866fda9c1c19ff31bc32c98f92d70f2055a3ba26a502377cf2d1e743';
   const closedShutterId = '0x0da0673d17298e8f52c88385959952d21c2d0ae2fff2f0fea9df02ca0590cb6a';
+  const closedInvalidShutterId =
+    '0xd37c87edb3cbd78d58a78056b4facb00df739fdf3a16b168305e9cfdd00b3ab5';
   const testStorageEngine = storageEngine(TEST_CACHE_DIR);
   const space = { id: '', name: '', network: '', settings: '' };
 
@@ -49,7 +51,8 @@ describe('VotesReport', () => {
     ['approval', approvalChoiceId],
     ['quadratic', quadraticChoiceId],
     ['ranked-choice (active) with shutter', activeShutterId],
-    ['ranked-choice (closed) with shutter', closedShutterId]
+    ['ranked-choice (closed) with shutter', closedShutterId],
+    ['ranked-choice (closed) with invalid shutter', closedInvalidShutterId]
   ])('generates a %s choices votes report', async (type: string, pid: string) => {
     const report = new VotesReport(pid, testStorageEngine);
     mockFetchProposal.mockResolvedValueOnce(

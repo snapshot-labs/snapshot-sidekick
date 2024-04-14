@@ -131,18 +131,22 @@ class VotesReport extends Cache {
     switch (this.proposal!.type) {
       case 'single-choice':
       case 'basic':
-        choices[0] = vote.choice;
+        if (typeof vote.choice === 'number') choices[0] = vote.choice;
         break;
       case 'approval':
       case 'ranked-choice':
-        (vote.choice as number[]).forEach((value, index) => {
-          choices[index] = value;
-        });
+        if (Array.isArray(vote.choice)) {
+          vote.choice.forEach((value, index) => {
+            choices[index] = value;
+          });
+        }
         break;
       case 'quadratic':
       case 'weighted':
-        for (const [key, value] of Object.entries(vote.choice)) {
-          choices[+key - 1] = value;
+        if (typeof vote.choice === 'object') {
+          for (const [key, value] of Object.entries(vote.choice)) {
+            choices[+key - 1] = value;
+          }
         }
     }
 
