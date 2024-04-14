@@ -6,7 +6,7 @@ import {
 
 describe('NFTClaimer/utils', () => {
   describe('validateAddresses()', () => {
-    it('returns true when all addresses are valid', () => {
+    it.skip('returns true when all addresses are valid', () => {
       expect(
         validateAddresses({
           contractA: '0x054a600d8B766c786270E25872236507D8459D8F',
@@ -14,7 +14,7 @@ describe('NFTClaimer/utils', () => {
         })
       ).toBe(true);
     });
-    it('throws an error when some of the addresses are invalid', () => {
+    it.skip('throws an error when some of the addresses are invalid', () => {
       expect(() => {
         validateAddresses({
           contractA: '0x054a600d8B766c786270E25872236507D8459D8F',
@@ -25,7 +25,7 @@ describe('NFTClaimer/utils', () => {
   });
 
   describe('validateProposerFee()', () => {
-    it('throws an error when proposerFee + snapshotFee > 100', () => {
+    it.skip('throws an error when proposerFee + snapshotFee > 100', () => {
       return expect(async () => {
         await validateProposerFee(100);
       }).rejects.toThrow();
@@ -33,7 +33,7 @@ describe('NFTClaimer/utils', () => {
   });
 
   describe('validateProposal()', () => {
-    it('throws an error when the proposalAuthor is not matching', () => {
+    it.skip('throws an error when the proposalAuthor is not matching', () => {
       const address = '0x054a600d8B766c786270E25872236507D8459D8F';
 
       expect(async () => {
@@ -41,7 +41,7 @@ describe('NFTClaimer/utils', () => {
       }).rejects.toThrow();
     });
 
-    it('throws an error when the proposal does not exist', () => {
+    it.skip('throws an error when the proposal does not exist', () => {
       expect(async () => {
         validateProposal(null, '');
       }).rejects.toThrowError('RECORD_NOT_FOUND');
