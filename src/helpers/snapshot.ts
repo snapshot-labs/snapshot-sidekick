@@ -18,7 +18,7 @@ export type Proposal = {
 export type Vote = {
   ipfs: string;
   voter: string;
-  choice: Record<string, number> | number;
+  choice: Record<string, number> | number | number[];
   vp: number;
   reason: string;
   created: number;

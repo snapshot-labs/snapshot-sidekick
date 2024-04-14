@@ -96,9 +96,7 @@ class VotesReport extends Cache {
 
       votes = votes.concat(newVotes);
 
-      this.generationProgress = Number(
-        ((votes.length / (this.proposal?.votes as number)) * 100).toFixed(2)
-      );
+      this.generationProgress = +((votes.length / this.proposal!.votes) * 100).toFixed(2);
     } while (resultsSize === pageSize);
 
     return votes;
@@ -109,21 +107,28 @@ class VotesReport extends Cache {
   }
 
   #formatCsvLine = (vote: Vote) => {
-    let choices: Vote['choice'][] = [];
+    const choices: Vote['choice'][] = Array.from({
+      length: ['basic', 'single-choice'].includes(this.proposal!.type)
+        ? 1
+        : this.proposal!.choices.length
+    });
 
-    if (typeof vote.choice !== 'number' && this.proposal) {
-      choices = Array.from({ length: this.proposal.choices.length });
-      if (Array.isArray(vote.choice)) {
-        vote.choice.forEach((value, index) => {
+    switch (this.proposal!.type) {
+      case 'single-choice':
+      case 'basic':
+        choices[0] = vote.choice;
+        break;
+      case 'approval':
+      case 'ranked-choice':
+        (vote.choice as number[]).forEach((value, index) => {
           choices[index] = value;
         });
-      } else {
+        break;
+      case 'quadratic':
+      case 'weighted':
         for (const [key, value] of Object.entries(vote.choice)) {
-          choices[parseInt(key) - 1] = value;
+          choices[+key - 1] = value;
         }
-      }
-    } else {
-      choices.push(vote.choice);
     }
 
     return [
