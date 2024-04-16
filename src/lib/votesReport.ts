@@ -104,10 +104,6 @@ class VotesReport extends Cache {
     return votes;
   };
 
-  toString() {
-    return `VotesReport#${this.id}`;
-  }
-
   #formatCsvLine = (vote: Vote) => {
     let choices: Vote['choice'][] = [];
 

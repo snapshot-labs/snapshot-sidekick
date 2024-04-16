@@ -6,6 +6,7 @@ import { IStorage } from '../storage/types';
 
 const MIN_BODY_LENGTH = 1;
 const MAX_BODY_LENGTH = 4096;
+const tempCacheIds = new Map<string, number>();
 
 export default class TextToSpeech extends Cache {
   proposal?: Proposal | null;
@@ -20,9 +21,8 @@ export default class TextToSpeech extends Cache {
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
 
-    if (!this.proposal) {
-      throw new Error('RECORD_NOT_FOUND');
-    }
+    if (!this.proposal) throw new Error('RECORD_NOT_FOUND');
+    if (this.#cacheExpired()) return false;
 
     return true;
   }
@@ -47,4 +47,16 @@ export default class TextToSpeech extends Cache {
       throw e.error?.code ? new Error(e.error?.code.toUpperCase()) : e;
     }
   };
+
+  #cacheExpired = () => {
+    const { id, state, updated } = this.proposal!;
+
+    if (state !== 'pending') return false;
+
+    return tempCacheIds.has(id) && tempCacheIds.get(id) !== updated;
+  };
+
+  afterCreateCache() {
+    tempCacheIds.set(this.proposal!.id, this.proposal!.updated);
+  }
 }

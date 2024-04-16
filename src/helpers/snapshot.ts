@@ -4,7 +4,7 @@ import { fetchWithKeepAlive } from './utils';
 
 export type Proposal = {
   id: string;
-  state: string;
+  state: 'pending' | 'active' | 'closed';
   choices: string[];
   space: Space;
   votes: number;
@@ -12,6 +12,7 @@ export type Proposal = {
   title: string;
   body: string;
   discussion: string;
+  updated: number;
 };
 
 export type Vote = {
@@ -78,6 +79,7 @@ const PROPOSAL_QUERY = gql`
         network
         name
       }
+      updated
     }
   }
 `;

@@ -36,11 +36,15 @@ export default class Cache {
     await this.isCacheable();
     const content = await this.getContent();
 
-    console.log(`[votes-report] File cache ready to be saved`);
+    console.log(`[${this.constructor.name}] File cache ready to be saved`);
 
     this.storage.set(this.filename, content);
     this.afterCreateCache();
 
     return content;
+  }
+
+  toString() {
+    return `${this.constructor.name}#${this.id}`;
   }
 }
