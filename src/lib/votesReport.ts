@@ -43,9 +43,9 @@ class VotesReport extends Cache {
 
     const headers = [
       'address',
-      votes.length === 0 || typeof votes[0].choice === 'number'
+      ['basic', 'single-choice'].includes(this.proposal!.type)
         ? 'choice'
-        : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+        : this.proposal!.choices.map((_choice, index) => `choice.${index + 1}`),
       'voting_power',
       'timestamp',
       'author_ipfs_hash',
@@ -96,9 +96,7 @@ class VotesReport extends Cache {
 
       votes = votes.concat(newVotes);
 
-      this.generationProgress = Number(
-        ((votes.length / (this.proposal?.votes as number)) * 100).toFixed(2)
-      );
+      this.generationProgress = +((votes.length / this.proposal!.votes) * 100).toFixed(2);
     } while (resultsSize === pageSize);
 
     return votes;
@@ -109,26 +107,9 @@ class VotesReport extends Cache {
   }
 
   #formatCsvLine = (vote: Vote) => {
-    let choices: Vote['choice'][] = [];
-
-    if (typeof vote.choice !== 'number' && this.proposal) {
-      choices = Array.from({ length: this.proposal.choices.length });
-      if (Array.isArray(vote.choice)) {
-        vote.choice.forEach((value, index) => {
-          choices[index] = value;
-        });
-      } else {
-        for (const [key, value] of Object.entries(vote.choice)) {
-          choices[parseInt(key) - 1] = value;
-        }
-      }
-    } else {
-      choices.push(vote.choice);
-    }
-
     return [
       vote.voter,
-      ...choices,
+      ...this.#getCsvChoices(vote),
       vote.vp,
       vote.created,
       vote.ipfs,
@@ -136,6 +117,40 @@ class VotesReport extends Cache {
     ]
       .flat()
       .join(',');
+  };
+
+  #getCsvChoices = (vote: Vote) => {
+    const choices: Vote['choice'][] = Array.from({
+      length: ['basic', 'single-choice'].includes(this.proposal!.type)
+        ? 1
+        : this.proposal!.choices.length
+    });
+
+    if (this.proposal!.privacy && this.proposal!.state !== 'closed') return choices;
+
+    switch (this.proposal!.type) {
+      case 'single-choice':
+      case 'basic':
+        if (typeof vote.choice === 'number') choices[0] = vote.choice;
+        break;
+      case 'approval':
+      case 'ranked-choice':
+        if (Array.isArray(vote.choice)) {
+          vote.choice.forEach((value, index) => {
+            choices[index] = value;
+          });
+        }
+        break;
+      case 'quadratic':
+      case 'weighted':
+        if (typeof vote.choice === 'object') {
+          for (const [key, value] of Object.entries(vote.choice)) {
+            choices[+key - 1] = value;
+          }
+        }
+    }
+
+    return choices;
   };
 }
 
