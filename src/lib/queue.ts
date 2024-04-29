@@ -3,6 +3,7 @@ import { capture } from '@snapshot-labs/snapshot-sentry';
 import Cache from './cache';
 import { timeQueueProcess } from './metrics';
 
+const MAX_CONCURRENT_PROCESSING_ITEMS = 10;
 const queues = new Map<string, Cache>();
 const processingItems = new Map<string, Cache>();
 
@@ -51,6 +52,11 @@ async function run() {
           `[queue] Skip: ${cacheable} is currently being processed, progress:
           ${processingItems.get(id)?.generationProgress}%`
         );
+        return;
+      }
+
+      if (processingItems.size >= MAX_CONCURRENT_PROCESSING_ITEMS) {
+        console.log(`[queue] Skip ${cacheable}: max concurrent processing items reached`);
         return;
       }
 
