@@ -36,7 +36,7 @@ class Summary extends Cache {
             content: `The following is a governance proposal of '${space.name}'. Generate me a summary in 350 characters max. Here's the title of the proposal: '${title}'. Here's the content of the proposal: '${body}'.`
           }
         ],
-        model: 'gpt-4-turbo-preview'
+        model: 'gpt-4o'
       });
 
       if (completion.choices.length === 0) {
