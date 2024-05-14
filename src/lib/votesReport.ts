@@ -61,7 +61,7 @@ class VotesReport extends Cache {
   };
 
   fetchAllVotes = async () => {
-    let votes: Vote[] = [];
+    const votes = new Map<string, Vote>();
     let page = 0;
     let createdPivot = 0;
     const pageSize = 1000;
@@ -69,7 +69,7 @@ class VotesReport extends Cache {
     const maxPage = 5;
 
     do {
-      let newVotes = await fetchVotes(this.id, {
+      const newVotes = await fetchVotes(this.id, {
         first: pageSize,
         skip: page * pageSize,
         created_gte: createdPivot,
@@ -78,15 +78,6 @@ class VotesReport extends Cache {
       });
       resultsSize = newVotes.length;
 
-      if (page === 0 && createdPivot > 0) {
-        // Loosely assuming that there will never be more than 1000 duplicates
-        const existingIpfs = votes.slice(-pageSize).map(vote => vote.ipfs);
-
-        newVotes = newVotes.filter(vote => {
-          return !existingIpfs.includes(vote.ipfs);
-        });
-      }
-
       if (page === maxPage) {
         page = 0;
         createdPivot = newVotes[newVotes.length - 1].created;
@@ -94,12 +85,14 @@ class VotesReport extends Cache {
         page++;
       }
 
-      votes = votes.concat(newVotes);
+      for (const vote of newVotes) {
+        votes.set(vote.ipfs, vote);
+      }
 
-      this.generationProgress = +((votes.length / this.proposal!.votes) * 100).toFixed(2);
+      this.generationProgress = +((votes.size / this.proposal!.votes) * 100).toFixed(2);
     } while (resultsSize === pageSize);
 
-    return votes;
+    return Array.from(votes.values());
   };
 
   toString() {
