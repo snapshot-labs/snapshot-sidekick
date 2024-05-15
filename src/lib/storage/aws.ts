@@ -8,7 +8,7 @@ import { capture } from '@snapshot-labs/snapshot-sentry';
 import type { IStorage } from './types';
 import type { Readable } from 'stream';
 
-const CACHE_PATH = 'public';
+const CACHE_PATH = 'public_1';
 
 class Aws implements IStorage {
   client: S3Client;
