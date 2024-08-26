@@ -140,4 +140,22 @@ router.post('/nft-claimer/mint', async (req, res) => {
   }
 });
 
+router.get('/proxy/:url', async (req, res) => {
+  const { url } = req.params;
+
+  try {
+    const response = await fetch(url);
+
+    return res.json(await response.json());
+  } catch (e: any) {
+    capture(e);
+    res.status(500).json({
+      error: {
+        code: 500,
+        message: 'failed to fetch URL'
+      }
+    });
+  }
+});
+
 export default router;
