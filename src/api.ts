@@ -9,6 +9,7 @@ import { queue, getProgress } from './lib/queue';
 import { snapshotFee } from './lib/nftClaimer/utils';
 import AiSummary from './lib/ai/summary';
 import AiTextToSpeech from './lib/ai/textToSpeech';
+import { getDomain } from './lib/domain';
 
 const router = express.Router();
 
@@ -95,6 +96,17 @@ router.get('/moderation', async (req, res) => {
 
   try {
     res.json(await getModerationList(list ? (list as string).split(',') : undefined));
+  } catch (e) {
+    capture(e);
+    return rpcError(res, 'INTERNAL_ERROR', '');
+  }
+});
+
+router.get('/domains/:domain', async (req, res) => {
+  const { domain } = req.params;
+
+  try {
+    res.json({ domain, space_id: getDomain(domain) });
   } catch (e) {
     capture(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
