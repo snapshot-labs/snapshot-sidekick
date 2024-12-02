@@ -52,7 +52,7 @@
     "remove-markdown": "^0.5.0"
   },
   "devDependencies": {
-    "@snapshot-labs/eslint-config": "^0.1.0-beta.15",
+    "@snapshot-labs/eslint-config": "^0.1.0-beta.18",
     "@snapshot-labs/prettier-config": "^0.1.0-beta.7",
     "@types/bluebird": "^3.5.38",
     "@types/compression": "^1.7.2",
