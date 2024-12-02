@@ -17,6 +17,14 @@
       "decimals": 18,
       "chainId": 5,
       "logoURI": ""
+    },
+    {
+      "name": "Developer DAO (CODE)",
+      "address": "0xb24cd494faE4C180A89975F1328Eab2a7D5d8f11",
+      "symbol": "CODE",
+      "decimals": 18,
+      "chainId": 1,
+      "logoURI": "https://szugq64bhvqg3dhbeihnnbbvx7peynjusnu2j2nv4jyzcshkqofa.arweave.net/lmhoe4E9YG2M4SIO1oQ1v95MNTSTaaTpteJxkUjqg4o"
     }
   ]
 }
