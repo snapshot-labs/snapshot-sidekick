@@ -160,7 +160,6 @@ router.get('/proxy/:url', async (req, res) => {
 
     return res.json(await response.json());
   } catch (e: any) {
-    capture(e);
     res.status(500).json({
       error: {
         code: 500,
