@@ -2096,9 +2096,9 @@
     tslib "^2.5.0"
 
 "@snapshot-labs/eslint-config-base@^0.1.0-beta.15":
-  version "0.1.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@snapshot-labs/eslint-config-base/-/eslint-config-base-0.1.0-beta.15.tgz#2f64a21a0590d0ffea8a82852ab4bd5742495daa"
-  integrity sha512-uqOqCDTsl92e1k3edaGweQCSlDo9mU8I1ejqXCJHHDr/ZZyBldd8R73qOjhEVdYBtbdHd97QRdKh3JhMjzhrtg==
+  version "0.1.0-beta.20"
+  resolved "https://registry.yarnpkg.com/@snapshot-labs/eslint-config-base/-/eslint-config-base-0.1.0-beta.20.tgz#2dd6e5e87f20bc300f965f5ef3677d617d70dfe5"
+  integrity sha512-IkMPe0t5cv5BbV5xGDsPdJw5ftEYWNyTGnkcwHOhuZ220cFD9Fk/T1r4s7cdATkrnqy8UEynABL3366YbTGM1w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^6.7.3"
     "@typescript-eslint/parser" "^6.7.3"
