@@ -31,6 +31,11 @@ export type Space = {
   name: string;
 };
 
+export type Network = {
+  id: string;
+  premium: boolean;
+};
+
 const httpLink = createHttpLink({
   uri: `${process.env.HUB_URL || 'https://hub.snapshot.org'}/graphql`,
   fetch: fetchWithKeepAlive
@@ -129,6 +134,15 @@ const SPACE_QUERY = gql`
   }
 `;
 
+const NETWORKS_QUERY = gql`
+  query networks {
+    networks {
+      id
+      premium
+    }
+  }
+`;
+
 export async function fetchProposal(id: string) {
   const {
     data: { proposal }
@@ -188,4 +202,14 @@ export async function fetchSpace(id: string) {
   });
 
   return space;
+}
+
+export async function fetchNetworks() {
+  const {
+    data: { networks }
+  }: { data: { networks: Network[] } } = await client.query({
+    query: NETWORKS_QUERY
+  });
+
+  return networks;
 }
