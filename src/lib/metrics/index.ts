@@ -8,6 +8,7 @@ import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
 import type { Express } from 'express';
 import db from '../../helpers/mysql';
+import { fetchNetworks } from '../../helpers/snapshot';
 
 export default function initMetrics(app: Express) {
   init(app, {
@@ -183,8 +184,19 @@ const providersFullArchiveNodeAvailability = new client.Gauge({
 
 const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
 const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
-const networksIds = Object.keys(networks);
 let networkPivot = 0;
+let premiumNetworks: any[] = [];
+
+async function refreshPremiumNetworks() {
+  const remoteNetworks = await fetchNetworks();
+  const premiumNetworkIds = remoteNetworks
+    .filter((network: any) => network.premium)
+    .map((network: any) => network.id);
+
+  premiumNetworks = premiumNetworkIds
+    .map((networkId: string) => networks[networkId as keyof typeof networks])
+    .filter(Boolean);
+}
 
 async function refreshProviderTiming(network: any) {
   const { key, multicall } = network;
@@ -224,14 +236,17 @@ async function refreshFullArchiveNodeChecker(network: any) {
 }
 
 async function run() {
-  const index = networksIds[networkPivot] as keyof typeof networks;
-  const network = networks[index];
+  if (networkPivot === 0) {
+    await refreshPremiumNetworks();
+  }
+
+  const network = premiumNetworks[networkPivot];
 
   refreshProviderTiming(network);
   refreshFullArchiveNodeChecker(network);
 
   networkPivot++;
-  if (networkPivot > networksIds.length - 1) networkPivot = 0;
+  if (networkPivot > premiumNetworks.length - 1) networkPivot = 0;
 
   await snapshot.utils.sleep(5e3);
   run();
