@@ -106,7 +106,7 @@ class VotesReport extends Cache {
       vote.vp,
       vote.created,
       vote.ipfs,
-      `"${vote.reason.replace(/(\r\n|\n|\r)/gm, '')}"`
+      `"'${vote.reason.replace(/(\r\n|\n|\r)/gm, '').replace(/"/g, '""')}"`
     ]
       .flat()
       .join(',');
