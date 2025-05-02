@@ -21,7 +21,7 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'jest-environment-node-single-context',
   setupFiles: ['dotenv/config'],
-  //setupFilesAfterEnv: ['<rootDir>src/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   moduleFileExtensions: ['js', 'ts'],
   testPathIgnorePatterns: ['dist/'],
   verbose: true

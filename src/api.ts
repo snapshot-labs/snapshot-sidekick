@@ -3,6 +3,7 @@ import { capture } from '@snapshot-labs/snapshot-sentry';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
+import picSnap, { ImageType } from './lib/picSnap';
 import mintPayload from './lib/nftClaimer/mint';
 import deployPayload from './lib/nftClaimer/deploy';
 import { queue, getProgress } from './lib/queue';
@@ -37,6 +38,23 @@ router.all('/votes/:id', async (req, res) => {
   } catch (e) {
     capture(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
+  }
+});
+
+router.get('/picsnap/:type(og-space|og-proposal|og-home)/:id?.:ext(png|svg)?', async (req, res) => {
+  const { type, id = '', ext = 'png' } = req.params;
+
+  try {
+    const image = new picSnap(type as ImageType, id, storageEngine(process.env.PICSNAP_SUBDIR));
+
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    res.setHeader('Content-Type', `image/${ext === 'svg' ? 'svg+xml' : 'png'}`);
+    return res.end(
+      ext === 'svg' ? await image.getSvg() : (await image.getCache()) || (await image.createCache())
+    );
+  } catch (e: any) {
+    capture(e);
+    return rpcError(res, e, id || type);
   }
 });
 
