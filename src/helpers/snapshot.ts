@@ -65,7 +65,7 @@ const client = new ApolloClient({
 });
 
 const PROPOSAL_QUERY = gql`
-  query Proposal($id: String) {
+  query Proposal($id: String!) {
     proposal(id: $id) {
       id
       title
@@ -82,7 +82,7 @@ const PROPOSAL_QUERY = gql`
 `;
 
 const SPACE_QUERY = gql`
-  query Space($id: String) {
+  query Space($id: String!) {
     space(id: $id) {
       id
       name
