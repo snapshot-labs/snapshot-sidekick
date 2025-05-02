@@ -8,6 +8,7 @@ export type Proposal = {
   id: string;
   title: string;
   state: State;
+  type: string;
   choices: string[];
   space: Space;
   votes: number;
