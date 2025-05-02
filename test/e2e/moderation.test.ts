@@ -29,7 +29,7 @@ describe('GET /api/moderation', () => {
   });
 
   describe('when list params is set', () => {
-    it.each(['flaggedLinks', 'verifiedSpaces', 'flaggedProposals', 'verifiedTokens'])(
+    it.each(['flaggedLinks', 'verifiedTokens'])(
       'returns only the selected %s list',
       async field => {
         const response = await request(HOST).get(`/api/moderation?list=${field}`);
@@ -40,17 +40,15 @@ describe('GET /api/moderation', () => {
     );
   });
 
-  it('returns multiple list: verifiedSpaces,flaggedProposals', async () => {
-    const response = await request(HOST).get(
-      `/api/moderation?list=verifiedSpaces,flaggedProposals`
-    );
+  it('returns multiple list: flaggedLinks,flaggedIps', async () => {
+    const response = await request(HOST).get(`/api/moderation?list=flaggedLinks,flaggedIps`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toMatchSnapshot();
   });
 
-  it('ignores invalid field, and returns only verifiedSpaces', async () => {
-    const response = await request(HOST).get(`/api/moderation?list=verifiedSpaces,testInvalid`);
+  it('ignores invalid field, and returns only flaggedLinks', async () => {
+    const response = await request(HOST).get(`/api/moderation?list=flaggedLinks,testInvalid`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toMatchSnapshot();

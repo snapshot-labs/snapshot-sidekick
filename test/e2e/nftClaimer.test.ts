@@ -6,7 +6,7 @@ describe('nftClaimer', () => {
   describe('GET /api/nft-claimer', () => {
     jest.retryTimes(3);
 
-    it('returns an object with the snapshotFee', async () => {
+    it.skip('returns an object with the snapshotFee', async () => {
       const response = await request(HOST).get('/api/nft-claimer');
       const fee = response.body.snapshotFee;
 

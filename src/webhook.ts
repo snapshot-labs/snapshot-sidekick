@@ -39,7 +39,7 @@ router.post('/webhook', (req, res) => {
 
     return rpcSuccess(res, 'Webhook received', id);
   } catch (e) {
-    capture(e, { context: { body } });
+    capture(e, { body });
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });

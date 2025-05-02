@@ -1,5 +1,4 @@
 import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
-import fetch from 'cross-fetch';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
@@ -7,7 +6,8 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import type { Proposal, Space } from '../../helpers/snapshot';
+import { fetchVote, type Proposal, type Space } from '../../helpers/snapshot';
+import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const requiredEnvKeys = [
   'NFT_CLAIMER_PRIVATE_KEY',
@@ -24,6 +24,7 @@ requiredEnvKeys.forEach(key => {
     missingEnvKeys.push(key);
   }
 });
+const broviderUrl = process.env.BROVIDER_URL || 'https://rpc.snapshot.org';
 
 if (missingEnvKeys.length > 0) {
   throw new Error(
@@ -42,6 +43,16 @@ export async function mintingAllowed(space: Space) {
   return (await getSpaceCollection(space.id)).enabled;
 }
 
+export async function hasVoted(address: string, proposal: Proposal) {
+  const vote = await fetchVote(address, proposal.id);
+  return vote !== undefined;
+}
+
+export async function hasMinted(address: string, proposal: Proposal) {
+  const mint = await getMint(address, proposal.id);
+  return mint !== undefined;
+}
+
 export async function validateSpace(address: string, space: Space | null) {
   if (!space) {
     throw new Error('RECORD_NOT_FOUND');
@@ -58,7 +69,10 @@ export async function validateSpace(address: string, space: Space | null) {
 }
 
 async function isSpaceOwner(spaceId: string, address: string) {
-  return (await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK)) === getAddress(address);
+  const spaceController = await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK, {
+    broviderUrl
+  });
+  return spaceController === getAddress(address);
 }
 
 export function validateProposal(proposal: Proposal | null, proposer: string) {
@@ -86,7 +100,7 @@ export async function getProposalContract(spaceId: string) {
 }
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch }),
+  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch: fetchWithKeepAlive }),
   cache: new InMemoryCache({
     addTypename: false
   }),
@@ -122,6 +136,32 @@ export async function getSpaceCollection(spaceId: string) {
   });
 
   return spaceCollections[0];
+}
+
+const MINT_COLLECTION_QUERY = gql`
+  query Mints($voter: String, $proposalId: String) {
+    mints(where: { minterAddress: $voter, proposal: $proposalId }, first: 1) {
+      id
+    }
+  }
+`;
+
+type Mint = {
+  id: string;
+};
+
+export async function getMint(voter: string, proposalId: string) {
+  const {
+    data: { mints }
+  }: { data: { mints: Mint[] } } = await client.query({
+    query: MINT_COLLECTION_QUERY,
+    variables: {
+      voter,
+      proposalId
+    }
+  });
+
+  return mints[0];
 }
 
 export function numberizeProposalId(id: string) {
@@ -198,7 +238,7 @@ export async function validateMintInput(params: any) {
 
 export async function snapshotFee(): Promise<number> {
   try {
-    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK);
+    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK, { broviderUrl });
     const contract = new Contract(
       DEPLOY_CONTRACT,
       ['function snapshotFee() public view returns (uint8)'],

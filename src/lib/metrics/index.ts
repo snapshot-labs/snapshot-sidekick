@@ -1,9 +1,14 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
+import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import snapshot from '@snapshot-labs/snapshot.js';
+import { Wallet } from '@ethersproject/wallet';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
 import DigitalOcean from './digitalOcean';
 import type { Express } from 'express';
+import db from '../../helpers/mysql';
+import { fetchNetworks } from '../../helpers/snapshot';
 
 export default function initMetrics(app: Express) {
   init(app, {
@@ -14,8 +19,12 @@ export default function initMetrics(app: Express) {
       /^\/api\/(nft-claimer)(\/(deploy|mint))?$/,
       /^\/api\/moderation$/,
       /^\/(webhook|sentry)$/
-    ]
+    ],
+    errorHandler: capture,
+    db
   });
+
+  run();
 }
 
 new client.Gauge({
@@ -147,4 +156,98 @@ try {
   if (e.message !== 'MISSING_KEY') {
     capture(e);
   }
+}
+
+export const cacheHitCount = new client.Counter({
+  name: 'cache_hit_count',
+  help: 'Number of hit/miss of the cache engine',
+  labelNames: ['status', 'type']
+});
+
+const providersResponseCode = new client.Gauge({
+  name: 'provider_response_code',
+  help: 'Response code of each provider request',
+  labelNames: ['network']
+});
+
+const providersTiming = new client.Gauge({
+  name: 'provider_duration_seconds',
+  help: 'Duration in seconds of each provider request',
+  labelNames: ['network', 'status']
+});
+
+const providersFullArchiveNodeAvailability = new client.Gauge({
+  name: 'provider_full_archive_node_availability',
+  help: 'Availability of full archive node for each provider',
+  labelNames: ['network']
+});
+
+const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
+const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
+let networkPivot = 0;
+let premiumNetworks: any[] = [];
+
+async function refreshPremiumNetworks() {
+  const remoteNetworks = await fetchNetworks();
+  const premiumNetworkIds = remoteNetworks
+    .filter((network: any) => network.premium)
+    .map((network: any) => network.id);
+
+  premiumNetworks = premiumNetworkIds
+    .map((networkId: string) => networks[networkId as keyof typeof networks])
+    .filter(Boolean);
+}
+
+async function refreshProviderTiming(network: any) {
+  const { key, multicall } = network;
+  const end = providersTiming.startTimer({ network: key });
+  let status = 0;
+
+  try {
+    const provider = snapshot.utils.getProvider(key);
+    await snapshot.utils.multicall(
+      key,
+      provider,
+      abi,
+      [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
+      {
+        blockTag: 'latest'
+      }
+    );
+    status = 1;
+    providersResponseCode.set({ network: key }, 200);
+  } catch (e: any) {
+    providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
+  } finally {
+    end({ status });
+  }
+}
+
+async function refreshFullArchiveNodeChecker(network: any) {
+  const { key, start, multicall } = network;
+  try {
+    const provider = snapshot.utils.getProvider(key);
+
+    await provider.getBalance(multicall, start);
+    providersFullArchiveNodeAvailability.set({ network: key }, 1);
+  } catch (e: any) {
+    providersFullArchiveNodeAvailability.set({ network: key }, 0);
+  }
+}
+
+async function run() {
+  if (networkPivot === 0) {
+    await refreshPremiumNetworks();
+  }
+
+  const network = premiumNetworks[networkPivot];
+
+  refreshProviderTiming(network);
+  refreshFullArchiveNodeChecker(network);
+
+  networkPivot++;
+  if (networkPivot > premiumNetworks.length - 1) networkPivot = 0;
+
+  await snapshot.utils.sleep(5e3);
+  run();
 }

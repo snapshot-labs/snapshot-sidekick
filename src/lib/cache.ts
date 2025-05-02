@@ -1,4 +1,5 @@
 import { IStorage } from './storage/types';
+import { cacheHitCount } from './metrics';
 
 export default class Cache {
   id: string;
@@ -17,13 +18,19 @@ export default class Cache {
     return '';
   }
 
-  getCache() {
-    return this.storage.get(this.filename);
+  async getCache() {
+    const cache = await this.storage.get(this.filename);
+
+    cacheHitCount.inc({ status: !cache ? 'MISS' : 'HIT', type: this.constructor.name });
+
+    return cache;
   }
 
   async isCacheable() {
     return true;
   }
+
+  afterCreateCache() {}
 
   async createCache() {
     await this.isCacheable();
@@ -32,6 +39,7 @@ export default class Cache {
     console.log(`[votes-report] File cache ready to be saved`);
 
     this.storage.set(this.filename, content);
+    this.afterCreateCache();
 
     return content;
   }

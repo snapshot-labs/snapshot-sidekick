@@ -1,6 +1,6 @@
 import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import fetch from 'cross-fetch';
+import { fetchWithKeepAlive } from './utils';
 
 export type State = 'pending' | 'active' | 'closed';
 
@@ -12,12 +12,15 @@ export type Proposal = {
   space: Space;
   votes: number;
   author: string;
+  body: string;
+  discussion: string;
+  privacy: string;
 };
 
 export type Vote = {
   ipfs: string;
   voter: string;
-  choice: Record<string, number> | number;
+  choice: Record<string, number> | number | number[];
   vp: number;
   reason: string;
   created: number;
@@ -31,9 +34,14 @@ export type Space = {
   followersCount?: number;
 };
 
+export type Network = {
+  id: string;
+  premium: boolean;
+};
+
 const httpLink = createHttpLink({
   uri: `${process.env.HUB_URL || 'https://hub.snapshot.org'}/graphql`,
-  fetch
+  fetch: fetchWithKeepAlive
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -70,12 +78,18 @@ const PROPOSAL_QUERY = gql`
       id
       title
       state
+      type
       choices
       votes
+      title
+      body
+      discussion
       author
+      privacy
       space {
         id
         network
+        name
       }
     }
   }
@@ -119,6 +133,23 @@ const VOTES_QUERY = gql`
   }
 `;
 
+const VOTE_QUERY = gql`
+  query Votes($voter: String!, $proposalId: String!) {
+    votes(first: 1, where: { voter: $voter, proposal: $proposalId }) {
+      id
+    }
+  }
+`;
+
+const NETWORKS_QUERY = gql`
+  query networks {
+    networks {
+      id
+      premium
+    }
+  }
+`;
+
 export async function fetchProposal(id: string) {
   const {
     data: { proposal }
@@ -153,6 +184,20 @@ export async function fetchVotes(
   return votes;
 }
 
+export async function fetchVote(voter: string, proposalId: string) {
+  const {
+    data: { votes }
+  }: { data: { votes: Vote[] } } = await client.query({
+    query: VOTE_QUERY,
+    variables: {
+      voter,
+      proposalId
+    }
+  });
+
+  return votes[0];
+}
+
 export async function fetchSpace(id: string) {
   const {
     data: { space }
@@ -164,4 +209,14 @@ export async function fetchSpace(id: string) {
   });
 
   return space;
+}
+
+export async function fetchNetworks() {
+  const {
+    data: { networks }
+  }: { data: { networks: Network[] } } = await client.query({
+    query: NETWORKS_QUERY
+  });
+
+  return networks;
 }

@@ -1,3 +1,5 @@
+import http from 'node:http';
+import https from 'node:https';
 import FileStorageEngine from '../lib/storage/file';
 import AwsStorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
@@ -46,3 +48,15 @@ export function storageEngine(subDir?: string) {
     return new FileStorageEngine(subDir);
   }
 }
+
+const agentOptions = { keepAlive: true };
+const httpAgent = new http.Agent(agentOptions);
+const httpsAgent = new https.Agent(agentOptions);
+
+function agent(url: string) {
+  return new URL(url).protocol === 'http:' ? httpAgent : httpsAgent;
+}
+
+export const fetchWithKeepAlive = (uri: any, options: any = {}) => {
+  return fetch(uri, { agent: agent(uri), ...options });
+};

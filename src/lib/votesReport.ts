@@ -1,6 +1,9 @@
-import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
-import type { IStorage } from './storage/types';
 import Cache from './cache';
+import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
+import { getIndex, setIndex } from './cacheRefresher';
+import type { IStorage } from './storage/types';
+
+const CACHEABLE_PROPOSAL_STATE = ['closed', 'active'];
 
 class VotesReport extends Cache {
   proposal?: Proposal | null;
@@ -13,11 +16,21 @@ class VotesReport extends Cache {
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
 
-    if (!this.proposal || this.proposal.state !== 'closed') {
+    if (!this.proposal || !CACHEABLE_PROPOSAL_STATE.includes(this.proposal.state)) {
       return Promise.reject('RECORD_NOT_FOUND');
     }
 
     return true;
+  }
+
+  async afterCreateCache(): Promise<void> {
+    const list = await getIndex();
+
+    if (this.proposal?.state === 'active' && !list.includes(this.id)) {
+      setIndex([...list, this.id]);
+    } else if (this.proposal?.state === 'closed' && list.includes(this.id)) {
+      setIndex(list.filter(item => item !== this.id));
+    }
   }
 
   getContent = async () => {
@@ -30,9 +43,9 @@ class VotesReport extends Cache {
 
     const headers = [
       'address',
-      votes.length === 0 || typeof votes[0].choice === 'number'
+      ['basic', 'single-choice'].includes(this.proposal!.type)
         ? 'choice'
-        : this.proposal && this.proposal.choices.map((_choice, index) => `choice.${index + 1}`),
+        : this.proposal!.choices.map((_choice, index) => `choice.${index + 1}`),
       'voting_power',
       'timestamp',
       'author_ipfs_hash',
@@ -48,7 +61,7 @@ class VotesReport extends Cache {
   };
 
   fetchAllVotes = async () => {
-    let votes: Vote[] = [];
+    const votes = new Map<string, Vote>();
     let page = 0;
     let createdPivot = 0;
     const pageSize = 1000;
@@ -56,7 +69,7 @@ class VotesReport extends Cache {
     const maxPage = 5;
 
     do {
-      let newVotes = await fetchVotes(this.id, {
+      const newVotes = await fetchVotes(this.id, {
         first: pageSize,
         skip: page * pageSize,
         created_gte: createdPivot,
@@ -65,15 +78,6 @@ class VotesReport extends Cache {
       });
       resultsSize = newVotes.length;
 
-      if (page === 0 && createdPivot > 0) {
-        // Loosely assuming that there will never be more than 1000 duplicates
-        const existingIpfs = votes.slice(-pageSize).map(vote => vote.ipfs);
-
-        newVotes = newVotes.filter(vote => {
-          return !existingIpfs.includes(vote.ipfs);
-        });
-      }
-
       if (page === maxPage) {
         page = 0;
         createdPivot = newVotes[newVotes.length - 1].created;
@@ -81,14 +85,14 @@ class VotesReport extends Cache {
         page++;
       }
 
-      votes = votes.concat(newVotes);
+      for (const vote of newVotes) {
+        votes.set(vote.ipfs, vote);
+      }
 
-      this.generationProgress = Number(
-        ((votes.length / (this.proposal?.votes as number)) * 100).toFixed(2)
-      );
+      this.generationProgress = +((votes.size / this.proposal!.votes) * 100).toFixed(2);
     } while (resultsSize === pageSize);
 
-    return votes;
+    return Array.from(votes.values());
   };
 
   toString() {
@@ -96,20 +100,9 @@ class VotesReport extends Cache {
   }
 
   #formatCsvLine = (vote: Vote) => {
-    let choices: Vote['choice'][] = [];
-
-    if (typeof vote.choice !== 'number' && this.proposal) {
-      choices = Array.from({ length: this.proposal.choices.length });
-      for (const [key, value] of Object.entries(vote.choice)) {
-        choices[parseInt(key) - 1] = value;
-      }
-    } else {
-      choices.push(vote.choice);
-    }
-
     return [
       vote.voter,
-      ...choices,
+      ...this.#getCsvChoices(vote),
       vote.vp,
       vote.created,
       vote.ipfs,
@@ -117,6 +110,40 @@ class VotesReport extends Cache {
     ]
       .flat()
       .join(',');
+  };
+
+  #getCsvChoices = (vote: Vote) => {
+    const choices: Vote['choice'][] = Array.from({
+      length: ['basic', 'single-choice'].includes(this.proposal!.type)
+        ? 1
+        : this.proposal!.choices.length
+    });
+
+    if (this.proposal!.privacy && this.proposal!.state !== 'closed') return choices;
+
+    switch (this.proposal!.type) {
+      case 'single-choice':
+      case 'basic':
+        if (typeof vote.choice === 'number') choices[0] = vote.choice;
+        break;
+      case 'approval':
+      case 'ranked-choice':
+        if (Array.isArray(vote.choice)) {
+          vote.choice.forEach((value, index) => {
+            choices[index] = value;
+          });
+        }
+        break;
+      case 'quadratic':
+      case 'weighted':
+        if (typeof vote.choice === 'object') {
+          for (const [key, value] of Object.entries(vote.choice)) {
+            choices[+key - 1] = value;
+          }
+        }
+    }
+
+    return choices;
   };
 }
 

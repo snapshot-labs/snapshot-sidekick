@@ -1,0 +1,10 @@
+{
+  "state": "closed",
+  "type": "ranked-choice",
+  "id": "0xd37c87edb3cbd78d58a78056b4facb00df739fdf3a16b168305e9cfdd00b3ab5",
+  "author": "",
+  "votes": 2,
+  "privacy": "shutter",
+  "choices": ["1", "2"],
+  "space": { "id": "", "network": "", "settings": "" }
+}
