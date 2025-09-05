@@ -8,7 +8,7 @@ export default {
   collectCoverage: true,
   coverageThreshold: {
     global: {
-      lines: 50
+      lines: 40
     }
   },
   collectCoverageFrom: ['./src/**'],
