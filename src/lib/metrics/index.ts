@@ -1,7 +1,8 @@
 import init, { client } from '@snapshot-labs/snapshot-metrics';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import fetch from 'node-fetch';
+import crypto from 'crypto';
 import snapshot from '@snapshot-labs/snapshot.js';
-import { Wallet } from '@ethersproject/wallet';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import { size as queueSize } from '../queue';
 import getModerationList from '../moderationList';
@@ -182,54 +183,71 @@ const providersFullArchiveNodeAvailability = new client.Gauge({
   labelNames: ['network']
 });
 
-const abi = ['function getEthBalance(address addr) view returns (uint256 balance)'];
-const wallet = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
 let networkPivot = 0;
 let premiumNetworks: any[] = [];
 
-async function refreshPremiumNetworks() {
-  const remoteNetworks = await fetchNetworks();
-  const premiumNetworkIds = remoteNetworks
-    .filter((network: any) => network.premium)
-    .map((network: any) => network.id);
+function broviderCall(network: string, method: string, params: any[] = []) {
+  return fetch(`https://brovider.xyz/${network}`, {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    body: JSON.stringify({
+      method,
+      params,
+      id: crypto.randomBytes(4).toString('hex'),
+      jsonrpc: '2.0'
+    })
+  });
+}
 
-  premiumNetworks = premiumNetworkIds
-    .map((networkId: string) => networks[networkId as keyof typeof networks])
-    .filter(Boolean);
+async function refreshPremiumNetworks() {
+  try {
+    const remoteNetworks = await fetchNetworks();
+    const premiumNetworkIds = remoteNetworks
+      .filter((network: any) => network.premium)
+      .map((network: any) => network.id);
+
+    premiumNetworks = premiumNetworkIds
+      .map((networkId: string) => networks[networkId as keyof typeof networks])
+      .filter(Boolean);
+  } catch (e: any) {
+    console.log(e);
+  }
 }
 
 async function refreshProviderTiming(network: any) {
-  const { key, multicall } = network;
+  const { broviderId, key, starknet } = network;
   const end = providersTiming.startTimer({ network: key });
   let status = 0;
+  let responseCode = 0;
 
   try {
-    const provider = snapshot.utils.getProvider(key);
-    await snapshot.utils.multicall(
-      key,
-      provider,
-      abi,
-      [wallet.address].map(adr => [multicall, 'getEthBalance', [adr]]),
-      {
-        blockTag: 'latest'
-      }
+    const response = await broviderCall(
+      broviderId || key,
+      starknet ? 'starknet_blockNumber' : 'eth_blockNumber'
     );
-    status = 1;
-    providersResponseCode.set({ network: key }, 200);
+    responseCode = response.status;
+    const data = await response.json();
+    status = data.result ? 1 : 0;
   } catch (e: any) {
-    providersResponseCode.set({ network: key }, parseInt(e?.error?.status || 0));
   } finally {
+    providersResponseCode.set({ network: key }, responseCode);
     end({ status });
   }
 }
 
 async function refreshFullArchiveNodeChecker(network: any) {
-  const { key, start, multicall } = network;
+  const { key, start, broviderId, starknet, multicall } = network;
   try {
-    const provider = snapshot.utils.getProvider(key);
-
-    await provider.getBalance(multicall, start);
-    providersFullArchiveNodeAvailability.set({ network: key }, 1);
+    const response = await broviderCall(
+      broviderId || key,
+      starknet ? 'starknet_getClassAt' : 'eth_getCode',
+      starknet ? [{ block_number: start }, multicall] : [multicall, `0x${start.toString(16)}`]
+    );
+    const data = await response.json();
+    providersFullArchiveNodeAvailability.set(
+      { network: key },
+      response.status === 200 && data.result && data.result !== '0x' ? 1 : 0
+    );
   } catch (e: any) {
     providersFullArchiveNodeAvailability.set({ network: key }, 0);
   }
@@ -240,13 +258,15 @@ async function run() {
     await refreshPremiumNetworks();
   }
 
-  const network = premiumNetworks[networkPivot];
+  if (premiumNetworks.length) {
+    const network = premiumNetworks[networkPivot];
 
-  refreshProviderTiming(network);
-  refreshFullArchiveNodeChecker(network);
+    refreshProviderTiming(network);
+    refreshFullArchiveNodeChecker(network);
 
-  networkPivot++;
-  if (networkPivot > premiumNetworks.length - 1) networkPivot = 0;
+    networkPivot++;
+    if (networkPivot > premiumNetworks.length - 1) networkPivot = 0;
+  }
 
   await snapshot.utils.sleep(5e3);
   run();
