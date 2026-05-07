@@ -10,6 +10,7 @@ import { snapshotFee } from './lib/nftClaimer/utils';
 import AiSummary from './lib/ai/summary';
 import AiTextToSpeech from './lib/ai/textToSpeech';
 import { getDomain } from './lib/domain';
+import { fetchPreview } from './lib/og';
 
 const router = express.Router();
 
@@ -149,6 +150,20 @@ router.post('/nft-claimer/mint', async (req, res) => {
   } catch (e: any) {
     capture(e, { body: req.body });
     return rpcError(res, e, salt);
+  }
+});
+
+router.get('/og', async (req, res) => {
+  const { url } = req.query;
+  if (typeof url !== 'string' || !url) {
+    return rpcError(res, 'Invalid Request', '');
+  }
+
+  try {
+    return res.json(await fetchPreview(url));
+  } catch (e: any) {
+    capture(e, { contexts: { og: { url } } });
+    return rpcError(res, e.message || 'INTERNAL_ERROR', '');
   }
 });
 
