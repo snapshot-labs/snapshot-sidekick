@@ -13,8 +13,5 @@
     "sourceMap": true,
     "inlineSources": true,
     "sourceRoot": "/"
-  },
-  "ts-node": {
-    "files": true
   }
 }

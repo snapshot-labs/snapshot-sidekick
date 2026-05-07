@@ -1,6 +1,7 @@
 import http from 'node:http';
 import https from 'node:https';
 import ogs from 'open-graph-scraper';
+// @ts-ignore
 import { requestFilterHandler } from 'ssrf-req-filter';
 
 const FETCH_TIMEOUT_MS = 5000;
