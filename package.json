@@ -48,8 +48,14 @@
     "multiformats": "^9",
     "mysql": "^2.18.1",
     "node-fetch": "^2.7.0",
+    "open-graph-scraper": "^5.2.3",
     "openai": "^4.29.2",
-    "remove-markdown": "^0.5.0"
+    "remove-markdown": "^0.5.0",
+    "ssrf-req-filter": "^1.1.1"
+  },
+  "resolutions": {
+    "cheerio": "1.0.0",
+    "undici": "^6.19.5"
   },
   "devDependencies": {
     "@snapshot-labs/eslint-config": "^0.1.0-beta.15",
