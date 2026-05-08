@@ -22,7 +22,7 @@
     "extends": "@snapshot-labs"
   },
   "engines": {
-    "node": "^18.19.0 || >=20.6.0"
+    "node": ">=20.18.1"
   },
   "prettier": "@snapshot-labs/prettier-config",
   "dependencies": {
@@ -52,10 +52,6 @@
     "openai": "^4.29.2",
     "remove-markdown": "^0.5.0",
     "ssrf-req-filter": "^1.1.1"
-  },
-  "resolutions": {
-    "cheerio": "1.0.0",
-    "undici": "^6.19.5"
   },
   "devDependencies": {
     "@snapshot-labs/eslint-config": "^0.1.0-beta.15",
