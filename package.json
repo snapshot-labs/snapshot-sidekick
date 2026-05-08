@@ -36,7 +36,7 @@
     "@ethersproject/transactions": "^5.7.0",
     "@ethersproject/wallet": "^5.7.0",
     "@snapshot-labs/snapshot-metrics": "^1.4.1",
-    "@snapshot-labs/snapshot-sentry": "snapshot-labs/snapshot-sentry#upgrade-sentry-v10",
+    "@snapshot-labs/snapshot-sentry": "https://github.com/snapshot-labs/snapshot-sentry.git#upgrade-sentry-v10",
     "@snapshot-labs/snapshot.js": "^0.14.20",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
