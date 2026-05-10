@@ -1,5 +1,6 @@
 import http from 'node:http';
 import https from 'node:https';
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import FileStorageEngine from '../lib/storage/file';
 import AwsStorageEngine from '../lib/storage/aws';
 import type { Response } from 'express';
@@ -9,6 +10,17 @@ const ERROR_CODES: Record<string, number> = {
   RECORD_NOT_FOUND: 404,
   UNAUTHORIZED: 401
 };
+
+export function isExpectedClientError(e: unknown): boolean {
+  const message = e instanceof Error ? e.message : typeof e === 'string' ? e : '';
+  const code = ERROR_CODES[message];
+  return typeof code === 'number' && code >= 400 && code < 500;
+}
+
+export function captureException(e: unknown, captureContext?: Parameters<typeof capture>[1]) {
+  if (isExpectedClientError(e)) return;
+  capture(e, captureContext);
+}
 
 export function rpcSuccess(res: Response, result: string, id: string | number) {
   res.json({

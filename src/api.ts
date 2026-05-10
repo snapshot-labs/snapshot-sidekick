@@ -1,6 +1,5 @@
 import express from 'express';
-import { capture } from '@snapshot-labs/snapshot-sentry';
-import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
+import { captureException, rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import getModerationList from './lib/moderationList';
 import VotesReport from './lib/votesReport';
 import mintPayload from './lib/nftClaimer/mint';
@@ -32,11 +31,11 @@ router.all('/votes/:id', async (req, res) => {
       queue(votesReport);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
     } catch (e: any) {
-      capture(e);
+      captureException(e);
       rpcError(res, e, id);
     }
   } catch (e) {
-    capture(e);
+    captureException(e);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -58,7 +57,7 @@ router.post('/ai/summary/:id', async (req, res) => {
 
     return rpcSuccess(res.status(200), summary, id);
   } catch (e: any) {
-    capture(e);
+    captureException(e);
     return rpcError(res, e.message || 'INTERNAL_ERROR', id);
   }
 });
@@ -76,7 +75,7 @@ router.post('/ai/tts/:id', async (req, res) => {
       try {
         audio = (await aiTextTpSpeech.createCache()) as Buffer;
       } catch (e: any) {
-        capture(e);
+        captureException(e);
         return rpcError(res, e, id);
       }
     } else {
@@ -87,7 +86,7 @@ router.post('/ai/tts/:id', async (req, res) => {
     res.attachment(aiTextTpSpeech.filename);
     return res.end(audio);
   } catch (e: any) {
-    capture(e);
+    captureException(e);
     return rpcError(res, e.message || 'INTERNAL_ERROR', id);
   }
 });
@@ -98,7 +97,7 @@ router.get('/moderation', async (req, res) => {
   try {
     res.json(await getModerationList(list ? (list as string).split(',') : undefined));
   } catch (e) {
-    capture(e);
+    captureException(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -109,7 +108,7 @@ router.get('/domains/:domain', async (req, res) => {
   try {
     res.json({ domain, space_id: getDomain(domain) });
   } catch (e) {
-    capture(e);
+    captureException(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -118,7 +117,7 @@ router.get('/nft-claimer', async (req, res) => {
   try {
     return res.json({ snapshotFee: await snapshotFee() });
   } catch (e: any) {
-    capture(e);
+    captureException(e);
     return rpcError(res, e, '');
   }
 });
@@ -138,7 +137,7 @@ router.post('/nft-claimer/deploy', async (req, res) => {
       })
     );
   } catch (e: any) {
-    capture(e, { body: req.body });
+    captureException(e, { body: req.body });
     return rpcError(res, e, salt);
   }
 });
@@ -148,7 +147,7 @@ router.post('/nft-claimer/mint', async (req, res) => {
   try {
     return res.json(await mintPayload({ proposalAuthor, recipient: address, id, salt }));
   } catch (e: any) {
-    capture(e, { body: req.body });
+    captureException(e, { body: req.body });
     return rpcError(res, e, salt);
   }
 });
@@ -162,7 +161,7 @@ router.get('/og', async (req, res) => {
   try {
     return res.json(await fetchPreview(url));
   } catch (e: any) {
-    capture(e, { contexts: { og: { url } } });
+    captureException(e, { contexts: { og: { url } } });
     return rpcError(res, e.message || 'INTERNAL_ERROR', '');
   }
 });
