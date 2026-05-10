@@ -1,3 +1,3 @@
 import { initLogger } from '@snapshot-labs/snapshot-sentry';
 
-initLogger();
+initLogger({ ignoreErrors: ['RECORD_NOT_FOUND'] });
