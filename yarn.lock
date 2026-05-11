@@ -2446,9 +2446,10 @@
     node-fetch "^2.7.0"
     prom-client "^14.2.0"
 
-"@snapshot-labs/snapshot-sentry@https://github.com/snapshot-labs/snapshot-sentry.git#upgrade-sentry-v10":
+"@snapshot-labs/snapshot-sentry@^2.0.0":
   version "2.0.0"
-  resolved "https://github.com/snapshot-labs/snapshot-sentry.git#34f78df68d8b77dd51b22d922eba1ebc5a632218"
+  resolved "https://registry.yarnpkg.com/@snapshot-labs/snapshot-sentry/-/snapshot-sentry-2.0.0.tgz#17b3ce6b488e6857718f0c85fda90991c9b034e5"
+  integrity sha512-lTQk/0nHll9WN1hhipzk/l9wq1EiYVH/XAGd+XnqUYKG5UIkeC6DQ9tffkA2M+f2Y1+9GUL85sFLk/B7/G1uJg==
   dependencies:
     "@sentry/node" "^10.52.0"
 
