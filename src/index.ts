@@ -1,8 +1,9 @@
 import 'dotenv/config';
+import './instrument';
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
-import { initLogger, fallbackLogger } from '@snapshot-labs/snapshot-sentry';
+import { fallbackLogger } from '@snapshot-labs/snapshot-sentry';
 import api from './api';
 import webhook from './webhook';
 import sentryTunnel from './sentryTunnel';
@@ -16,7 +17,6 @@ import { initDomainsRefresher } from './lib/domain';
 const app = express();
 const PORT = process.env.PORT || 3005;
 
-initLogger(app);
 initMetrics(app);
 initCacheRefresher();
 initDomainsRefresher();
