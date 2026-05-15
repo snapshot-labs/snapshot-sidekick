@@ -31,7 +31,14 @@ export async function fetchPreview(url: string): Promise<OgPreview> {
       description: result.ogDescription || result.twitterDescription || result.dcDescription,
       icon: new URL(result.favicon || '/favicon.ico', result.requestUrl || url).toString()
     };
-  } catch (e: any) {
-    throw new Error(e?.result?.error || e?.message || 'Failed to fetch preview');
+  } catch {
+    // Link previews are best-effort: a fetch failure (timeout, blocked host,
+    // oversized page, no metadata) is an expected outcome, not an error.
+    // Degrade to an icon-only preview instead of throwing.
+    try {
+      return { icon: new URL('/favicon.ico', url).toString() };
+    } catch {
+      return {};
+    }
   }
 }
