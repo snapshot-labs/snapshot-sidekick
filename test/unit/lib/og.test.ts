@@ -55,16 +55,25 @@ describe('fetchPreview', () => {
     );
   });
 
-  it('rethrows ogs errors with the message from result.error', async () => {
+  it('falls back to an icon-only preview when ogs throws', async () => {
     mockOgsThrow({
       error: true,
       result: { success: false, error: 'Call to 127.0.0.1 is blocked.' }
     });
-    await expect(fetchPreview('http://127.0.0.1/')).rejects.toThrow(/blocked/);
+    await expect(fetchPreview('http://127.0.0.1/')).resolves.toEqual({
+      icon: 'http://127.0.0.1/favicon.ico'
+    });
   });
 
-  it('throws a generic message when ogs throws without details', async () => {
+  it('falls back to an icon-only preview when ogs throws without details', async () => {
     mockOgsThrow(new Error('boom'));
-    await expect(fetchPreview('https://example.com/')).rejects.toThrow('boom');
+    await expect(fetchPreview('https://example.com/page')).resolves.toEqual({
+      icon: 'https://example.com/favicon.ico'
+    });
+  });
+
+  it('returns an empty preview when the URL itself is unparseable', async () => {
+    mockOgsThrow(new Error('boom'));
+    await expect(fetchPreview('::not-a-url::')).resolves.toEqual({});
   });
 });

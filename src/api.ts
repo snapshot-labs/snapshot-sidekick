@@ -159,12 +159,9 @@ router.get('/og', async (req, res) => {
     return rpcError(res, 'Invalid Request', '');
   }
 
-  try {
-    return res.json(await fetchPreview(url));
-  } catch (e: any) {
-    capture(e, { contexts: { og: { url } } });
-    return rpcError(res, e.message || 'INTERNAL_ERROR', '');
-  }
+  // fetchPreview is best-effort and never throws: failures degrade to an
+  // icon-only (or empty) preview.
+  return res.json(await fetchPreview(url));
 });
 
 router.get('/proxy/:url', async (req, res) => {
