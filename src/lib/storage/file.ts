@@ -21,10 +21,10 @@ class File implements IStorage {
       console.log(`[storage:file] File saved to ${this.path(key)}`);
 
       return true;
-    } catch (e) {
-      capture(e, { key, path: this.path(key) });
-      console.error('[storage:file] File storage failed', e);
-      throw e;
+    } catch (err) {
+      capture(err, { key, path: this.path(key) });
+      console.error('[storage:file] File storage failed', err);
+      throw err;
     }
   }
 
@@ -36,9 +36,9 @@ class File implements IStorage {
 
       console.log(`[storage:file] File fetched from ${this.path(key)}`);
       return readFileSync(this.path(key));
-    } catch (e) {
-      capture(e, { key, path: this.path(key) });
-      console.error('[storage:file] Fetch file failed', e);
+    } catch (err) {
+      capture(err, { key, path: this.path(key) });
+      console.error('[storage:file] Fetch file failed', err);
       return false;
     }
   }
@@ -53,9 +53,9 @@ class File implements IStorage {
 
       console.log(`[storage:file] File ${this.path(key)} deleted`);
       return true;
-    } catch (e) {
-      capture(e, { key, path: this.path(key) });
-      console.error('[storage:file] Fetch deletion failed', e);
+    } catch (err) {
+      capture(err, { key, path: this.path(key) });
+      console.error('[storage:file] Fetch deletion failed', err);
       return false;
     }
   }

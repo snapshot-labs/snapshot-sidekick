@@ -31,8 +31,8 @@ router.post('/webhook', (req, res) => {
   try {
     processVotesReport(id, event);
     return rpcSuccess(res, 'Webhook received', id);
-  } catch (e) {
-    capture(e, { body });
+  } catch (err) {
+    capture(err, { body });
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });

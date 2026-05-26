@@ -45,8 +45,8 @@ export default class TextToSpeech extends Cache {
       });
 
       return Buffer.from(await mp3.arrayBuffer());
-    } catch (e: any) {
-      throw e.error?.code ? new Error(e.error?.code.toUpperCase()) : e;
+    } catch (err: any) {
+      throw err.error?.code ? new Error(err.error?.code.toUpperCase()) : err;
     }
   };
 }

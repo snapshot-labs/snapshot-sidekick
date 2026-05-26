@@ -29,9 +29,9 @@ router.post(
         console.debug(await response.text());
       }
       return res.sendStatus(status);
-    } catch (e: any) {
-      capture(e);
-      rpcError(res, e, '');
+    } catch (err: any) {
+      capture(err);
+      rpcError(res, err, '');
     }
   }
 );

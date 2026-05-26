@@ -5,7 +5,7 @@
   "repository": "snapshot-labs/snapshot-sidekick",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src/ test/ data/ --ext .ts,.json",
+    "lint": "eslint src/ test/",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.json && copyfiles data/*.json data/*.txt public/* dist/",
@@ -17,9 +17,6 @@
     "test:integration": "dotenv -e test/.env.test jest test/integration/",
     "test:e2e": "PORT=3003 start-server-and-test 'yarn start:test' http://localhost:3003 'dotenv -e test/.env.test jest --runInBand --collectCoverage=false test/e2e/'",
     "test:e2e:update-snapshot": "PORT=3003 start-server-and-test 'yarn start:test' http://localhost:3003 'dotenv -e test/.env.test jest --runInBand --collectCoverage=false --updateSnapshot test/e2e/'"
-  },
-  "eslintConfig": {
-    "extends": "@snapshot-labs"
   },
   "engines": {
     "node": ">=22.11.0"
@@ -36,7 +33,7 @@
     "@ethersproject/transactions": "^5.7.0",
     "@ethersproject/wallet": "^5.7.0",
     "@snapshot-labs/snapshot-metrics": "^1.4.1",
-    "@snapshot-labs/snapshot-sentry": "^2.0.0",
+    "@snapshot-labs/snapshot-sentry": "^2.1.0",
     "@snapshot-labs/snapshot.js": "^0.14.22",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
@@ -54,7 +51,7 @@
     "ssrf-req-filter": "^1.1.1"
   },
   "devDependencies": {
-    "@snapshot-labs/eslint-config": "^0.1.0",
+    "@snapshot-labs/eslint-config": "^0.1.1",
     "@snapshot-labs/prettier-config": "^0.1.0",
     "@types/bluebird": "^3.5.38",
     "@types/compression": "^1.7.2",
@@ -66,12 +63,10 @@
     "@types/node-fetch": "^2.6.4",
     "@types/remove-markdown": "^0.3.4",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^6.7.2",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.2.1",
-    "eslint": "^8.47.0",
-    "eslint-plugin-prettier": "5",
+    "eslint": "^9.0.0",
     "jest": "^29.6.2",
     "jest-environment-node-single-context": "^29.1.0",
     "nodemon": "^3.0.1",

@@ -51,8 +51,8 @@ class Summary extends Cache {
       }
 
       return content;
-    } catch (e: any) {
-      throw e.error?.code ? new Error(e.error?.code.toUpperCase()) : e;
+    } catch (err: any) {
+      throw err.error?.code ? new Error(err.error?.code.toUpperCase()) : err;
     }
   };
 }

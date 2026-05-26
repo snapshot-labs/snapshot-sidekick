@@ -16,9 +16,9 @@ async function processItem(cacheable: Cache) {
     processingItems.set(cacheable.id, cacheable);
     await cacheable.createCache();
     end();
-  } catch (e) {
-    capture(e, { id: cacheable.id });
-    console.error(`[queue] Error while processing item`, e);
+  } catch (err) {
+    capture(err, { id: cacheable.id });
+    console.error(`[queue] Error while processing item`, err);
   } finally {
     queues.delete(cacheable.id);
     processingItems.delete(cacheable.id);
@@ -66,8 +66,8 @@ async function run() {
 
       processItem(cacheable);
     });
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
   } finally {
     await sleep(parseInt(process.env.QUEUE_INTERVAL || '15000'));
     await run();

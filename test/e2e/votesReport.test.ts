@@ -20,7 +20,7 @@ describe('GET /api/votes/:id', () => {
     beforeAll(async () => {
       try {
         await votesReport.createCache();
-      } catch (e) {
+      } catch {
         console.error('Error while creating the cache');
       }
     });

@@ -34,12 +34,12 @@ router.all('/votes/:id', async (req, res) => {
       await votesReport.isCacheable();
       queue(votesReport);
       return rpcSuccess(res.status(202), getProgress(id).toString(), id);
-    } catch (e: any) {
-      capture(e);
-      rpcError(res, e, id);
+    } catch (err: any) {
+      capture(err);
+      rpcError(res, err, id);
     }
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
     return rpcError(res, 'INTERNAL_ERROR', id);
   }
 });
@@ -63,9 +63,9 @@ router.post('/ai/summary/:id', async (req, res) => {
     }
 
     return rpcSuccess(res.status(200), summary, id);
-  } catch (e: any) {
-    capture(e);
-    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
+  } catch (err: any) {
+    capture(err);
+    return rpcError(res, err.message || 'INTERNAL_ERROR', id);
   }
 });
 
@@ -84,9 +84,9 @@ router.post('/ai/tts/:id', async (req, res) => {
     if (!cachedAudio) {
       try {
         audio = (await aiTextTpSpeech.createCache()) as Buffer;
-      } catch (e: any) {
-        capture(e);
-        return rpcError(res, e, id);
+      } catch (err: any) {
+        capture(err);
+        return rpcError(res, err, id);
       }
     } else {
       audio = cachedAudio as Buffer;
@@ -95,9 +95,9 @@ router.post('/ai/tts/:id', async (req, res) => {
     res.header('Content-Type', 'audio/mpeg');
     res.attachment(aiTextTpSpeech.filename);
     return res.end(audio);
-  } catch (e: any) {
-    capture(e);
-    return rpcError(res, e.message || 'INTERNAL_ERROR', id);
+  } catch (err: any) {
+    capture(err);
+    return rpcError(res, err.message || 'INTERNAL_ERROR', id);
   }
 });
 
@@ -108,8 +108,8 @@ router.get('/moderation', async (req, res) => {
     res.json(
       await getModerationList(list ? (list as string).split(',') : undefined)
     );
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -119,8 +119,8 @@ router.get('/domains/:domain', async (req, res) => {
 
   try {
     res.json({ domain, space_id: getDomain(domain) });
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
     return rpcError(res, 'INTERNAL_ERROR', '');
   }
 });
@@ -128,9 +128,9 @@ router.get('/domains/:domain', async (req, res) => {
 router.get('/nft-claimer', async (req, res) => {
   try {
     return res.json({ snapshotFee: await snapshotFee() });
-  } catch (e: any) {
-    capture(e);
-    return rpcError(res, e, '');
+  } catch (err: any) {
+    capture(err);
+    return rpcError(res, err, '');
   }
 });
 
@@ -156,9 +156,9 @@ router.post('/nft-claimer/deploy', async (req, res) => {
         spaceTreasury
       })
     );
-  } catch (e: any) {
-    capture(e, { body: req.body });
-    return rpcError(res, e, salt);
+  } catch (err: any) {
+    capture(err, { body: req.body });
+    return rpcError(res, err, salt);
   }
 });
 
@@ -168,9 +168,9 @@ router.post('/nft-claimer/mint', async (req, res) => {
     return res.json(
       await mintPayload({ proposalAuthor, recipient: address, id, salt })
     );
-  } catch (e: any) {
-    capture(e, { body: req.body });
-    return rpcError(res, e, salt);
+  } catch (err: any) {
+    capture(err, { body: req.body });
+    return rpcError(res, err, salt);
   }
 });
 
@@ -192,7 +192,7 @@ router.get('/proxy/:url', async (req, res) => {
     const response = await fetch(url);
 
     return res.json(await response.json());
-  } catch (e: any) {
+  } catch {
     res.status(500).json({
       error: {
         code: 500,
