@@ -1,13 +1,13 @@
-import init, { client } from '@snapshot-labs/snapshot-metrics';
-import networks from '@snapshot-labs/snapshot.js/src/networks.json';
-import fetch from 'node-fetch';
 import crypto from 'crypto';
-import snapshot from '@snapshot-labs/snapshot.js';
+import init, { client } from '@snapshot-labs/snapshot-metrics';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import { size as queueSize } from '../queue';
+import snapshot from '@snapshot-labs/snapshot.js';
+import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import { Express } from 'express';
+import fetch from 'node-fetch';
 import getModerationList from '../moderationList';
+import { size as queueSize } from '../queue';
 import DigitalOcean from './digitalOcean';
-import type { Express } from 'express';
 import db from '../../helpers/mysql';
 import { fetchNetworks } from '../../helpers/snapshot';
 

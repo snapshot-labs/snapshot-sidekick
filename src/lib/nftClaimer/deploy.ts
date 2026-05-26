@@ -1,10 +1,10 @@
+import { FormatTypes, Interface } from '@ethersproject/abi';
 import { getAddress } from '@ethersproject/address';
 import { splitSignature } from '@ethersproject/bytes';
-import { FormatTypes, Interface } from '@ethersproject/abi';
-import { fetchSpace } from '../../helpers/snapshot';
-import { signer, validateDeployInput, validateSpace } from './utils';
 import spaceCollectionAbi from './spaceCollectionImplementationAbi.json';
 import spaceFactoryAbi from './spaceFactoryAbi.json';
+import { signer, validateDeployInput, validateSpace } from './utils';
+import { fetchSpace } from '../../helpers/snapshot';
 
 const DeployType = {
   Deploy: [

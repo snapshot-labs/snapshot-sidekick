@@ -1,7 +1,7 @@
 import Cache from './cache';
-import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
 import { getIndex, setIndex } from './cacheRefresher';
-import type { IStorage } from './storage/types';
+import { IStorage } from './storage/types';
+import { fetchProposal, fetchVotes, Proposal, Vote } from '../helpers/snapshot';
 
 const CACHEABLE_PROPOSAL_STATE = ['closed', 'active'];
 

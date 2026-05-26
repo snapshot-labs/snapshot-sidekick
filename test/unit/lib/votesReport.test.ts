@@ -1,6 +1,6 @@
 import { readFileSync, rmSync } from 'fs';
-import VotesReport from '../../../src/lib/votesReport';
 import { storageEngine } from '../../../src/helpers/utils';
+import VotesReport from '../../../src/lib/votesReport';
 
 const TEST_CACHE_DIR = 'test-cache';
 

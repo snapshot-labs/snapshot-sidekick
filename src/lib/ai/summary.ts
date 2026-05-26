@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
-import { IStorage } from '../storage/types';
 import Cache from '../cache';
+import { IStorage } from '../storage/types';
 
 class Summary extends Cache {
   proposal?: Proposal | null;

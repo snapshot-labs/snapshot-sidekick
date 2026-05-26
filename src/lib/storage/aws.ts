@@ -1,12 +1,12 @@
+import { Readable } from 'stream';
 import {
-  S3Client,
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
-  DeleteObjectCommand
+  S3Client
 } from '@aws-sdk/client-s3';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import type { IStorage } from './types';
-import type { Readable } from 'stream';
+import { IStorage } from './types';
 
 const CACHE_PATH = 'public';
 

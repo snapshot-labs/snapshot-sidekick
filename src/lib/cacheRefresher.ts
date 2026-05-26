@@ -1,7 +1,7 @@
 import { capture } from '@snapshot-labs/snapshot-sentry';
+import { queue } from './queue';
 import VotesReport from './votesReport';
 import { sleep, storageEngine } from '../helpers/utils';
-import { queue } from './queue';
 
 const REFRESH_INTERVAL = 15 * 60 * 1e3;
 const INDEX_FILENAME = 'snapshot-active-proposals-list.csv';

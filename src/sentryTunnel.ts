@@ -1,8 +1,8 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import { capture } from '@snapshot-labs/snapshot-sentry';
 import { URL } from 'url';
-import { rpcError, fetchWithKeepAlive } from './helpers/utils';
+import { capture } from '@snapshot-labs/snapshot-sentry';
+import bodyParser from 'body-parser';
+import express from 'express';
+import { fetchWithKeepAlive, rpcError } from './helpers/utils';
 
 const router = express.Router();
 

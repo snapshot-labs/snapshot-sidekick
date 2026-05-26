@@ -1,17 +1,17 @@
 import {
-  gql,
   ApolloClient,
-  InMemoryCache,
-  HttpLink
+  gql,
+  HttpLink,
+  InMemoryCache
 } from '@apollo/client/core';
-import snapshot from '@snapshot-labs/snapshot.js';
-import { CID } from 'multiformats/cid';
-import { Wallet } from '@ethersproject/wallet';
-import { Contract } from '@ethersproject/contracts';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
+import { Contract } from '@ethersproject/contracts';
+import { Wallet } from '@ethersproject/wallet';
 import { capture } from '@snapshot-labs/snapshot-sentry';
-import { fetchVote, type Proposal, type Space } from '../../helpers/snapshot';
+import snapshot from '@snapshot-labs/snapshot.js';
+import { CID } from 'multiformats/cid';
+import { fetchVote, Proposal, Space } from '../../helpers/snapshot';
 import { fetchWithKeepAlive } from '../../helpers/utils';
 
 const requiredEnvKeys = [

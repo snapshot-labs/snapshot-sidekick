@@ -1,5 +1,5 @@
-import { IStorage } from './storage/types';
 import { cacheHitCount } from './metrics';
+import { IStorage } from './storage/types';
 
 export default class Cache {
   id: string;

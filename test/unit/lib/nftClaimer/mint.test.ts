@@ -1,6 +1,6 @@
+import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { recoverAddress } from '@ethersproject/transactions';
-import { getAddress } from '@ethersproject/address';
 import payload from '../../../../src/lib/nftClaimer/mint';
 
 const TEST_MINT_DOMAIN = 'TestDAO';

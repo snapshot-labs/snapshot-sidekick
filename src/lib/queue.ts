@@ -1,7 +1,7 @@
-import { sleep } from '../helpers/utils';
 import { capture } from '@snapshot-labs/snapshot-sentry';
 import Cache from './cache';
 import { timeQueueProcess } from './metrics';
+import { sleep } from '../helpers/utils';
 
 const MAX_CONCURRENT_PROCESSING_ITEMS = 10;
 const queues = new Map<string, Cache>();

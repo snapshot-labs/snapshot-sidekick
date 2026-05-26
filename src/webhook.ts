@@ -1,8 +1,8 @@
+import { capture } from '@snapshot-labs/snapshot-sentry';
 import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
-import { capture } from '@snapshot-labs/snapshot-sentry';
-import VotesReport from './lib/votesReport';
 import { queue } from './lib/queue';
+import VotesReport from './lib/votesReport';
 
 const router = express.Router();
 
