@@ -6,7 +6,7 @@ jobs:
   lint:
     strategy:
       matrix:
-        target: ['18']
+        target: ['22']
     uses: snapshot-labs/actions/.github/workflows/lint.yml@main
     secrets: inherit
     with:
