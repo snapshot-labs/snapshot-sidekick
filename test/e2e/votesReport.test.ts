@@ -1,7 +1,7 @@
-import request from 'supertest';
-import VotesReport from '../../src/lib/votesReport';
-import { storageEngine, sleep } from '../../src/helpers/utils';
 import { rmSync } from 'fs';
+import request from 'supertest';
+import { sleep, storageEngine } from '../../src/helpers/utils';
+import VotesReport from '../../src/lib/votesReport';
 
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
 

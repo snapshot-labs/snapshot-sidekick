@@ -1,10 +1,10 @@
-import mysql from 'mysql';
-// @ts-ignore
-import Pool from 'mysql/lib/Pool';
-// @ts-ignore
-import Connection from 'mysql/lib/Connection';
 import bluebird from 'bluebird';
 import { ConnectionString } from 'connection-string';
+import mysql from 'mysql';
+// @ts-ignore
+import Connection from 'mysql/lib/Connection';
+// @ts-ignore
+import Pool from 'mysql/lib/Pool';
 
 type values = string | number | boolean | null;
 export type SqlRow = Record<string, values>;

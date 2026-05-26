@@ -1,17 +1,17 @@
-import { splitSignature } from '@ethersproject/bytes';
-import { fetchProposal, Space, Proposal } from '../../helpers/snapshot';
-import {
-  validateProposal,
-  getProposalContract,
-  signer,
-  numberizeProposalId,
-  validateMintInput,
-  mintingAllowed,
-  hasVoted,
-  hasMinted
-} from './utils';
-import abi from './spaceCollectionImplementationAbi.json';
 import { FormatTypes, Interface } from '@ethersproject/abi';
+import { splitSignature } from '@ethersproject/bytes';
+import abi from './spaceCollectionImplementationAbi.json';
+import {
+  getProposalContract,
+  hasMinted,
+  hasVoted,
+  mintingAllowed,
+  numberizeProposalId,
+  signer,
+  validateMintInput,
+  validateProposal
+} from './utils';
+import { fetchProposal, Proposal, Space } from '../../helpers/snapshot';
 
 const MintType = {
   Mint: [

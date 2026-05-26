@@ -1,6 +1,6 @@
 import { recoverAddress } from '@ethersproject/transactions';
+import { Space } from '../../../../src/helpers/snapshot';
 import payload from '../../../../src/lib/nftClaimer/deploy';
-import type { Space } from '../../../../src/helpers/snapshot';
 import { signer } from '../../../../src/lib/nftClaimer/utils';
 
 const mockFetchSpace = jest.fn((id: string): any => {

@@ -1,8 +1,8 @@
 import {
-  gql,
   ApolloClient,
-  InMemoryCache,
-  createHttpLink
+  createHttpLink,
+  gql,
+  InMemoryCache
 } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { fetchWithKeepAlive } from './utils';

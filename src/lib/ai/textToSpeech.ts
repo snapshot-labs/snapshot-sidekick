@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import removeMd from 'remove-markdown';
-import Cache from '../cache';
 import { fetchProposal, Proposal } from '../../helpers/snapshot';
+import Cache from '../cache';
 import { IStorage } from '../storage/types';
 
 const MIN_BODY_LENGTH = 1;
