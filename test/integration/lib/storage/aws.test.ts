@@ -49,8 +49,8 @@ describe('Storage/Aws', () => {
         });
       });
     });
-  } catch (e: any) {
-    console.log('Test skipped: ', e.message);
+  } catch (err: any) {
+    console.log('Test skipped: ', err.message);
     it.todo('needs to setup the AWS credentials');
   }
 });

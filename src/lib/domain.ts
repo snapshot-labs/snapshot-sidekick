@@ -18,8 +18,8 @@ export async function initDomainsRefresher() {
     console.log(`[domains-refresh] Refreshing domains list`);
     await refreshList();
     console.log(`[domains-refresh] ${data.size} domains found`);
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
   } finally {
     await sleep(REFRESH_INTERVAL);
     await initDomainsRefresher();

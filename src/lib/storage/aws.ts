@@ -40,9 +40,9 @@ class Aws implements IStorage {
       console.log(`[storage:aws] File saved to ${this.path(key)}`);
 
       return true;
-    } catch (e) {
-      capture(e, { key, path: this.path(key) });
-      console.error('[storage:aws] File storage failed', e);
+    } catch (err) {
+      capture(err, { key, path: this.path(key) });
+      console.error('[storage:aws] File storage failed', err);
       throw new Error('Unable to access storage');
     }
   }
@@ -67,10 +67,10 @@ class Aws implements IStorage {
         stream.once('end', () => resolve(Buffer.concat(chunks)));
         stream.once('error', reject);
       });
-    } catch (e: any) {
-      if (e['$metadata']?.httpStatusCode !== 404) {
-        capture(e, { key, path: this.path(key) });
-        console.error('[storage:aws] File fetch failed', e);
+    } catch (err: any) {
+      if (err['$metadata']?.httpStatusCode !== 404) {
+        capture(err, { key, path: this.path(key) });
+        console.error('[storage:aws] File fetch failed', err);
       }
 
       return false;
@@ -86,10 +86,10 @@ class Aws implements IStorage {
       await this.client.send(command);
 
       return true;
-    } catch (e: any) {
-      if (e['$metadata']?.httpStatusCode !== 404) {
-        capture(e, { key, path: this.path(key) });
-        console.error('[storage:aws] File delete failed', e);
+    } catch (err: any) {
+      if (err['$metadata']?.httpStatusCode !== 404) {
+        capture(err, { key, path: this.path(key) });
+        console.error('[storage:aws] File delete failed', err);
       }
 
       return false;

@@ -29,8 +29,8 @@ export default async function run() {
     console.log(`[cache-refresh] Refreshing active proposals cache`);
     const count = await processItems();
     console.log(`[cache-refresh] ${count} proposals queued for refresh`);
-  } catch (e) {
-    capture(e);
+  } catch (err) {
+    capture(err);
   } finally {
     await sleep(REFRESH_INTERVAL);
     await run();

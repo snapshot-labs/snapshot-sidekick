@@ -156,9 +156,9 @@ try {
       this.set(balances.month_to_date_usage);
     }
   });
-} catch (e: any) {
-  if (e.message !== 'MISSING_KEY') {
-    capture(e);
+} catch (err: any) {
+  if (err.message !== 'MISSING_KEY') {
+    capture(err);
   }
 }
 
@@ -212,8 +212,8 @@ async function refreshPremiumNetworks() {
     premiumNetworks = premiumNetworkIds
       .map((networkId: string) => networks[networkId as keyof typeof networks])
       .filter(Boolean);
-  } catch (e: any) {
-    console.log(e);
+  } catch (err: any) {
+    console.log(err);
   }
 }
 
@@ -231,7 +231,7 @@ async function refreshProviderTiming(network: any) {
     responseCode = response.status;
     const data = await response.json();
     status = data.result ? 1 : 0;
-  } catch (e: any) {
+  } catch {
   } finally {
     providersResponseCode.set({ network: key }, responseCode);
     end({ status });
@@ -253,7 +253,7 @@ async function refreshFullArchiveNodeChecker(network: any) {
       { network: key },
       response.status === 200 && data.result && data.result !== '0x' ? 1 : 0
     );
-  } catch (e: any) {
+  } catch {
     providersFullArchiveNodeAvailability.set({ network: key }, 0);
   }
 }

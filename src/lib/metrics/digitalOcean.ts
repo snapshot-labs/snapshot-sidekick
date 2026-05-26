@@ -33,8 +33,8 @@ export default class DigitalOcean {
       }
 
       return apps;
-    } catch (e: any) {
-      capture(e);
+    } catch (err: any) {
+      capture(err);
       return false;
     }
   }
@@ -49,8 +49,8 @@ export default class DigitalOcean {
       }
 
       return instances;
-    } catch (e: any) {
-      capture(e);
+    } catch (err: any) {
+      capture(err);
       return false;
     }
   }
@@ -58,8 +58,8 @@ export default class DigitalOcean {
   async balances() {
     try {
       return await this.#fetch(`customers/my/balance`);
-    } catch (e: any) {
-      capture(e);
+    } catch (err: any) {
+      capture(err);
       return false;
     }
   }

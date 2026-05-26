@@ -203,7 +203,7 @@ function validateNumbers(numbers: Record<string, string>) {
   Object.entries(numbers).forEach(([key, value]) => {
     try {
       BigNumber.from(value).toString();
-    } catch (e: any) {
+    } catch {
       throw new Error(`Value for ${key} is not a valid number (${value})`);
     }
   });
@@ -275,8 +275,8 @@ export async function snapshotFee(): Promise<number> {
     );
 
     return contract.snapshotFee();
-  } catch (e: any) {
-    capture(e);
+  } catch (err: any) {
+    capture(err);
     throw 'Unable to retrieve the snapshotFee';
   }
 }
