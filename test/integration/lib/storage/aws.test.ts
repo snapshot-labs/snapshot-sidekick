@@ -14,7 +14,9 @@ describe('Storage/Aws', () => {
     describe('when the file does not exists', () => {
       it('can create then retrieve the file', async () => {
         await storage.set(TEST_FILENAME, TEST_CONTENT);
-        expect((await storage.get(TEST_FILENAME)).toString()).toEqual(TEST_CONTENT);
+        expect((await storage.get(TEST_FILENAME)).toString()).toEqual(
+          TEST_CONTENT
+        );
       });
 
       describe('get()', () => {
@@ -33,7 +35,9 @@ describe('Storage/Aws', () => {
         it('overwrites the file with new content', async () => {
           const newContent = 'new content';
           await storage.set(TEST_FILENAME, newContent);
-          expect((await storage.get(TEST_FILENAME)).toString()).toEqual(newContent);
+          expect((await storage.get(TEST_FILENAME)).toString()).toEqual(
+            newContent
+          );
         });
       });
 

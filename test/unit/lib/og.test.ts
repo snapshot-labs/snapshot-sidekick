@@ -4,7 +4,11 @@ jest.mock('open-graph-scraper', () => jest.fn());
 const ogs = jest.requireMock('open-graph-scraper') as jest.Mock;
 
 function mockOgsResult(result: Record<string, any>) {
-  ogs.mockResolvedValueOnce({ error: false, result: { success: true, ...result }, response: {} });
+  ogs.mockResolvedValueOnce({
+    error: false,
+    result: { success: true, ...result },
+    response: {}
+  });
 }
 
 function mockOgsThrow(error: any) {
@@ -49,7 +53,10 @@ describe('fetchPreview', () => {
   });
 
   it('resolves a relative favicon against requestUrl', async () => {
-    mockOgsResult({ favicon: 'favicon.png', requestUrl: 'https://example.com/sub/' });
+    mockOgsResult({
+      favicon: 'favicon.png',
+      requestUrl: 'https://example.com/sub/'
+    });
     expect((await fetchPreview('https://example.com/sub/')).icon).toBe(
       'https://example.com/sub/favicon.png'
     );

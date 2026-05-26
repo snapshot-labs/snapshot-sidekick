@@ -168,7 +168,16 @@
   {
     "ipfs": "bafkreidpjy6vvzmiwurb4yy4cw4yxmwuhoqt7nsh5mqy5rd5eyilwt5tq4",
     "voter": "0xCb96594AbA4627e6064731b0098Dc97547b397BE",
-    "choice": { "4": 1, "13": 1, "16": 1, "20": 1, "24": 1, "26": 1, "33": 1, "35": 1 },
+    "choice": {
+      "4": 1,
+      "13": 1,
+      "16": 1,
+      "20": 1,
+      "24": 1,
+      "26": 1,
+      "33": 1,
+      "35": 1
+    },
     "vp": 1,
     "reason": "",
     "created": 1671157302
@@ -4004,7 +4013,16 @@
   {
     "ipfs": "bafkreihsozconifzbarwuftblgo3bwlieqkmuta4355tjfy4vodgfrfspe",
     "voter": "0x4712DF6d282c8830081cc1c172FF47E04Ec7aC60",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "9": 1, "16": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "9": 1,
+      "16": 1
+    },
     "vp": 1,
     "reason": "",
     "created": 1671180290
@@ -4012,7 +4030,17 @@
   {
     "ipfs": "bafkreiacwumhnsiyvfsw53v5entlr3cgw2rlskr33wrqgm67z26cem6jm4",
     "voter": "0x2169Ec73eeB5287Ed3180b401B6383BEaf5a2011",
-    "choice": { "1": 1, "2": 1, "5": 1, "6": 1, "11": 1, "12": 1, "13": 2, "22": 1, "24": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "5": 1,
+      "6": 1,
+      "11": 1,
+      "12": 1,
+      "13": 2,
+      "22": 1,
+      "24": 1
+    },
     "vp": 0.05569815079381274,
     "reason": "",
     "created": 1671180296
@@ -4108,7 +4136,16 @@
   {
     "ipfs": "bafkreictksig3ms2sooa2q6dkpj5tytzbg5dayv33earbzy566i6g6mfva",
     "voter": "0x0e198F0c34A93aea5F6bD3967cbD1B8F8c8C8319",
-    "choice": { "1": 1, "2": 3, "5": 2, "6": 1, "29": 1, "31": 1, "32": 1, "40": 5 },
+    "choice": {
+      "1": 1,
+      "2": 3,
+      "5": 2,
+      "6": 1,
+      "29": 1,
+      "31": 1,
+      "32": 1,
+      "40": 5
+    },
     "vp": 0.012568103118443086,
     "reason": "",
     "created": 1671181747
@@ -4369,7 +4406,16 @@
   {
     "ipfs": "bafkreif25oppw4ul5ioazhguue5ya4ibhg5f4zj2je7xdw5vf2q63hv35a",
     "voter": "0x0064F043786e8c597d6565FCBF4F0989Bdd0F9A3",
-    "choice": { "4": 1, "11": 1, "13": 1, "16": 1, "23": 1, "25": 1, "34": 1, "35": 1 },
+    "choice": {
+      "4": 1,
+      "11": 1,
+      "13": 1,
+      "16": 1,
+      "23": 1,
+      "25": 1,
+      "34": 1,
+      "35": 1
+    },
     "vp": 43.40180377005323,
     "reason": "",
     "created": 1671183430
@@ -4695,7 +4741,17 @@
   {
     "ipfs": "bafkreibau3paldtg67wlj4te736x2ea3ad65fdem6hmryq3bvgasnt2ioi",
     "voter": "0x492b4a8e71E4072d59d93B127f246055BbE82A5B",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "38": 1, "39": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "38": 1,
+      "39": 1
+    },
     "vp": 1.26,
     "reason": "",
     "created": 1671190424
@@ -4727,7 +4783,16 @@
   {
     "ipfs": "bafkreiff6rcxe7h6iktjgdlvvzwnuxlrvjm5z53u3b3xhu75wozyvrc5ha",
     "voter": "0x80131e57f111F2354A86Bc2Af2fEA414eA9C66AF",
-    "choice": { "1": 1, "2": 1, "5": 1, "6": 1, "7": 1, "8": 2, "9": 3, "33": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 2,
+      "9": 3,
+      "33": 1
+    },
     "vp": 0.86,
     "reason": "",
     "created": 1671191183
@@ -4767,7 +4832,16 @@
   {
     "ipfs": "bafkreigyb53it4cy6scxewnot65bm7lkpkhzx26ufbedvhsehvu3e55pfm",
     "voter": "0xafb46441AEc7a2c9625c5c89edCB863671e310C8",
-    "choice": { "1": 2, "4": 1, "6": 1, "7": 2, "8": 1, "9": 1, "14": 2, "23": 1 },
+    "choice": {
+      "1": 2,
+      "4": 1,
+      "6": 1,
+      "7": 2,
+      "8": 1,
+      "9": 1,
+      "14": 2,
+      "23": 1
+    },
     "vp": 0.32786783305669553,
     "reason": "",
     "created": 1671192960
@@ -4936,7 +5010,17 @@
   {
     "ipfs": "bafkreif4qilfrgjj7ktpcoftpuwshpetbhi2ywvubbiupttf7kl6lqdpee",
     "voter": "0x3420C19BCd121E6fEbCC20Fd502B14A71C2F857B",
-    "choice": { "1": 1001, "2": 1, "3": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "10": 1 },
+    "choice": {
+      "1": 1001,
+      "2": 1,
+      "3": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1,
+      "10": 1
+    },
     "vp": 0.19504697,
     "reason": "",
     "created": 1671196018
@@ -6040,7 +6124,18 @@
   {
     "ipfs": "bafkreieyo4srzkad3hyst3c34phjfxpgoc3k36nf7gluo44bkl2veojge4",
     "voter": "0xe3F97E97576b4EDAF30008a2586f9fDd417a745f",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "10": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1,
+      "10": 1
+    },
     "vp": 0.02,
     "reason": "",
     "created": 1671241798
@@ -6048,7 +6143,16 @@
   {
     "ipfs": "bafkreib5zuyuwe2cbhpzhr65bvl75giduzfelav2hks57vwqyv5xphkj2i",
     "voter": "0x0928AE0e403514895B692476F052CeCBbDAd9EC8",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1
+    },
     "vp": 0.1461367596991081,
     "reason": "",
     "created": 1671242077
@@ -6056,7 +6160,16 @@
   {
     "ipfs": "bafkreihm5g22bkgh2g4zwol2enhacmpqwzutvtipkv7rjiz7h7bsgu4xhy",
     "voter": "0x565Ef6Cd1d7aE856ff3D8A52607b8A0d81bF7E0C",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1
+    },
     "vp": 0.02,
     "reason": "",
     "created": 1671242213
@@ -6064,7 +6177,17 @@
   {
     "ipfs": "bafkreidwpakks4szbfaj3uf57izbfdrd25rpf6v46tm2mxwfqmrz4mbqeq",
     "voter": "0xDf07b9f4394CbE97A8f1c89e910155c71fC1Ece7",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1
+    },
     "vp": 0.02,
     "reason": "",
     "created": 1671242392
@@ -6072,7 +6195,18 @@
   {
     "ipfs": "bafkreickji7evtygfwhhyd2mkmrhqxaa4fwjj5l6vhuylcbyghwkcjwqo4",
     "voter": "0xD9b6bde79863135Ff29A5A5ec13DbadBa50eb3F6",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "10": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1,
+      "10": 1
+    },
     "vp": 0.02,
     "reason": "",
     "created": 1671242517
@@ -6131,7 +6265,16 @@
   {
     "ipfs": "bafkreiefjybnvz4ve5xtwka3pq7rq75uplah76m7gunuuoe2csgy7aw27a",
     "voter": "0x33dfBf5aD72E69B9844c65801097501101B569ea",
-    "choice": { "2": 1, "4": 1, "7": 1, "10": 1, "12": 1, "16": 1, "18": 1, "24": 1 },
+    "choice": {
+      "2": 1,
+      "4": 1,
+      "7": 1,
+      "10": 1,
+      "12": 1,
+      "16": 1,
+      "18": 1,
+      "24": 1
+    },
     "vp": 1.655324939038903,
     "reason": "",
     "created": 1671249381
@@ -6299,7 +6442,18 @@
   {
     "ipfs": "bafkreifpqwzidndg334h7qfiffbu5p2a7m7yqvjy56yusy35dvqolil3uu",
     "voter": "0x5574D6F75a59945A3D2e056D048816E11Ce12BF8",
-    "choice": { "1": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "20": 1, "25": 2 },
+    "choice": {
+      "1": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1,
+      "20": 1,
+      "25": 2
+    },
     "vp": 0.18917595580772317,
     "reason": "",
     "created": 1671260704
@@ -6410,7 +6564,16 @@
   {
     "ipfs": "bafkreihilanru4q2wbzmj43mch62s23drbjfkxwoer6dzqu35knhnmz6bm",
     "voter": "0xd7b26011E6eB5857a6251da1f77E9f3d8AaC4489",
-    "choice": { "1": 1, "3": 1, "5": 1, "7": 1, "9": 1, "26": 1, "27": 1, "28": 2 },
+    "choice": {
+      "1": 1,
+      "3": 1,
+      "5": 1,
+      "7": 1,
+      "9": 1,
+      "26": 1,
+      "27": 1,
+      "28": 2
+    },
     "vp": 2.1251145003999774,
     "reason": "",
     "created": 1671261823
@@ -6766,7 +6929,16 @@
   {
     "ipfs": "bafkreigikltomrbldr7okryzxt45pkflxekzqk5f5uteoycik2z4kpye4i",
     "voter": "0x75133Cc748f1f9b280118A65610c0d5811B19d55",
-    "choice": { "2": 1, "3": 1, "4": 1, "11": 1, "12": 1, "20": 2, "29": 1, "36": 3 },
+    "choice": {
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "11": 1,
+      "12": 1,
+      "20": 2,
+      "29": 1,
+      "36": 3
+    },
     "vp": 1.393362118011519,
     "reason": "",
     "created": 1671284140
@@ -6814,7 +6986,16 @@
   {
     "ipfs": "bafkreicdt6jimwkkn3ual6vt3p6xv7j5ppl2dw37yvlzngdry5f3owhrqe",
     "voter": "0x98c366dbE6d98A2D6A3ED471608921b03f3abCCa",
-    "choice": { "5": 1, "11": 1, "13": 1, "16": 1, "23": 1, "25": 1, "34": 1, "35": 1 },
+    "choice": {
+      "5": 1,
+      "11": 1,
+      "13": 1,
+      "16": 1,
+      "23": 1,
+      "25": 1,
+      "34": 1,
+      "35": 1
+    },
     "vp": 1.00013,
     "reason": "",
     "created": 1671291005
@@ -7492,7 +7673,16 @@
   {
     "ipfs": "bafkreigyhwen6vygu2lltce2kolcp7npwhuw5txm5ljp5enfuj74zj67uy",
     "voter": "0x8d3ec18dc2c96daFCD0924afE7273892Bf4c1652",
-    "choice": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1
+    },
     "vp": 0.0625830289936688,
     "reason": "",
     "created": 1671366955
@@ -7675,7 +7865,17 @@
   {
     "ipfs": "bafkreih7wijnlgn3ohywcuv7l6e4xrn2d7wnri5ncdxcreo4yy5r7n5fze",
     "voter": "0x040BAa573b9DaB3143425D7E0D11916961d385BF",
-    "choice": { "1": 10, "2": 5, "3": 5, "4": 6, "5": 4, "6": 7, "7": 7, "8": 6, "9": 6 },
+    "choice": {
+      "1": 10,
+      "2": 5,
+      "3": 5,
+      "4": 6,
+      "5": 4,
+      "6": 7,
+      "7": 7,
+      "8": 6,
+      "9": 6
+    },
     "vp": 0.03258185883633462,
     "reason": "",
     "created": 1671373591
@@ -7779,7 +7979,18 @@
   {
     "ipfs": "bafkreiaxu7kaawoym6rg6fnjb7imtrkymgjb4red6duci64atgaksikuvq",
     "voter": "0x4B298E988079ab2fba509810fD712d82305A1E4f",
-    "choice": { "1": 5, "2": 7, "3": 3, "4": 1, "5": 1, "6": 1, "7": 1, "18": 1, "19": 1, "20": 1 },
+    "choice": {
+      "1": 5,
+      "2": 7,
+      "3": 3,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "18": 1,
+      "19": 1,
+      "20": 1
+    },
     "vp": 0.04067092408181453,
     "reason": "",
     "created": 1671379388
@@ -8064,7 +8275,16 @@
   {
     "ipfs": "bafkreiapq3okowyvbhkfjbuzj2wcjqlsndvsrzkpmwvgls6zt7rj5nqzuq",
     "voter": "0x9179107E3d45D841179729F02dba57C3342D7fdF",
-    "choice": { "1": 1, "2": 1, "3": 1, "6": 1, "9": 1, "26": 1, "27": 1, "28": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "6": 1,
+      "9": 1,
+      "26": 1,
+      "27": 1,
+      "28": 1
+    },
     "vp": 0.4064531973241,
     "reason": "",
     "created": 1671416631
@@ -8139,7 +8359,14 @@
   {
     "ipfs": "bafkreif26fp7aldu7eh3xx7hcpg3xqsnqlirqidlurrdhnaezsk6zxkfcy",
     "voter": "0xCc6f414b71c58218c1aDc3965ba7B48FDf607000",
-    "choice": { "11": 1000, "16": 100, "17": 100, "23": 800, "30": 100, "39": 100 },
+    "choice": {
+      "11": 1000,
+      "16": 100,
+      "17": 100,
+      "23": 800,
+      "30": 100,
+      "39": 100
+    },
     "vp": 2011.6337966026913,
     "reason": "",
     "created": 1671421297
@@ -8147,7 +8374,14 @@
   {
     "ipfs": "bafkreicuynkdp3gweybxangshufannnre2pf446ykwe4olsux3abzl3pha",
     "voter": "0x29737f1186Fbe889D4906841c30A5048dAb7E638",
-    "choice": { "11": 1000, "16": 100, "17": 100, "23": 800, "30": 100, "39": 100 },
+    "choice": {
+      "11": 1000,
+      "16": 100,
+      "17": 100,
+      "23": 800,
+      "30": 100,
+      "39": 100
+    },
     "vp": 3474,
     "reason": "",
     "created": 1671421404
@@ -8308,7 +8542,16 @@
   {
     "ipfs": "bafkreia5jkb3bx7lrgccqs4f7mmxubsafs43ht4vffertqqbsivomrf3te",
     "voter": "0x8168363c12488275050F75F4deCd92b773F637F9",
-    "choice": { "1": 2, "2": 1, "3": 1, "4": 1, "7": 1, "17": 1, "22": 1, "23": 1 },
+    "choice": {
+      "1": 2,
+      "2": 1,
+      "3": 1,
+      "4": 1,
+      "7": 1,
+      "17": 1,
+      "22": 1,
+      "23": 1
+    },
     "vp": 0.99,
     "reason": "",
     "created": 1671437707
@@ -8324,7 +8567,16 @@
   {
     "ipfs": "bafkreid3bddmfcz4gfuaoa4pud3ktztphuix4t2lstbli34y4o5acjwyry",
     "voter": "0xF84DabE76B1a95413C322Eff45e9768F732D1975",
-    "choice": { "1": 1, "3": 1, "7": 1, "8": 1, "18": 1, "23": 1, "24": 1, "26": 1 },
+    "choice": {
+      "1": 1,
+      "3": 1,
+      "7": 1,
+      "8": 1,
+      "18": 1,
+      "23": 1,
+      "24": 1,
+      "26": 1
+    },
     "vp": 1,
     "reason": "",
     "created": 1671438001
@@ -8709,7 +8961,17 @@
   {
     "ipfs": "bafkreifgbdd2ammnh3mma4fpidzkv7k75tsqyin5iq5uw2x5ifgnt5gauq",
     "voter": "0xDC24c2Aa06eA26ac3bc4a226c4aE3182d4e11813",
-    "choice": { "1": 1, "2": 1, "3": 1, "5": 1, "13": 2, "14": 3, "15": 1, "16": 1, "26": 2 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "5": 1,
+      "13": 2,
+      "14": 3,
+      "15": 1,
+      "16": 1,
+      "26": 2
+    },
     "vp": 1.2334,
     "reason": "",
     "created": 1671453615
@@ -8830,7 +9092,17 @@
   {
     "ipfs": "bafkreif7fdsnm3zir4mnmgl7wtkhapngtz6ugyslczol2ehvojn5eyaqye",
     "voter": "0x180fB0E6ab6E35Ed77aE4E9E8C7fBcc38AFa35aC",
-    "choice": { "1": 1, "2": 3, "3": 3, "9": 3, "10": 2, "11": 1, "12": 2, "19": 2, "37": 2 },
+    "choice": {
+      "1": 1,
+      "2": 3,
+      "3": 3,
+      "9": 3,
+      "10": 2,
+      "11": 1,
+      "12": 2,
+      "19": 2,
+      "37": 2
+    },
     "vp": 1.3099887,
     "reason": "",
     "created": 1671460973
@@ -8894,7 +9166,16 @@
   {
     "ipfs": "bafkreie7uxc6x6czbdoe6vdpwjdachwxdvgjsizytgl2eqpqsiuwcebwgy",
     "voter": "0x64c6AC491527A44BC45858F2811158936FB8044d",
-    "choice": { "1": 2, "2": 3, "3": 3, "22": 3, "37": 2, "38": 1, "39": 1, "40": 1 },
+    "choice": {
+      "1": 2,
+      "2": 3,
+      "3": 3,
+      "22": 3,
+      "37": 2,
+      "38": 1,
+      "39": 1,
+      "40": 1
+    },
     "vp": 1.167788,
     "reason": "",
     "created": 1671462010
@@ -9225,7 +9506,17 @@
   {
     "ipfs": "bafkreienjsee6ydk3cjt3wa7wdm7ax6nynsshglvmyhknntq4tbolcp4zi",
     "voter": "0xAf79ee26cE3f57a008ae739Bcf0996A2fB9C6626",
-    "choice": { "4": 1, "7": 1, "11": 1, "15": 1, "23": 1, "27": 1, "32": 1, "36": 1, "39": 1 },
+    "choice": {
+      "4": 1,
+      "7": 1,
+      "11": 1,
+      "15": 1,
+      "23": 1,
+      "27": 1,
+      "32": 1,
+      "36": 1,
+      "39": 1
+    },
     "vp": 0.5154458151783653,
     "reason": "",
     "created": 1671490964
@@ -9233,7 +9524,17 @@
   {
     "ipfs": "bafkreihmrxkfn7m4suxpxsy3pp36dk2dbthdbe4siaqflmlifl2xifx6ey",
     "voter": "0xDCDBC5eF852964945bA5D4772B26dAcFFcD9F59d",
-    "choice": { "6": 1, "9": 1, "12": 1, "16": 1, "21": 1, "26": 1, "29": 1, "33": 1, "38": 1 },
+    "choice": {
+      "6": 1,
+      "9": 1,
+      "12": 1,
+      "16": 1,
+      "21": 1,
+      "26": 1,
+      "29": 1,
+      "33": 1,
+      "38": 1
+    },
     "vp": 1.4920769512242802,
     "reason": "",
     "created": 1671491599
@@ -9241,7 +9542,18 @@
   {
     "ipfs": "bafkreih572ftuw6sqbvpmvwfstughxibahssxjfpikfr6undkhvclt5pfe",
     "voter": "0x84Ecf15af6fEC307aFeAB934b46947967Bc02d5f",
-    "choice": { "1": 1, "2": 1, "3": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "10": 1, "12": 1 },
+    "choice": {
+      "1": 1,
+      "2": 1,
+      "3": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1,
+      "10": 1,
+      "12": 1
+    },
     "vp": 6.236450674521951,
     "reason": "",
     "created": 1671492313
@@ -9281,7 +9593,14 @@
   {
     "ipfs": "bafkreidb4mlyk4jtxwm56mrasoo4cxhssmosoypcgw6udcklkah2w2jyla",
     "voter": "0xC22fd653df4F0a2a4331FE81f0964F4b0ee5033d",
-    "choice": { "4": 500, "5": 131, "13": 250, "20": 125, "26": 125, "35": 125 },
+    "choice": {
+      "4": 500,
+      "5": 131,
+      "13": 250,
+      "20": 125,
+      "26": 125,
+      "35": 125
+    },
     "vp": 1256.5922312354426,
     "reason": "",
     "created": 1671495321
@@ -10119,7 +10438,16 @@
   {
     "ipfs": "bafkreickj2wjptzhcy6ajcocwe7lhglqdu7s47c7mmuvc3kaf5y6kgdaq4",
     "voter": "0x17B9c8863b3bD8D5Fdb9497378fD0cDa29C15AE1",
-    "choice": { "2": 1, "4": 2, "5": 1, "13": 1, "16": 1, "23": 1, "26": 1, "35": 1 },
+    "choice": {
+      "2": 1,
+      "4": 2,
+      "5": 1,
+      "13": 1,
+      "16": 1,
+      "23": 1,
+      "26": 1,
+      "35": 1
+    },
     "vp": 401,
     "reason": "",
     "created": 1671555624
@@ -10977,7 +11305,14 @@
   {
     "ipfs": "bafkreiezmmkt72ewoyvajctu7cb6e3jpecnted2v6cnckrnjlhhulgmeli",
     "voter": "0xbCbb6ebf12Cc1a5e940ECA21dCF6aF617aAd4Ca9",
-    "choice": { "11": 100, "13": 2000, "16": 400, "17": 200, "23": 50, "32": 69 },
+    "choice": {
+      "11": 100,
+      "13": 2000,
+      "16": 400,
+      "17": 200,
+      "23": 50,
+      "32": 69
+    },
     "vp": 3530.104922811242,
     "reason": "",
     "created": 1671633000
@@ -12193,7 +12528,13 @@
   {
     "ipfs": "bafkreiayh35x673yskkrb2gdcjganqdiaoihjrbyzv2okcm7snjdtun7py",
     "voter": "0x5a488B762cA0EA05321405b192fAB0B66a93ca28",
-    "choice": { "4": 83000, "11": 83000, "13": 83000, "16": 83000, "35": 83000 },
+    "choice": {
+      "4": 83000,
+      "11": 83000,
+      "13": 83000,
+      "16": 83000,
+      "35": 83000
+    },
     "vp": 415475.34627449024,
     "reason": "",
     "created": 1671666599

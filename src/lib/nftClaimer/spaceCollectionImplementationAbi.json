@@ -6,7 +6,11 @@
       { "internalType": "uint128", "name": "_maxSupply", "type": "uint128" },
       { "internalType": "uint256", "name": "_mintPrice", "type": "uint256" },
       { "internalType": "uint8", "name": "_proposerFee", "type": "uint8" },
-      { "internalType": "address", "name": "_spaceTreasury", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_spaceTreasury",
+        "type": "address"
+      },
       { "internalType": "address", "name": "_spaceOwner", "type": "address" }
     ],
     "name": "initialize",
@@ -31,7 +35,11 @@
   {
     "inputs": [
       { "internalType": "address[]", "name": "proposers", "type": "address[]" },
-      { "internalType": "uint256[]", "name": "proposalIds", "type": "uint256[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "proposalIds",
+        "type": "uint256[]"
+      },
       { "internalType": "uint256", "name": "salt", "type": "uint256" },
       { "internalType": "uint8", "name": "v", "type": "uint8" },
       { "internalType": "bytes32", "name": "r", "type": "bytes32" },

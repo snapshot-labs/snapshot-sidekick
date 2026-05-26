@@ -18,7 +18,9 @@ router.post('/webhook', (req, res) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type, id } = body.id?.toString().split('/');
 
-  if (req.headers['authentication'] !== `${process.env.WEBHOOK_AUTH_TOKEN ?? ''}`) {
+  if (
+    req.headers['authentication'] !== `${process.env.WEBHOOK_AUTH_TOKEN ?? ''}`
+  ) {
     return rpcError(res, 'UNAUTHORIZED', id);
   }
 

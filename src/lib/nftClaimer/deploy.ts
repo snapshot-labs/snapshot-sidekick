@@ -14,7 +14,9 @@ const DeployType = {
   ]
 };
 
-const VERIFYING_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
+const VERIFYING_CONTRACT = getAddress(
+  process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string
+);
 const IMPLEMENTATION_ADDRESS = getAddress(
   process.env.NFT_CLAIMER_DEPLOY_IMPLEMENTATION_ADDRESS as string
 );
@@ -46,10 +48,16 @@ export default async function payload(input: {
   const result = {
     initializer,
     salt: params.salt,
-    abi: new Interface(spaceFactoryAbi).getFunction('deployProxy').format(FormatTypes.full),
+    abi: new Interface(spaceFactoryAbi)
+      .getFunction('deployProxy')
+      .format(FormatTypes.full),
     verifyingContract: VERIFYING_CONTRACT,
     implementation: IMPLEMENTATION_ADDRESS,
-    signature: await generateSignature(IMPLEMENTATION_ADDRESS, initializer, params.salt)
+    signature: await generateSignature(
+      IMPLEMENTATION_ADDRESS,
+      initializer,
+      params.salt
+    )
   };
 
   console.debug('Signer', signer.address);
@@ -80,7 +88,10 @@ function getInitializer(args: {
   // the smart contract version
   // NOTE Do not forget to remove the last 4 params in the ABI when copy/pasting
   // from the smart contract
-  const initializer = new Interface(spaceCollectionAbi).encodeFunctionData('initialize', params);
+  const initializer = new Interface(spaceCollectionAbi).encodeFunctionData(
+    'initialize',
+    params
+  );
   const result = `${INITIALIZE_SELECTOR}${initializer.slice(10)}`;
 
   console.debug('Initializer params', params);
@@ -88,7 +99,11 @@ function getInitializer(args: {
   return result;
 }
 
-async function generateSignature(implementation: string, initializer: string, salt: string) {
+async function generateSignature(
+  implementation: string,
+  initializer: string,
+  salt: string
+) {
   const params = {
     domain: {
       name: 'SpaceCollectionFactory',
@@ -104,5 +119,7 @@ async function generateSignature(implementation: string, initializer: string, sa
     }
   };
 
-  return splitSignature(await signer._signTypedData(params.domain, params.types, params.value));
+  return splitSignature(
+    await signer._signTypedData(params.domain, params.types, params.value)
+  );
 }

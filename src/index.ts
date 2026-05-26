@@ -44,4 +44,6 @@ app.use((_, res) => {
   rpcError(res, 'RECORD_NOT_FOUND', '');
 });
 
-app.listen(PORT, () => console.log(`[http] Start server at http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`[http] Start server at http://localhost:${PORT}`)
+);

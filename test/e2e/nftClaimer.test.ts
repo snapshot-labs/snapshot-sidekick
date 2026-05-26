@@ -22,7 +22,9 @@ describe('nftClaimer', () => {
     });
 
     describe('on invalid input', () => {
-      it.todo('returns a 401 error when the submitter is not the space controller');
+      it.todo(
+        'returns a 401 error when the submitter is not the space controller'
+      );
       it.todo('returns an error when the space does not exist');
     });
   });

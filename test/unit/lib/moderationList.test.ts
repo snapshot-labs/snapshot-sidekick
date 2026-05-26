@@ -7,19 +7,25 @@ const mockDbQueryAsync = jest.fn((query: string, args?: string[]): any[] => {
 });
 jest.mock('../../../src/helpers/mysql', () => ({
   __esModule: true,
-  default: { queryAsync: (query: string, args?: string[]) => mockDbQueryAsync(query, args) }
+  default: {
+    queryAsync: (query: string, args?: string[]) =>
+      mockDbQueryAsync(query, args)
+  }
 }));
 
 describe('moderationList', () => {
-  it.each(['flaggedLinks', 'flaggedIps'])('returns only the %s', async field => {
-    mockDbQueryAsync.mockImplementationOnce(() => {
-      return SqlFixtures[field];
-    });
+  it.each(['flaggedLinks', 'flaggedIps'])(
+    'returns only the %s',
+    async field => {
+      mockDbQueryAsync.mockImplementationOnce(() => {
+        return SqlFixtures[field];
+      });
 
-    const list = await getModerationList([field]);
+      const list = await getModerationList([field]);
 
-    expect(list).toMatchSnapshot();
-  });
+      expect(list).toMatchSnapshot();
+    }
+  );
 
   it('returns multiple list: flaggedLinks and flaggedIps', async () => {
     mockDbQueryAsync.mockImplementationOnce(() => {

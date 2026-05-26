@@ -14,7 +14,9 @@ export default class TextToSpeech extends Cache {
   constructor(id: string, storage: IStorage) {
     super(id, storage);
     this.filename = `snapshot-proposal-ai-tts-${this.id}.mp3`;
-    this.openAi = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'Missing key' });
+    this.openAi = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || 'Missing key'
+    });
   }
 
   async isCacheable() {

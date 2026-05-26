@@ -6,7 +6,8 @@ import { rmSync } from 'fs';
 const HOST = `http://localhost:${process.env.PORT || 3003}`;
 
 describe('GET /api/votes/:id', () => {
-  const id = '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
+  const id =
+    '0x1e5fdb5c87867a94c1c7f27025d62851ea47f6072f2296ca53a48fce1b87cdef';
   const storage = storageEngine(process.env.VOTE_REPORT_SUBDIR);
 
   afterEach(() => {

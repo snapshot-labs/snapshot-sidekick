@@ -1,7 +1,11 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "implementation", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      },
       { "internalType": "bytes", "name": "initializer", "type": "bytes" },
       { "internalType": "uint256", "name": "salt", "type": "uint256" },
       { "internalType": "uint8", "name": "v", "type": "uint8" },
@@ -25,9 +29,21 @@
   {
     "inputs": [
       { "internalType": "uint8", "name": "_snapshotFee", "type": "uint8" },
-      { "internalType": "address", "name": "_snapshotOwner", "type": "address" },
-      { "internalType": "address", "name": "_snapshotTreasury", "type": "address" },
-      { "internalType": "address", "name": "_verifiedSigner", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_snapshotOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_snapshotTreasury",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_verifiedSigner",
+        "type": "address"
+      }
     ],
     "name": "updateFactorySettings",
     "outputs": [],

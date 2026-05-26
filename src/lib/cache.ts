@@ -21,7 +21,10 @@ export default class Cache {
   async getCache() {
     const cache = await this.storage.get(this.filename);
 
-    cacheHitCount.inc({ status: !cache ? 'MISS' : 'HIT', type: this.constructor.name });
+    cacheHitCount.inc({
+      status: !cache ? 'MISS' : 'HIT',
+      type: this.constructor.name
+    });
 
     return cache;
   }

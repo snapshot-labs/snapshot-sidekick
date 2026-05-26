@@ -16,7 +16,10 @@ class VotesReport extends Cache {
   async isCacheable() {
     this.proposal = await fetchProposal(this.id);
 
-    if (!this.proposal || !CACHEABLE_PROPOSAL_STATE.includes(this.proposal.state)) {
+    if (
+      !this.proposal ||
+      !CACHEABLE_PROPOSAL_STATE.includes(this.proposal.state)
+    ) {
       return Promise.reject('RECORD_NOT_FOUND');
     }
 
@@ -55,7 +58,9 @@ class VotesReport extends Cache {
     content += headers.join(',');
     content += `\n${votes.map(vote => this.#formatCsvLine(vote)).join('\n')}`;
 
-    console.log(`[votes-report] Report for ${this.id} ready with ${votes.length} items`);
+    console.log(
+      `[votes-report] Report for ${this.id} ready with ${votes.length} items`
+    );
 
     return content;
   };
@@ -89,7 +94,10 @@ class VotesReport extends Cache {
         votes.set(vote.ipfs, vote);
       }
 
-      this.generationProgress = +((votes.size / this.proposal!.votes) * 100).toFixed(2);
+      this.generationProgress = +(
+        (votes.size / this.proposal!.votes) *
+        100
+      ).toFixed(2);
     } while (resultsSize === pageSize);
 
     return Array.from(votes.values());
@@ -119,7 +127,8 @@ class VotesReport extends Cache {
         : this.proposal!.choices.length
     });
 
-    if (this.proposal!.privacy && this.proposal!.state !== 'closed') return choices;
+    if (this.proposal!.privacy && this.proposal!.state !== 'closed')
+      return choices;
 
     switch (this.proposal!.type) {
       case 'single-choice':
