@@ -28,8 +28,14 @@ export async function fetchPreview(url: string): Promise<OgPreview> {
     } as any);
     return {
       title: result.ogTitle || result.twitterTitle || result.dcTitle,
-      description: result.ogDescription || result.twitterDescription || result.dcDescription,
-      icon: new URL(result.favicon || '/favicon.ico', result.requestUrl || url).toString()
+      description:
+        result.ogDescription ||
+        result.twitterDescription ||
+        result.dcDescription,
+      icon: new URL(
+        result.favicon || '/favicon.ico',
+        result.requestUrl || url
+      ).toString()
     };
   } catch {
     // Link previews are best-effort: a fetch failure (timeout, blocked host,

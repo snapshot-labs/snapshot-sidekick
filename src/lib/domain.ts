@@ -35,5 +35,7 @@ async function refreshList() {
 
   const body: Record<string, string> = await response.json();
 
-  data = new Map(Object.entries(body).map(([domain, spaceId]) => [domain, `s:${spaceId}`]));
+  data = new Map(
+    Object.entries(body).map(([domain, spaceId]) => [domain, `s:${spaceId}`])
+  );
 }

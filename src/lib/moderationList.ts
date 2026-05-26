@@ -4,7 +4,10 @@ import db from '../helpers/mysql';
 
 type MODERATION_LIST = Record<string, string[] | JSON>;
 
-const CACHE_PATH = path.resolve(__dirname, `../../${process.env.MODERATION_LIST_PATH || 'data'}`);
+const CACHE_PATH = path.resolve(
+  __dirname,
+  `../../${process.env.MODERATION_LIST_PATH || 'data'}`
+);
 const FIELDS = new Map<keyof MODERATION_LIST, Record<string, string>>([
   ['flaggedLinks', { action: 'flag', type: 'link' }],
   ['flaggedIps', { action: 'flag', type: 'ip' }],
@@ -19,7 +22,10 @@ export function readFile(filename: string) {
   );
 }
 
-function parseFileContent(content: string, parser: string): MODERATION_LIST[keyof MODERATION_LIST] {
+function parseFileContent(
+  content: string,
+  parser: string
+): MODERATION_LIST[keyof MODERATION_LIST] {
   switch (parser) {
     case 'txt':
       return content.split('\n').filter(value => value !== '');
@@ -30,7 +36,9 @@ function parseFileContent(content: string, parser: string): MODERATION_LIST[keyo
   }
 }
 
-export default async function getModerationList(fields = Array.from(FIELDS.keys())) {
+export default async function getModerationList(
+  fields = Array.from(FIELDS.keys())
+) {
   const list: Partial<MODERATION_LIST> = {};
   const reverseMapping: Record<string, keyof MODERATION_LIST> = {};
   const queryWhereStatement: string[] = [];
@@ -59,7 +67,9 @@ export default async function getModerationList(fields = Array.from(FIELDS.keys(
     );
 
     dbResults.forEach(row => {
-      (list[reverseMapping[`${row.action}-${row.type}`]] as string[]).push(row.value as string);
+      (list[reverseMapping[`${row.action}-${row.type}`]] as string[]).push(
+        row.value as string
+      );
     });
   }
 

@@ -11,7 +11,10 @@ export type SqlRow = Record<string, values>;
 type SqlQueryArgs = values | Record<string, values>;
 
 interface PromisedPool {
-  queryAsync: (query: string, args?: SqlQueryArgs | SqlQueryArgs[]) => Promise<SqlRow[]>;
+  queryAsync: (
+    query: string,
+    args?: SqlQueryArgs | SqlQueryArgs[]
+  ) => Promise<SqlRow[]>;
   endAsync: () => Promise<any>;
 }
 

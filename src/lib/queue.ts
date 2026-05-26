@@ -10,7 +10,9 @@ const processingItems = new Map<string, Cache>();
 async function processItem(cacheable: Cache) {
   console.log(`[queue] Processing queue item: ${cacheable}`);
   try {
-    const end = timeQueueProcess.startTimer({ name: cacheable.constructor.name });
+    const end = timeQueueProcess.startTimer({
+      name: cacheable.constructor.name
+    });
     processingItems.set(cacheable.id, cacheable);
     await cacheable.createCache();
     end();
@@ -56,7 +58,9 @@ async function run() {
       }
 
       if (processingItems.size >= MAX_CONCURRENT_PROCESSING_ITEMS) {
-        console.log(`[queue] Skip ${cacheable}: max concurrent processing items reached`);
+        console.log(
+          `[queue] Skip ${cacheable}: max concurrent processing items reached`
+        );
         return;
       }
 

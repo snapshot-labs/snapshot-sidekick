@@ -10,7 +10,9 @@ class Summary extends Cache {
   constructor(id: string, storage: IStorage) {
     super(id, storage);
     this.filename = `snapshot-proposal-ai-summary-${this.id}.txt`;
-    this.openAi = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'Missing key' });
+    this.openAi = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || 'Missing key'
+    });
   }
 
   async isCacheable() {

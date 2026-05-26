@@ -1,4 +1,9 @@
-import { gql, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
+import {
+  gql,
+  ApolloClient,
+  InMemoryCache,
+  HttpLink
+} from '@apollo/client/core';
 import snapshot from '@snapshot-labs/snapshot.js';
 import { CID } from 'multiformats/cid';
 import { Wallet } from '@ethersproject/wallet';
@@ -28,13 +33,18 @@ const broviderUrl = process.env.BROVIDER_URL || 'https://rpc.snapshot.org';
 
 if (missingEnvKeys.length > 0) {
   throw new Error(
-    `NFT Claimer not configured properly, missing env keys: ${missingEnvKeys.join(', ')}`
+    `NFT Claimer not configured properly, missing env keys: ${missingEnvKeys.join(
+      ', '
+    )}`
   );
 }
 
-const hardcodedHubNetwork = process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
+const hardcodedHubNetwork =
+  process.env.HUB_URL === 'https://hub.snapshot.org' ? '1' : '5';
 const HUB_NETWORK = process.env.HUB_NETWORK || hardcodedHubNetwork;
-const DEPLOY_CONTRACT = getAddress(process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string);
+const DEPLOY_CONTRACT = getAddress(
+  process.env.NFT_CLAIMER_DEPLOY_VERIFYING_CONTRACT as string
+);
 const NFT_CLAIMER_NETWORK = parseInt(process.env.NFT_CLAIMER_NETWORK as string);
 
 export const signer = new Wallet(process.env.NFT_CLAIMER_PRIVATE_KEY as string);
@@ -69,9 +79,13 @@ export async function validateSpace(address: string, space: Space | null) {
 }
 
 async function isSpaceOwner(spaceId: string, address: string) {
-  const spaceController = await snapshot.utils.getSpaceController(spaceId, HUB_NETWORK, {
-    broviderUrl
-  });
+  const spaceController = await snapshot.utils.getSpaceController(
+    spaceId,
+    HUB_NETWORK,
+    {
+      broviderUrl
+    }
+  );
   return spaceController === getAddress(address);
 }
 
@@ -93,14 +107,19 @@ export async function getProposalContract(spaceId: string) {
   const contract = await getSpaceCollection(spaceId);
 
   if (!contract) {
-    throw new Error(`SpaceCollection contract is not found for space ${spaceId}`);
+    throw new Error(
+      `SpaceCollection contract is not found for space ${spaceId}`
+    );
   }
 
   return contract.id;
 }
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: process.env.NFT_CLAIMER_SUBGRAPH_URL, fetch: fetchWithKeepAlive }),
+  link: new HttpLink({
+    uri: process.env.NFT_CLAIMER_SUBGRAPH_URL,
+    fetch: fetchWithKeepAlive
+  }),
   cache: new InMemoryCache({
     addTypename: false
   }),
@@ -165,7 +184,9 @@ export async function getMint(voter: string, proposalId: string) {
 }
 
 export function numberizeProposalId(id: string) {
-  return BigNumber.from(id.startsWith('0x') ? id : CID.parse(id).bytes).toString();
+  return BigNumber.from(
+    id.startsWith('0x') ? id : CID.parse(id).bytes
+  ).toString();
 }
 
 export function validateAddresses(addresses: Record<string, string>) {
@@ -204,7 +225,10 @@ export async function validateProposerFee(fee: number) {
 }
 
 export async function validateDeployInput(params: any) {
-  validateAddresses({ spaceOwner: params.spaceOwner, spaceTreasury: params.spaceTreasury });
+  validateAddresses({
+    spaceOwner: params.spaceOwner,
+    spaceTreasury: params.spaceTreasury
+  });
   validateNumbers({
     maxSupply: params.maxSupply,
     proposerFee: params.proposerFee,
@@ -224,7 +248,10 @@ export async function validateDeployInput(params: any) {
 }
 
 export async function validateMintInput(params: any) {
-  validateAddresses({ proposalAuthor: params.proposalAuthor, recipient: params.recipient });
+  validateAddresses({
+    proposalAuthor: params.proposalAuthor,
+    recipient: params.recipient
+  });
   validateNumbers({
     salt: params.salt
   });
@@ -238,7 +265,9 @@ export async function validateMintInput(params: any) {
 
 export async function snapshotFee(): Promise<number> {
   try {
-    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK, { broviderUrl });
+    const provider = snapshot.utils.getProvider(NFT_CLAIMER_NETWORK, {
+      broviderUrl
+    });
     const contract = new Contract(
       DEPLOY_CONTRACT,
       ['function snapshotFee() public view returns (uint8)'],

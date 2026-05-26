@@ -1,4 +1,9 @@
-import { gql, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core';
+import {
+  gql,
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink
+} from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { fetchWithKeepAlive } from './utils';
 
@@ -158,7 +163,13 @@ export async function fetchProposal(id: string) {
 
 export async function fetchVotes(
   id: string,
-  { first = 1000, skip = 0, orderBy = 'created_gte', orderDirection = 'asc', created_gte = 0 } = {}
+  {
+    first = 1000,
+    skip = 0,
+    orderBy = 'created_gte',
+    orderDirection = 'asc',
+    created_gte = 0
+  } = {}
 ) {
   const {
     data: { votes }

@@ -42,7 +42,9 @@ const mockHasMinted = jest.fn((address: string, proposal: string): boolean => {
 });
 jest.mock('../../../../src/lib/nftClaimer/utils', () => {
   // Require the original module to not be mocked...
-  const originalModule = jest.requireActual('../../../../src/lib/nftClaimer/utils');
+  const originalModule = jest.requireActual(
+    '../../../../src/lib/nftClaimer/utils'
+  );
 
   return {
     __esModule: true,
@@ -50,8 +52,10 @@ jest.mock('../../../../src/lib/nftClaimer/utils', () => {
     getProposalContract: (id: string) => mockGetProposalContract(id),
     validateProposal: (id: any) => mockValidateProposal(id),
     mintingAllowed: (space: any) => mockMintingAllowed(space),
-    hasVoted: (address: string, proposal: string) => mockHasVoted(address, proposal),
-    hasMinted: (address: string, proposal: string) => mockHasMinted(address, proposal)
+    hasVoted: (address: string, proposal: string) =>
+      mockHasVoted(address, proposal),
+    hasMinted: (address: string, proposal: string) =>
+      mockHasMinted(address, proposal)
   };
 });
 
@@ -70,7 +74,8 @@ describe('nftClaimer', () => {
       v: 27
     };
 
-    const expectedDigest = '0x65b2c526e8c21a68583765e51f03990a67a0a0cb46794ab7ec666e88808eb93a';
+    const expectedDigest =
+      '0x65b2c526e8c21a68583765e51f03990a67a0a0cb46794ab7ec666e88808eb93a';
 
     const input = {
       proposalAuthor: proposer,
@@ -140,7 +145,9 @@ describe('nftClaimer', () => {
 
     describe('when passing invalid values', () => {
       it.skip('throws an error when the proposalAuthor address is not valid', () => {
-        expect(async () => getPayload({ proposalAuthor: 'test' })).rejects.toThrow();
+        expect(async () =>
+          getPayload({ proposalAuthor: 'test' })
+        ).rejects.toThrow();
       });
 
       it.skip('throws an error when the recipient address is not valid', () => {
@@ -152,14 +159,17 @@ describe('nftClaimer', () => {
         ).rejects.toThrow();
       });
 
-      it.each(NAN)('throws an error when the salt is not a number (%s)', val => {
-        return expect(
-          async () =>
-            await getPayload({
-              salt: val as any
-            })
-        ).rejects.toThrow();
-      });
+      it.each(NAN)(
+        'throws an error when the salt is not a number (%s)',
+        val => {
+          return expect(
+            async () =>
+              await getPayload({
+                salt: val as any
+              })
+          ).rejects.toThrow();
+        }
+      );
 
       it.skip('throws an error when the proposal is not found', () => {
         mockFetchProposal.mockReturnValueOnce(null);

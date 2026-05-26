@@ -16,7 +16,10 @@ const router = express.Router();
 
 router.all('/votes/:id', async (req, res) => {
   const { id } = req.params;
-  const votesReport = new VotesReport(id, storageEngine(process.env.VOTE_REPORT_SUBDIR));
+  const votesReport = new VotesReport(
+    id,
+    storageEngine(process.env.VOTE_REPORT_SUBDIR)
+  );
 
   try {
     const file = await votesReport.getCache();
@@ -43,7 +46,10 @@ router.all('/votes/:id', async (req, res) => {
 
 router.post('/ai/summary/:id', async (req, res) => {
   const { id } = req.params;
-  const aiSummary = new AiSummary(id, storageEngine(process.env.AI_SUMMARY_SUBDIR));
+  const aiSummary = new AiSummary(
+    id,
+    storageEngine(process.env.AI_SUMMARY_SUBDIR)
+  );
 
   try {
     const cachedSummary = await aiSummary.getCache();
@@ -65,7 +71,10 @@ router.post('/ai/summary/:id', async (req, res) => {
 
 router.post('/ai/tts/:id', async (req, res) => {
   const { id } = req.params;
-  const aiTextTpSpeech = new AiTextToSpeech(id, storageEngine(process.env.AI_TTS_SUBDIR));
+  const aiTextTpSpeech = new AiTextToSpeech(
+    id,
+    storageEngine(process.env.AI_TTS_SUBDIR)
+  );
 
   try {
     const cachedAudio = await aiTextTpSpeech.getCache();
@@ -96,7 +105,9 @@ router.get('/moderation', async (req, res) => {
   const { list } = req.query;
 
   try {
-    res.json(await getModerationList(list ? (list as string).split(',') : undefined));
+    res.json(
+      await getModerationList(list ? (list as string).split(',') : undefined)
+    );
   } catch (e) {
     capture(e);
     return rpcError(res, 'INTERNAL_ERROR', '');
@@ -124,7 +135,15 @@ router.get('/nft-claimer', async (req, res) => {
 });
 
 router.post('/nft-claimer/deploy', async (req, res) => {
-  const { address, id, salt, maxSupply, mintPrice, spaceTreasury, proposerFee } = req.body;
+  const {
+    address,
+    id,
+    salt,
+    maxSupply,
+    mintPrice,
+    spaceTreasury,
+    proposerFee
+  } = req.body;
   try {
     return res.json(
       await deployPayload({
@@ -146,7 +165,9 @@ router.post('/nft-claimer/deploy', async (req, res) => {
 router.post('/nft-claimer/mint', async (req, res) => {
   const { proposalAuthor, address, id, salt } = req.body;
   try {
-    return res.json(await mintPayload({ proposalAuthor, recipient: address, id, salt }));
+    return res.json(
+      await mintPayload({ proposalAuthor, recipient: address, id, salt })
+    );
   } catch (e: any) {
     capture(e, { body: req.body });
     return rpcError(res, e, salt);

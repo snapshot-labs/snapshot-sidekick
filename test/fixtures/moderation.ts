@@ -2,7 +2,12 @@
 export const SqlFixtures: Record<string, any[]> = {
   flaggedLinks: [
     { action: 'flag', type: 'link', value: 'https://gogle.com', created: 100 },
-    { action: 'flag', type: 'link', value: 'https://facebook.com', created: 100 }
+    {
+      action: 'flag',
+      type: 'link',
+      value: 'https://facebook.com',
+      created: 100
+    }
   ],
   flaggedAddresses: [
     { action: 'flag', type: 'address', value: '0x0001', created: 100 },

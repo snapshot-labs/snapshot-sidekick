@@ -44,7 +44,10 @@ new client.Gauge({
     const list = await getModerationList();
     for (const type in list) {
       const data = list[type] as any;
-      this.set({ type }, Array.isArray(data) ? data.length : data.tokens.length);
+      this.set(
+        { type },
+        Array.isArray(data) ? data.length : data.tokens.length
+      );
     }
   }
 });
@@ -241,7 +244,9 @@ async function refreshFullArchiveNodeChecker(network: any) {
     const response = await broviderCall(
       broviderId || key,
       starknet ? 'starknet_getClassAt' : 'eth_getCode',
-      starknet ? [{ block_number: start }, multicall] : [multicall, `0x${start.toString(16)}`]
+      starknet
+        ? [{ block_number: start }, multicall]
+        : [multicall, `0x${start.toString(16)}`]
     );
     const data = await response.json();
     providersFullArchiveNodeAvailability.set(

@@ -26,7 +26,9 @@ describe('Cache', () => {
 
     describe('when the cache does not exists', () => {
       it('returns false', async () => {
-        const mockCacheGet = jest.spyOn(testStorageEngine, 'get').mockResolvedValueOnce(false);
+        const mockCacheGet = jest
+          .spyOn(testStorageEngine, 'get')
+          .mockResolvedValueOnce(false);
 
         expect(await cache.getCache()).toBe(false);
         expect(mockCacheGet).toHaveBeenCalledTimes(1);
@@ -40,14 +42,21 @@ describe('Cache', () => {
       ['buffer', readFileSync(`${__dirname}/../../fixtures/icon.png`)]
     ];
 
-    it.each(inputs)('creates the cache file from a %s', async (type, content) => {
-      const spy = jest.spyOn(cache, 'getContent').mockResolvedValueOnce(content);
-      const mockCacheGet = jest.spyOn(testStorageEngine, 'set').mockResolvedValueOnce(true);
+    it.each(inputs)(
+      'creates the cache file from a %s',
+      async (type, content) => {
+        const spy = jest
+          .spyOn(cache, 'getContent')
+          .mockResolvedValueOnce(content);
+        const mockCacheGet = jest
+          .spyOn(testStorageEngine, 'set')
+          .mockResolvedValueOnce(true);
 
-      await cache.createCache();
+        await cache.createCache();
 
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(mockCacheGet).toHaveBeenCalledWith(cache.filename, content);
-    });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(mockCacheGet).toHaveBeenCalledWith(cache.filename, content);
+      }
+    );
   });
 });
