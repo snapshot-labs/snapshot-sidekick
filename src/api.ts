@@ -3,7 +3,6 @@ import express from 'express';
 import { rpcError, rpcSuccess, storageEngine } from './helpers/utils';
 import AiSummary from './lib/ai/summary';
 import AiTextToSpeech from './lib/ai/textToSpeech';
-import { getDomain } from './lib/domain';
 import getModerationList from './lib/moderationList';
 import deployPayload from './lib/nftClaimer/deploy';
 import mintPayload from './lib/nftClaimer/mint';
@@ -108,17 +107,6 @@ router.get('/moderation', async (req, res) => {
     res.json(
       await getModerationList(list ? (list as string).split(',') : undefined)
     );
-  } catch (err) {
-    capture(err);
-    return rpcError(res, 'INTERNAL_ERROR', '');
-  }
-});
-
-router.get('/domains/:domain', async (req, res) => {
-  const { domain } = req.params;
-
-  try {
-    res.json({ domain, space_id: getDomain(domain) });
   } catch (err) {
     capture(err);
     return rpcError(res, 'INTERNAL_ERROR', '');

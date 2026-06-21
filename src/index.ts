@@ -10,7 +10,6 @@ import './lib/queue';
 import { name, version } from '../package.json';
 import { rpcError } from './helpers/utils';
 import initCacheRefresher from './lib/cacheRefresher';
-import { initDomainsRefresher } from './lib/domain';
 import initMetrics from './lib/metrics';
 import webhook from './webhook';
 
@@ -19,7 +18,6 @@ const PORT = process.env.PORT || 3005;
 
 initMetrics(app);
 initCacheRefresher();
-initDomainsRefresher();
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '4mb' }));
